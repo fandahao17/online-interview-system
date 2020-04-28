@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import RightMenu from '@/components/RightMenu'
+import RightMenu from '@/adminviews/RightMenu'
 
 export default {
   name: 'NavMenu',

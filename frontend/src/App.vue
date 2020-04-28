@@ -1,53 +1,15 @@
 <template>
   <div id="app">
-    <el-container>
-      <el-header>
-        <nav-menu></nav-menu>
-      </el-header>
-      <el-main>
-        <app-main></app-main>
-      </el-main>
-    </el-container>
+    <router-view/>
   </div>
 </template>
 
 <script>
-import NavMenu from '@/components/NavMenu'
-import AppMain from '@/components/AppMain'
-
 export default {
-  name: 'App',
-  components: {
-    NavMenu,
-    AppMain
-  }
+  name: 'App'
 }
 </script>
 
 <style>
-body {
-  margin: 0;
-}
 
-.el-header {
-  background-color: #B3C0D1;
-  color: #333;
-  line-height: 60px;
-  padding: 0;
-}
-
-.el-aside {
-  background-color: #D3DCE6;
-  color: #333;
-  text-align: center;
-  line-height: 200px;
-}
-
-.el-main {
-  color: #333;
-}
-
-body > .el-container {
-  margin-bottom: 40px;
-}
 </style>
