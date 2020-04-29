@@ -1,5 +1,15 @@
 <template>
   <div class="hello">
+    <h2>
+      Click
+      <router-link to="/admin">this</router-link>
+      to see admin page
+    </h2>
+    <h2>
+      Click
+      <router-link to="/interviewee">this</router-link>
+      to see interviewee page
+    </h2>
     <h1>{{ msg }}</h1>
     <h2>Essential Links</h2>
     <ul>
