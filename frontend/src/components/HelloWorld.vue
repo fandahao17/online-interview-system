@@ -1,13 +1,14 @@
 <template>
   <div class="hello">
+    <h1>This is hello world page</h1>
     <h2>
       Click
-      <router-link to="/admin">this</router-link>
+      <router-link to="/admin">here</router-link>
       to see admin page
     </h2>
     <h2>
       Click
-      <router-link to="/interviewee">this</router-link>
+      <router-link to="/interviewee">here</router-link>
       to see interviewee page
     </h2>
     <h1>{{ msg }}</h1>

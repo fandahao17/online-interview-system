@@ -1,0 +1,18 @@
+<template>
+  <div class="video-window">
+    这是视频的窗口
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'VideoWindow'
+}
+</script>
+
+<style scoped>
+.video-window {
+  height: 200px;
+  line-height: 200px;
+}
+</style>
