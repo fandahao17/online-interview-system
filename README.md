@@ -1,5 +1,5 @@
-## backend
-主要用来和frontend进行协同合作
+## backend+frontend
+整合前后端(Django+Vue)
 ### 1.Mysql: 
 #### (1)数据库设计
 对于数据库的设计module位于`Online_Interview_System/interview/modules.py`下，主要设计了Applicant, Interviewer, Room三个实体。关于之后视频，代码，白板，对话框等面试信息的存储暂时使用Char类型表示，之后根据需求作出相应更改。
