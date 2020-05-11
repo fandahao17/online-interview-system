@@ -12,14 +12,14 @@
 主要通过Django模版配置使知道Vue的`index.html`的位置，通过视图来创建最简单的模版控制器，以及增加路由的方式。之后在访问`http://ip:8080/xxx`时便会直接返回`index.html`。若是涉及到较复杂的静态文件部分(css样式等)，还需做其它处理。(待更)
 - nginx直接访问(待更)
 
-### 3.模块整合
-#### 1.模块设计的同学
-对于视频等Vue模块，可以在`Issue #9`下方列出你们需要的URL路由请求，eg:`http://localhost:8080/xxx`,xxx即为你们需要的模块名。之后在和前端同学整合时会需要。之后可以把你们整合好的模块放在`/home/interview/database/`下，或在Issue上说明你们的模块在那个分支即可。也可以提前写上你们模块需要的交互操作，我们做出提前的设计。
-#### 2.前端设计的同学
-我们需要及时沟通，作出视图层的设计，并及时对数据库模型进行修改。
-#### 3.django整合的同学
-需要进一步详细了解django的机制。
-#### 4.进一步部署
+### 3.接口部分
+- 白板：将整合好的组件添加到`Online_Interview_System/frontend/src/intvweeviews/Board.vue`内
+- 编辑器：将整合好的组件添加到`Online_Interview_System/frontend/src/intvweeviews/Editor.vue`内
+- 文字聊天：将整合好的组件添加到`Online_Interview_System/frontend/src/intvweeviews/Text.vue`内
+- 视屏：将整合好的组建添加到`Online_Interview_System/frontend/src/intvweeviews/Video.vue`内
+### 4.前端和后端部分
+设计用户注册界面和数据库的交互部分
+### 5.进一步部署
 可能之后会需要关于nginx, uwsgi, celery, mysql, redis, supervisor等(常用的web框架)方面的知识
 
 <I>待更，相关需求可在Issue#9下留言</I>
