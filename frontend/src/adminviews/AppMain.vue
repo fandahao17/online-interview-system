@@ -1,10 +1,10 @@
 <template>
   <div>
-    <el-row>
-      <el-col :span="8">
-        <el-card class="box-card" shadow="hover">
+    <el-row v-for="rn in rowNum" v-bind:key="rn">
+      <el-col :span="8" v-for="i in 3" v-bind:key="i">
+        <el-card class="box-card" shadow="hover" @click.native="clickCard">
           <div slot="header" class="clearfix">
-            <span>候选人</span>
+            <span> 候选人{{ (((rn-1) * 3) + i) }}</span>
             <el-button style="float: right; padding: 3px 0" type="text">编辑</el-button>
           </div>
           <div v-for="n in 3" :key="n" class="text item">
@@ -12,21 +12,12 @@
           </div>
         </el-card>
       </el-col>
-      <el-col :span="8">
+    </el-row>
+    <el-row v-if="lastRow > 0">
+      <el-col :span="8" v-for="i in lastRow" v-bind:key="i">
         <el-card class="box-card" shadow="hover">
           <div slot="header" class="clearfix">
-            <span>候选人</span>
-            <el-button style="float: right; padding: 3px 0" type="text">编辑</el-button>
-          </div>
-          <div v-for="n in 3" :key="n" class="text item">
-            {{'列表内容 ' + n }}
-          </div>
-        </el-card>
-      </el-col>
-      <el-col :span="8">
-        <el-card class="box-card" shadow="hover">
-          <div slot="header" class="clearfix">
-            <span>候选人</span>
+            <span>候选人{{ intvweeNum - lastRow + i }}</span>
             <el-button style="float: right; padding: 3px 0" type="text">编辑</el-button>
           </div>
           <div v-for="n in 3" :key="n" class="text item">
@@ -36,83 +27,57 @@
       </el-col>
     </el-row>
 
-    <el-row>
-      <el-col :span="8">
-        <el-card class="box-card" shadow="hover">
-          <div slot="header" class="clearfix">
-            <span>候选人</span>
-            <el-button style="float: right; padding: 3px 0" type="text">编辑</el-button>
-          </div>
-          <div v-for="n in 3" :key="n" class="text item">
-            {{'列表内容 ' + n }}
-          </div>
-        </el-card>
-      </el-col>
-      <el-col :span="8">
-        <el-card class="box-card" shadow="hover">
-          <div slot="header" class="clearfix">
-            <span>候选人</span>
-            <el-button style="float: right; padding: 3px 0" type="text">编辑</el-button>
-          </div>
-          <div v-for="n in 3" :key="n" class="text item">
-            {{'列表内容 ' + n }}
-          </div>
-        </el-card>
-      </el-col>
-      <el-col :span="8">
-        <el-card class="box-card" shadow="hover">
-          <div slot="header" class="clearfix">
-            <span>候选人</span>
-            <el-button style="float: right; padding: 3px 0" type="text">编辑</el-button>
-          </div>
-          <div v-for="n in 3" :key="n" class="text item">
-            {{'列表内容 ' + n }}
-          </div>
-        </el-card>
-      </el-col>
-    </el-row>
-
-    <el-row>
-      <el-col :span="8">
-        <el-card class="box-card" shadow="hover">
-          <div slot="header" class="clearfix">
-            <span>候选人</span>
-            <el-button style="float: right; padding: 3px 0" type="text">编辑</el-button>
-          </div>
-          <div v-for="n in 3" :key="n" class="text item">
-            {{'列表内容 ' + n }}
-          </div>
-        </el-card>
-      </el-col>
-      <el-col :span="8">
-        <el-card class="box-card" shadow="hover">
-          <div slot="header" class="clearfix">
-            <span>候选人</span>
-            <el-button style="float: right; padding: 3px 0" type="text">编辑</el-button>
-          </div>
-          <div v-for="n in 3" :key="n" class="text item">
-            {{'列表内容 ' + n }}
-          </div>
-        </el-card>
-      </el-col>
-      <el-col :span="8">
-        <el-card class="box-card" shadow="hover">
-          <div slot="header" class="clearfix">
-            <span>候选人</span>
-            <el-button style="float: right; padding: 3px 0" type="text">编辑</el-button>
-          </div>
-          <div v-for="n in 3" :key="n" class="text item">
-            {{'列表内容 ' + n }}
-          </div>
-        </el-card>
-      </el-col>
-    </el-row>
+    <el-dialog title="候选人信息" :visible.sync="dialogFormVisible">
+      <el-form :model="form">
+        <el-form-item label="姓名" :label-width="formLabelWidth">
+          <el-input v-model="form.name" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="email" :label-width="formLabelWidth">
+          <el-input v-model="form.email" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="活动区域" :label-width="formLabelWidth">
+          <el-select v-model="form.region" placeholder="请选择活动区域">
+            <el-option label="区域一" value="shanghai"></el-option>
+            <el-option label="区域二" value="beijing"></el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'AppMain'
+  name: 'AppMain',
+  data: function () {
+    return {
+      intvweeNum: 11,
+      dialogFormVisible: false,
+      form: {
+        name: '',
+        email: '',
+        region: ''
+      },
+      formLabelWidth: '120px'
+    }
+  },
+  computed: {
+    rowNum: function () { // 除最后一行外有多少行
+      return Math.floor(this.intvweeNum / 3)
+    },
+    lastRow: function () { // 最后一行有多少个元素
+      return this.intvweeNum - 3 * this.rowNum
+    }
+  },
+  methods: {
+    clickCard: function () {
+      this.dialogFormVisible = true
+    }
+  }
 }
 </script>
 
@@ -164,5 +129,13 @@ export default {
 .row-bg {
   padding: 10px 0;
   background-color: #f9fafc;
+}
+
+.el-input {
+  width: 300px;
+}
+
+.el-form {
+  text-align: left;
 }
 </style>
