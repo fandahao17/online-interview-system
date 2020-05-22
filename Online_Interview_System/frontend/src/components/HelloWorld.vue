@@ -11,6 +11,11 @@
       <router-link to="/interviewee">here</router-link>
       to see interviewee page
     </h2>
+    <h2>
+      Click
+      <router-link to="/login">here</router-link>
+      to see login page
+    </h2>
     <h1>{{ msg }}</h1>
     <h2>Essential Links</h2>
     <ul>
