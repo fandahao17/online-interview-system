@@ -5,8 +5,8 @@ class Applicant(models.Model):
     name = models.CharField(max_length = 128)
     mobile = models.CharField(max_length = 20, unique = True)
     email = models.EmailField(primary_key = True, unique = True)
+    password = models.CharField(max_length = 128)
     status = models.IntegerField()
-    image = models.ImageField(upload_to = 'image/%Y%m', default = 'image/default.jpg', max_length = 100)
 
     class Meta:
         verbose_name = 'applicant_message'
@@ -18,7 +18,9 @@ class Applicant(models.Model):
 class Interviewer(models.Model):
     '''interviewer'''
     name = models.CharField(max_length = 128)
+    mobile = models.CharField(max_length = 20, unique = True)
     email = models.EmailField(primary_key = True, unique = True)
+    password = models.CharField(max_length = 128)
     free1 = models.DateTimeField(null=True,blank=True)
     free2 = models.DateTimeField(null=True,blank=True)
     free3 = models.DateTimeField(null=True,blank=True)

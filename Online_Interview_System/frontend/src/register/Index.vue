@@ -8,7 +8,7 @@
           <el-aside width="500px">Online Interview System</el-aside>
           <div class="vertical-bar"></div>
           <el-main>
-              <log-in></log-in>
+              <register-in></register-in>
           </el-main>
       </el-container>
     </el-container>
@@ -16,13 +16,13 @@
 </template>
 
 <script>
-import HeadMenu from '@/login_register/HeadMenu'
-import LogIn from '@/login_register/LogIn'
+import HeadMenu from '@/register/HeadMenu'
+import RegisterIn from '@/register/RegisterIn'
 export default {
   name: 'LogRegHome',
   components: {
     HeadMenu,
-    LogIn
+    RegisterIn
   }
 }
 </script>

@@ -2,10 +2,10 @@
   <div>
     <div class="tag">首页</div>
     <div class="menu-right">
-      <el-menu default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect2">
-        <el-menu-item index="1">登陆</el-menu-item>
-        <el-menu-item index="2">注册</el-menu-item>
-        <el-menu-item class="el-icon-user-solid" index="3"> 未登陆</el-menu-item>
+      <el-menu default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect" router>
+        <el-menu-item index="/login">登陆</el-menu-item>
+        <el-menu-item index="/register">注册</el-menu-item>
+        <el-menu-item class="el-icon-user-solid" index="/login"> 未登陆</el-menu-item>
       </el-menu>
     </div>
   </div>
@@ -16,14 +16,11 @@ export default {
   name: 'HeadMenu',
   data: function () {
     return {
-      activeIndex: '1'
+      activeIndex: '/register'
     }
   },
   methods: {
-    handleSelect1: function (key, keyPath) {
-      console.log(key, keyPath)
-    },
-    handleSelect2: function (key, keyPath) {
+    handleSelect: function (key, keyPath) {
       console.log(key, keyPath)
     }
   }
