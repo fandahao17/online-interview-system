@@ -5,6 +5,7 @@ import AdminHome from '@/adminviews/Index'
 import IntvweeHome from '@/intvweeviews/Index'
 import LogRegHome from '@/login/Index'
 import RegisterHome from '@/register/Index'
+import HrHome from '@/hrs/Index'
 
 Vue.use(Router)
 
@@ -34,6 +35,11 @@ export default new Router({
       path: '/register',
       name: 'Register',
       component: RegisterHome
+    },
+    {
+      path: '/hr',
+      name: 'Hr',
+      component: HrHome
     }
   ]
 })

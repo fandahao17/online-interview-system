@@ -37,8 +37,12 @@ export default {
         label: '面试官'
       }, {
         value: '身份2',
-        label: '面试者'
-      }],
+        label: '超级管理员'
+      }, {
+        value: '身份3',
+        label: 'HR'
+      }
+      ],
       value: '',
       input1: '',
       input2: ''
