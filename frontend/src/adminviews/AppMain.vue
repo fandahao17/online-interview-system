@@ -7,12 +7,26 @@
             <span> 候选人{{ (((rn-1) * 3) + i) }}</span>
             <el-button style="float: right; padding: 3px 0" type="text">编辑</el-button>
           </div>
+
+          <el-col :span="18">
+            <div v-for="n in 3" :key="n" class="text item">
+              {{'列表内容 ' + n }}
+            </div>
+          </el-col>
+          <el-col :span="6">
+            <el-checkbox v-model="checked"></el-checkbox>
+          </el-col>
+
+          <!--
           <div v-for="n in 3" :key="n" class="text item">
             {{'列表内容 ' + n }}
           </div>
+          <el-checkbox v-model="checked">备选项</el-checkbox>
+          -->
         </el-card>
       </el-col>
     </el-row>
+    <!-- 最后一行 -->
     <el-row v-if="lastRow > 0">
       <el-col :span="8" v-for="i in lastRow" v-bind:key="i">
         <el-card class="box-card" shadow="hover">
@@ -27,6 +41,7 @@
       </el-col>
     </el-row>
 
+    <!-- 点击卡片弹出的表单 -->
     <el-dialog title="候选人信息" :visible.sync="dialogFormVisible">
       <el-form :model="form">
         <el-form-item label="姓名" :label-width="formLabelWidth">
@@ -55,14 +70,15 @@ export default {
   name: 'AppMain',
   data: function () {
     return {
-      intvweeNum: 11,
-      dialogFormVisible: false,
-      form: {
+      intvweeNum: 11, // 从 API 请求到的 interviewee 的数量
+      dialogFormVisible: false, // 是否显示弹出表单
+      form: { // 弹出表单的内容
         name: '',
         email: '',
         region: ''
       },
-      formLabelWidth: '120px'
+      formLabelWidth: '120px', // 弹出表单的宽度
+      checked: false // 复选框是否选中
     }
   },
   computed: {
@@ -137,5 +153,9 @@ export default {
 
 .el-form {
   text-align: left;
+}
+
+.el-checkbox {
+  float: right;
 }
 </style>
