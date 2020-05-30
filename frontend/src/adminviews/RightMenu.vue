@@ -14,7 +14,7 @@
       :file-list="fileList">
       <el-button icon="el-icon-upload2" type="primary" plain>导入</el-button>
     </el-upload>
-    <el-button icon="el-icon-delete" type="danger" plain>删除</el-button>
+    <el-button icon="el-icon-delete" type="danger" plain @click="clickDelete">删除</el-button>
 
     <el-dropdown class="avatar-container">
       <div class="avatar-wrapper">
@@ -70,6 +70,9 @@ export default {
   methods: {
     clickAdd: function () {
       this.dialogFormVisible = true
+    },
+    clickDelete: function () {
+      this.$eventHub.$emit('click-delete', 'delete button was clicked')
     },
     handleRemove: function (file, fileList) {
       console.log(file, fileList)

@@ -14,7 +14,7 @@
             </div>
           </el-col>
           <el-col :span="6">
-            <el-checkbox v-model="checked"></el-checkbox>
+            <el-checkbox v-model="checked" v-if="isDeleting"></el-checkbox>
           </el-col>
 
           <!--
@@ -78,7 +78,8 @@ export default {
         region: ''
       },
       formLabelWidth: '120px', // 弹出表单的宽度
-      checked: false // 复选框是否选中
+      checked: false, // 复选框是否选中
+      isDeleting: false // 现在是否在删除过程中
     }
   },
   computed: {
@@ -92,7 +93,19 @@ export default {
   methods: {
     clickCard: function () {
       this.dialogFormVisible = true
+    },
+    handleDelete: function (msg) {
+      // 处理 RightMenu 中“删除”按钮被点击的事件
+      // note: 点击 delete 后这个函数会被触发两次
+      alert(msg)
+      this.isDeleting = true
     }
+  },
+  created: function () {
+    this.$eventHub.$on('click-delete', this.handleDelete)
+  },
+  beforeDestory: function () {
+    this.$eventHub.$off('click-delete')
   }
 }
 </script>
