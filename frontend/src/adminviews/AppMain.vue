@@ -16,13 +16,6 @@
           <el-col :span="6">
             <el-checkbox v-model="checked" v-if="isDeleting"></el-checkbox>
           </el-col>
-
-          <!--
-          <div v-for="n in 3" :key="n" class="text item">
-            {{'列表内容 ' + n }}
-          </div>
-          <el-checkbox v-model="checked">备选项</el-checkbox>
-          -->
         </el-card>
       </el-col>
     </el-row>
@@ -34,12 +27,21 @@
             <span>候选人{{ intvweeNum - lastRow + i }}</span>
             <el-button style="float: right; padding: 3px 0" type="text">编辑</el-button>
           </div>
-          <div v-for="n in 3" :key="n" class="text item">
-            {{'列表内容 ' + n }}
-          </div>
+          <el-col :span="18">
+            <div v-for="n in 3" :key="n" class="text item">
+              {{'列表内容 ' + n }}
+            </div>
+          </el-col>
+          <el-col :span="6">
+            <el-checkbox v-model="checked" v-if="isDeleting"></el-checkbox>
+          </el-col>
         </el-card>
       </el-col>
     </el-row>
+
+    <!-- 点击 delete 后出现的确认取消按钮 -->
+    <el-button icon="el-icon-search" plain class="cancel-delete" v-if="isDeleting" @click="clickCancelDelete">取消</el-button>
+    <el-button icon="el-icon-delete" type="danger" plain class="confirm-delete" v-if="isDeleting" @click="clickConfirmDelete">删除</el-button>
 
     <!-- 点击卡片弹出的表单 -->
     <el-dialog title="候选人信息" :visible.sync="dialogFormVisible">
@@ -70,6 +72,7 @@ export default {
   name: 'AppMain',
   data: function () {
     return {
+      test: 0,
       intvweeNum: 11, // 从 API 请求到的 interviewee 的数量
       dialogFormVisible: false, // 是否显示弹出表单
       form: { // 弹出表单的内容
@@ -94,11 +97,19 @@ export default {
     clickCard: function () {
       this.dialogFormVisible = true
     },
-    handleDelete: function (msg) {
+    handleDelete: function () {
       // 处理 RightMenu 中“删除”按钮被点击的事件
       // note: 点击 delete 后这个函数会被触发两次
-      alert(msg)
+      this.test = this.test + 1
+      console.log(this.test)
+      alert('delete button was clicked' + this.test)
       this.isDeleting = true
+    },
+    clickCancelDelete: function () {
+      this.isDeleting = false
+    },
+    clickConfirmDelete: function () {
+      this.isDeleting = false
     }
   },
   created: function () {
@@ -170,5 +181,17 @@ export default {
 
 .el-checkbox {
   float: right;
+}
+
+.cancel-delete {
+  position: fixed;
+  right: 150px;
+  bottom: 25px;
+}
+
+.confirm-delete {
+  position: fixed;
+  right: 40px;
+  bottom: 25px;
 }
 </style>

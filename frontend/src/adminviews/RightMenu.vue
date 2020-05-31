@@ -10,8 +10,7 @@
       :before-remove="beforeRemove"
       multiple
       :limit="3"
-      :on-exceed="handleExceed"
-      :file-list="fileList">
+      :on-exceed="handleExceed">
       <el-button icon="el-icon-upload2" type="primary" plain>导入</el-button>
     </el-upload>
     <el-button icon="el-icon-delete" type="danger" plain @click="clickDelete">删除</el-button>
@@ -72,7 +71,7 @@ export default {
       this.dialogFormVisible = true
     },
     clickDelete: function () {
-      this.$eventHub.$emit('click-delete', 'delete button was clicked')
+      this.$eventHub.$emit('click-delete')
     },
     handleRemove: function (file, fileList) {
       console.log(file, fileList)
@@ -114,6 +113,10 @@ export default {
 
 .upload-demo {
   display: inline-block;
+}
+
+.el-upload-list {
+  display: none;
 }
 
 .el-button {
