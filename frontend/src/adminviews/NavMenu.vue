@@ -1,6 +1,6 @@
 <template>
   <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal"
-    @select="handleSelect" router>
+    @select="handleSelect">
     <el-menu-item index="1">候选人管理</el-menu-item>
     <el-menu-item index="2">面试官管理</el-menu-item>
     <el-menu-item index="3">HR 管理</el-menu-item>

@@ -40,11 +40,11 @@
     </el-row>
 
     <!-- 点击 delete 后出现的确认取消按钮 -->
-    <el-button icon="el-icon-search" plain class="cancel-delete" v-if="isDeleting" @click="clickCancelDelete">取消</el-button>
+    <el-button icon="el-icon-close" plain class="cancel-delete" v-if="isDeleting" @click="clickCancelDelete">取消</el-button>
     <el-button icon="el-icon-delete" type="danger" plain class="confirm-delete" v-if="isDeleting" @click="clickConfirmDelete">删除</el-button>
 
-    <!-- 点击卡片弹出的表单 -->
-    <el-dialog title="候选人信息" :visible.sync="dialogFormVisible">
+    <!-- 点击候选人、面试官卡片弹出的表单 -->
+    <el-dialog title="候选人信息" :visible.sync="intvwDialogFormVisible">
       <el-form :model="form">
         <el-form-item label="姓名" :label-width="formLabelWidth">
           <el-input v-model="form.name" autocomplete="off"></el-input>
@@ -60,8 +60,208 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+        <el-button @click="intvwDialogFormVisible = false">取消</el-button>
+        <el-button type="primary" @click="intvwDialogFormVisible = false">确定</el-button>
+      </div>
+    </el-dialog>
+
+    <!-- 点击 HR 卡片弹出的表单 -->
+    <el-dialog width=85% :visible.sync="hrDialogFormVisible">
+      <el-row :gutter="20">
+        <el-col :span="7">
+          <h3>HR 信息</h3>
+          <el-form :model="form">
+            <el-form-item label="姓名" :label-width="hrFormLabelWidth">
+              <span v-if="editHrInfo === false" > {{ form.name }} </span>
+              <el-input v-else v-model="form.name" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="email" :label-width="hrFormLabelWidth">
+              <span v-if="editHrInfo === false" > {{ form.email }} </span>
+              <el-input v-else v-model="form.email" autocomplete="off"></el-input>
+            </el-form-item>
+          </el-form>
+          <div class="hrinfo-footer">
+            <el-button size="medium" type="primary" plain v-if="editHrInfo === false" @click="editHrInfo = true">编 辑</el-button>
+            <el-button size="medium" v-if="editHrInfo" @click="editHrInfo = false">取 消</el-button>
+            <el-button size="medium" type="primary" plain v-if="editHrInfo" @click="editHrInfo = false">确 定</el-button>
+          </div>
+        </el-col>
+        <el-col :span="1">
+          <el-divider direction="vertical"></el-divider>
+        </el-col>
+        <el-col :span="8">
+          <h3>分配给该 HR 的候选人</h3>
+          <el-table
+            ref="multipleTable"
+            :data="intvweeTableData"
+            style="width: 100%"
+            max-height="340">
+            <el-table-column type="expand">
+              <template slot-scope="props">
+                <el-form label-position="left" inline class="demo-table-expand">
+                  <el-form-item label="姓名">
+                    <span>{{ props.row.name }}</span>
+                  </el-form-item>
+                  <el-form-item label="候选人 ID">
+                    <span>{{ props.row.id }}</span>
+                  </el-form-item>
+                  <el-form-item label="email">
+                    <span>{{ props.row.email }}</span>
+                  </el-form-item>
+                  <el-form-item label="商品分类">
+                    <span>{{ props.row.category }}</span>
+                  </el-form-item>
+                </el-form>
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="姓名"
+              prop="name"
+              show-overflow-tooltip>
+            </el-table-column>
+            <el-table-column
+              label="email"
+              prop="email">
+            </el-table-column>
+            <el-table-column
+              type="selection"
+              width="55">
+            </el-table-column>
+          </el-table>
+          <div class="hr-intvwee-footer">
+            <el-button size="medium" type="danger" plain @click="hrDialogFormVisible = true">删 除</el-button>
+            <el-button size="medium" type="primary" plain @click="addIntvweeDialogFormVisible = true">添 加</el-button>
+          </div>
+        </el-col>
+        <el-col :span="1">
+          <el-divider direction="vertical"></el-divider>
+        </el-col>
+        <el-col :span="7">
+          <h3>分配给该 HR 的面试官</h3>
+          <el-table
+            ref="multipleTable"
+            :data="intvwerTableData"
+            style="width: 100%"
+            max-height="340">
+            <el-table-column type="expand">
+              <template slot-scope="props">
+                <el-form label-position="left" inline class="demo-table-expand">
+                  <el-form-item label="姓名">
+                    <span>{{ props.row.name }}</span>
+                  </el-form-item>
+                  <el-form-item label="面试官 ID">
+                    <span>{{ props.row.id }}</span>
+                  </el-form-item>
+                  <el-form-item label="email">
+                    <span>{{ props.row.email }}</span>
+                  </el-form-item>
+                </el-form>
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="姓名"
+              prop="name"
+              show-overflow-tooltip>
+            </el-table-column>
+            <el-table-column
+              label="email"
+              prop="email"
+              show-overflow-tooltip>
+            </el-table-column>
+            <el-table-column
+              type="selection"
+              width="55">
+            </el-table-column>
+          </el-table>
+          <div class="hr-intvwer-footer">
+            <el-button size="medium" type="danger" plain @click="hrDialogFormVisible = true">删 除</el-button>
+            <el-button size="medium" type="primary" plain @click="addIntvwerDialogFormVisible = true">添 加</el-button>
+          </div>
+        </el-col>
+      </el-row>
+    </el-dialog>
+
+    <!-- 在 HR 弹窗中点击添加候选人弹出的表单 -->
+    <el-dialog title="候选人列表" :visible.sync="addIntvweeDialogFormVisible">
+      <el-table
+        ref="multipleTable"
+        :data="intvweeTableData"
+        style="width: 100%"
+        max-height="350">
+        <el-table-column type="expand">
+          <template slot-scope="props">
+            <el-form label-position="left" inline class="demo-table-expand">
+              <el-form-item label="姓名">
+                <span>{{ props.row.name }}</span>
+              </el-form-item>
+              <el-form-item label="候选人 ID">
+                <span>{{ props.row.id }}</span>
+              </el-form-item>
+              <el-form-item label="email">
+                <span>{{ props.row.email }}</span>
+              </el-form-item>
+            </el-form>
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="姓名"
+          prop="name"
+          show-overflow-tooltip>
+        </el-table-column>
+        <el-table-column
+          label="email"
+          prop="email">
+        </el-table-column>
+        <el-table-column
+          type="selection"
+          width="55">
+        </el-table-column>
+      </el-table>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="addIntvweeDialogFormVisible = false">取消</el-button>
+        <el-button type="primary" @click="addIntvweeDialogFormVisible = false">确定</el-button>
+      </div>
+    </el-dialog>
+
+    <!-- 在 HR 弹窗中点击添加面试官弹出的表单 -->
+    <el-dialog title="面试官列表" :visible.sync="addIntvwerDialogFormVisible">
+      <el-table
+        ref="multipleTable"
+        :data="intvwerTableData"
+        style="width: 100%"
+        max-height="350">
+        <el-table-column type="expand">
+          <template slot-scope="props">
+            <el-form label-position="left" inline class="demo-table-expand">
+              <el-form-item label="姓名">
+                <span>{{ props.row.name }}</span>
+              </el-form-item>
+              <el-form-item label="面试官 ID">
+                <span>{{ props.row.id }}</span>
+              </el-form-item>
+              <el-form-item label="email">
+                <span>{{ props.row.email }}</span>
+              </el-form-item>
+            </el-form>
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="姓名"
+          prop="name"
+          show-overflow-tooltip>
+        </el-table-column>
+        <el-table-column
+          label="email"
+          prop="email">
+        </el-table-column>
+        <el-table-column
+          type="selection"
+          width="55">
+        </el-table-column>
+      </el-table>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="addIntvwerDialogFormVisible = false">取消</el-button>
+        <el-button type="primary" @click="addIntvwerDialogFormVisible = false">确定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -72,17 +272,53 @@ export default {
   name: 'AppMain',
   data: function () {
     return {
-      test: 0,
+      editHrInfo: false,
+      addIntvweeDialogFormVisible: false,
+      addIntvwerDialogFormVisible: false,
       intvweeNum: 11, // 从 API 请求到的 interviewee 的数量
-      dialogFormVisible: false, // 是否显示弹出表单
+      intvwDialogFormVisible: false, // 是否显示弹出表单
+      hrDialogFormVisible: true, // 是否显示弹出表单
       form: { // 弹出表单的内容
-        name: '',
-        email: '',
-        region: ''
+        name: 'default',
+        email: 'default@default.com',
+        region: 'default'
       },
       formLabelWidth: '120px', // 弹出表单的宽度
+      hrFormLabelWidth: '70px', // 弹出表单的宽度
       checked: false, // 复选框是否选中
-      isDeleting: false // 现在是否在删除过程中
+      isDeleting: false, // 现在是否在删除过程中
+      intvweeTableData: [{
+        id: '1',
+        name: '候选人1',
+        email: 'aaa@gmail.com',
+        category: '江浙小吃、小吃零食'
+      }, {
+        id: '2',
+        name: '候选人2',
+        email: 'bbb@gmail.com',
+        category: '江浙小吃、小吃零食'
+      }, {
+        id: '3',
+        name: '候选人3',
+        email: 'ccc@gmail.com',
+        category: '江浙小吃、小吃零食'
+      }, {
+        id: '4',
+        name: '候选人4',
+        email: 'ddd@gmail.com',
+        category: '江浙小吃、小吃零食'
+      }],
+      intvwerTableData: [{
+        id: '1',
+        name: '面试官1',
+        email: 'aaa@gmail.com',
+        category: '江浙小吃、小吃零食'
+      }, {
+        id: '2',
+        name: '面试官2',
+        email: 'bbb@gmail.com',
+        category: '江浙小吃、小吃零食'
+      }]
     }
   },
   computed: {
@@ -95,7 +331,7 @@ export default {
   },
   methods: {
     clickCard: function () {
-      this.dialogFormVisible = true
+      this.intvwDialogFormVisible = true
     },
     handleDelete: function () {
       // 处理 RightMenu 中“删除”按钮被点击的事件
@@ -152,6 +388,7 @@ export default {
 }
 .el-col {
   border-radius: 4px;
+  height: 100%;
 }
 .bg-purple-dark {
   background: #99a9bf;
@@ -172,7 +409,7 @@ export default {
 }
 
 .el-input {
-  width: 300px;
+  width: 90%;
 }
 
 .el-form {
@@ -193,5 +430,12 @@ export default {
   position: fixed;
   right: 40px;
   bottom: 25px;
+}
+
+.hrinfo-footer,
+.hr-intvwee-footer,
+.hr-intvwer-footer {
+  float: right;
+  padding-top: 20px;
 }
 </style>
