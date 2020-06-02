@@ -14,11 +14,16 @@ Vue.config.productionTip = false
 
 Vue.use(ElementUI)
 
+Vue.prototype.$eventHub = Vue.prototype.$eventHub || new Vue()
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
   router,
   store,
   components: { App },
-  template: '<App/>'
+  template: '<App/>',
+  data: {
+    eventHub: new Vue()
+  }
 })
