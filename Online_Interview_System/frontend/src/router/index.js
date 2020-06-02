@@ -3,6 +3,9 @@ import Router from 'vue-router'
 import HelloWorld from '@/components/HelloWorld'
 import AdminHome from '@/adminviews/Index'
 import IntvweeHome from '@/intvweeviews/Index'
+import LogRegHome from '@/login/Index'
+import RegisterHome from '@/register/Index'
+import HrHome from '@/hrs/Index'
 
 Vue.use(Router)
 
@@ -22,6 +25,21 @@ export default new Router({
       path: '/interviewee',
       name: 'Interviewee',
       component: IntvweeHome
+    },
+    {
+      path: '/login',
+      name: 'Login',
+      component: LogRegHome
+    },
+    {
+      path: '/register',
+      name: 'Register',
+      component: RegisterHome
+    },
+    {
+      path: '/hr',
+      name: 'Hr',
+      component: HrHome
     }
   ]
 })
