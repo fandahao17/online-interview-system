@@ -336,9 +336,6 @@ export default {
     handleDelete: function () {
       // 处理 RightMenu 中“删除”按钮被点击的事件
       // note: 点击 delete 后这个函数会被触发两次
-      this.test = this.test + 1
-      console.log(this.test)
-      alert('delete button was clicked' + this.test)
       this.isDeleting = true
     },
     clickCancelDelete: function () {
