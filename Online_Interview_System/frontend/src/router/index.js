@@ -9,7 +9,7 @@ import HrHome from '@/hrs/Index'
 
 Vue.use(Router)
 
-export default new Router({
+var router = new Router({
   routes: [
     {
       path: '/',
@@ -43,3 +43,11 @@ export default new Router({
     }
   ]
 })
+router.beforeEach((to, from, next) => {
+  if (to.path === '/login') {
+    window.hideLogin = false
+  }
+  next()
+})
+
+export default router

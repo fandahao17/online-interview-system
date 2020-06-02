@@ -30,7 +30,7 @@
         </el-row>
         <el-row>
           <el-col :span="6">
-              <el-button type="primary" round>注册</el-button>
+              <el-button type="primary" @click.native="onRegister" round>注册</el-button>
           </el-col>
           <el-col :span="6">
             <el-button type="danger" round>取消</el-button>
@@ -39,7 +39,9 @@
   </div>
 </template>
 <script>
+import axios from 'axios'
 export default {
+  name: 'RegisterIn',
   data () {
     return {
       options: [{
@@ -56,24 +58,36 @@ export default {
       input1: '',
       input2: '',
       input3: '',
-      input4: '',
-      imageUrl: ''
+      input4: ''
     }
   },
   methods: {
-    handleAvatarSuccess (res, file) {
-      this.imageUrl = URL.createObjectURL(file.raw)
-    },
-    beforeAvatarUpload (file) {
-      const isJPG = file.type === 'image/jpeg'
-      const isLt2M = file.size / 1024 / 1024 < 2
-      if (!isJPG) {
-        this.$message.error('上传头像图片只能是 JPG 格式!')
-      }
-      if (!isLt2M) {
-        this.$message.error('上传头像图片大小不能超过 2MB!')
-      }
-      return isJPG && isLt2M
+    onRegister () {
+      axios.request({
+        url: 'http://127.0.0.1:8000/api/register',
+        method: 'POST',
+        data: {
+          name: this.input1,
+          password: this.input4,
+          mobile: this.input2,
+          email: this.input3,
+          identity: Number(this.value.charAt(this.value.length - 1))
+        },
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }).then(function (arg) {
+        //  get return results
+        if (arg.data.code === 1000) {
+          alert(arg.data.msg)
+          this.$router.replace('register', 'login')
+        } else {
+          alert(arg.data.msg)
+        }
+      }).catch(function (arg) {
+        //  Error
+        alert(arg.data.msg)
+      })
     }
   }
 }
