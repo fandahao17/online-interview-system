@@ -20,7 +20,14 @@
 ### 4.api接口
 - `http://127.0.0.1:8000/api/login`: 用户登陆api
 - `http://127.0.0.1:8000/api/register`: 用户注册api
-...
+
+**Note：其它api还未设计，有需求可以及时交流更新**
+### 5.项目运行方式
+分别运行如下指令，之后项目效果在vue界面查看：
+- django：django：python manage.py runserver (端口8000）
+- vue：npm run dev（端口8080）
+
+
 
 
 <I>Update time: 2020.6.2</I>
