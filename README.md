@@ -24,7 +24,7 @@
 **Note：其它api还未设计，有需求可以及时交流更新**
 ### 5.项目运行方式
 分别运行如下指令，之后项目效果在vue界面查看：
-- django：django：python manage.py runserver (端口8000）
+- django：python manage.py runserver (端口8000）
 - vue：npm run dev（端口8080）
 
 
