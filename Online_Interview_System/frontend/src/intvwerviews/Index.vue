@@ -61,6 +61,7 @@
 </template>
 
 <script>
+//  import axios from 'axios'
 import IntvwerHeadmenu from '@/intvwerviews/HeadMenu'
 
 export default {
@@ -117,7 +118,35 @@ export default {
         }]
       }]
     }
-  },
+  }, /*
+  created () {
+    var identity = localStorage.getItem('identity')
+    var token = localStorage.getItem('token')
+    var name = localStorage.getItem('name')
+    var _this = this
+    axios.request({
+      url: 'http://127.0.0.1:8000/api/statecheck',
+      method: 'POST',
+      data: {
+        token: token,
+        identity: identity,
+        name: name
+      },
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }).then(function (arg) {
+      //  get return results
+      if (arg.data.code !== 1000) {
+        window.alert(arg.data.msg)
+        _this.$router.push('/404')
+      }
+    }).catch(function (arg) {
+      //  Error
+      //  window.alert(arg.data.msg)
+      _this.$router.push('/404')
+    })
+  }, */
   computed: {
     treeData1: function () {
       return JSON.parse(JSON.stringify(this.treeData))

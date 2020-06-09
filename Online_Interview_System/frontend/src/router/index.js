@@ -8,6 +8,7 @@ import RegisterHome from '@/register/Index'
 import HrHome from '@/hrs/Index'
 import IntvwerHome from '@/intvwerviews/Index'
 import ScheduleView from '@/intvwerviews/ScheduleView'
+import Error from '@/error/Error'
 
 Vue.use(Router)
 
@@ -52,6 +53,11 @@ var router = new Router({
       path: '/hr',
       name: 'Hr',
       component: HrHome
+    },
+    {
+      path: '*',
+      name: 'Error',
+      component: Error
     }
   ]
 })

@@ -20,6 +20,12 @@
 ### 4.api接口
 - `http://127.0.0.1:8000/api/login`: 用户登陆api
 - `http://127.0.0.1:8000/api/register`: 用户注册api
+- `http://127.0.0.1:8000/api/statecheck`: 用户token前端验证api
+
+### 5.api使用方法
+- login-api: 参考`LogIn.vue`实现
+- register-api: 参考`RegisterIn.vue`实现
+- statecheck-api(前端使用localStorage存储token，其它设计暂未实现): (1)第一次登录的时候，前端调后端的登陆接口，发送用户名和密码; (2)后端收到请求，验证用户名和密码，验证成功，就给前端返回一个token; (3)前端拿到token，将token存储到localStorage和vuex中，并跳转路由页面; (4)前端每次跳转路由，就判断 localStroage 中有无 token ，没有就跳转到登录页面，有则跳转到对应路由页面; (5)每次调后端接口，都要在请求头中加token; (6)后端判断请求头中有无token，有token，就拿到token并验证token，验证成功就返回数据，验证失败（例如：token过期）就返回401，请求头中没有token也返回401; (7)如果前端拿到状态码为401，就清除token信息并跳转到登录页面
 
 **Note：其它api还未设计，有需求可以及时交流更新**
 ### 5.项目运行方式
