@@ -68,6 +68,7 @@ export default {
         //  get return results
         if (arg.data.code === 1000) {
           alert(arg.data.msg)
+          //  this.push(/)
         } else {
           alert(arg.data.msg)
         }
