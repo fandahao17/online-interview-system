@@ -63,15 +63,16 @@ export default {
   },
   methods: {
     onRegister () {
+      var _this = this
       axios.request({
         url: 'http://127.0.0.1:8000/api/register',
         method: 'POST',
         data: {
-          name: this.input1,
-          password: this.input4,
-          mobile: this.input2,
-          email: this.input3,
-          identity: Number(this.value.charAt(this.value.length - 1))
+          name: _this.input1,
+          password: _this.input4,
+          mobile: _this.input2,
+          email: _this.input3,
+          identity: Number(_this.value.charAt(_this.value.length - 1))
         },
         headers: {
           'Content-Type': 'application/json'
@@ -80,7 +81,7 @@ export default {
         //  get return results
         if (arg.data.code === 1000) {
           alert(arg.data.msg)
-          this.$router.replace('register', 'login')
+          _this.$router.push('/login')
         } else {
           alert(arg.data.msg)
         }

@@ -8,7 +8,7 @@ from rest_framework.decorators import api_view
 
 @api_view(['POST'])
 def login(request):
-	ret = {"code": 1000, "msg": "Begin msg"}
+	ret = {"code": 1000, "msg": "Begin msg", "type": "-1"}
 	try:
 		name = request.data.get('name')
 		password = request.data.get('password')
@@ -23,6 +23,7 @@ def login(request):
 			token = str(time.time()) + name
 			models.interToken.objects.update_or_create(name=obj, defaults={'token': token})
 			ret["msg"] = "Login success"
+			ret["type"] = "1"
 			return JsonResponse(ret)
 
 		elif identity == 2:
@@ -35,6 +36,7 @@ def login(request):
 			token = str(time.time()) + name
 			models.superToken.objects.update_or_create(name=obj, defaults={'token': token})
 			ret["msg"] = "Login success"
+			ret["type"] = "2"
 			return JsonResponse(ret)
 
 		elif identity == 3:
@@ -46,6 +48,7 @@ def login(request):
 			token = str(time.time()) + name
 			models.hrToken.objects.update_or_create(name=obj, defaults={'token': token})
 			ret["msg"] = "Login success"
+			ret["type"] = "3"
 			return JsonResponse(ret)
 		else:
 			ret["code"] = 1003
@@ -60,7 +63,7 @@ def login(request):
 
 @api_view(['POST'])
 def register(request):
-	ret = {"code": 1000, "msg": 'Begin msg'}
+	ret = {"code": 1000, "msg": 'Begin msg', "type": "-1"}
 	try:
 		name = request.data.get('name')
 		password = request.data.get('password')
@@ -68,12 +71,27 @@ def register(request):
 		email = request.data.get('email')
 		identity = request.data.get('identity')
 		if identity == 1:
+			obj = models.Interviewer.objects.filter(name=name, mobile=mobile, email=email, password=password)
+			if obj:
+				ret["code"] = 1003
+				ret["msg"] = 'Repeat registration, change your please change the registration information or log in'
+				return JsonResponse(ret)
 			b = models.Interviewer(name=name, mobile=mobile, email=email, password=password)
 			b.save()
 		elif identity == 2:
+			obj = models.Super.objects.filter(name=name, mobile=mobile, email=email, password=password)
+			if obj:
+				ret["code"] = 1003
+				ret["msg"] = 'Repeat registration, change your please change the registration information or log in'
+				return JsonResponse(ret)
 			b = models.Super(name=name, mobile=mobile, email=email, password=password)
 			b.save()
 		elif identity == 3:
+			obj = models.Hr.objects.filter(name=name, mobile=mobile, email=email, password=password)
+			if obj:
+				ret["code"] = 1003
+				ret["msg"] = 'Repeat registration, change your please change the registration information or log in'
+				return JsonResponse(ret)
 			b = models.Hr(name=name, mobile=mobile, email=email, password=password)
 			b.save()
 		else:
@@ -83,6 +101,7 @@ def register(request):
 
 		ret["code"] = 1000
 		ret["msg"] = 'Register success'
+		ret["type"] = str(identity)
 		return JsonResponse(ret)
 	except Exception as e:
 		ret["code"] = '1002'

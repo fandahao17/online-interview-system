@@ -53,13 +53,14 @@ export default {
   },
   methods: {
     onLogin () {
+      var _this = this
       axios.request({
         url: 'http://127.0.0.1:8000/api/login',
         method: 'POST',
         data: {
-          name: this.input1,
-          password: this.input2,
-          identity: Number(this.value.charAt(this.value.length - 1))
+          name: _this.input1,
+          password: _this.input2,
+          identity: Number(_this.value.charAt(_this.value.length - 1))
         },
         headers: {
           'Content-Type': 'application/json'
@@ -67,15 +68,22 @@ export default {
       }).then(function (arg) {
         //  get return results
         if (arg.data.code === 1000) {
-          alert(arg.data.msg)
-          //  this.push(/)
+          window.alert(arg.data.msg)
+          if (arg.data.type === '1') {
+            _this.$router.push('/interviewee')
+          } else if (arg.data.type === '2') {
+            _this.$router.push('/admin')
+          } else if (arg.data.type === '3') {
+            _this.$router.push('/hr')
+          }
         } else {
-          alert(arg.data.msg)
+          window.alert(arg.data.msg)
         }
-      }).catch(function (arg) {
-        //  Error
-        alert(arg.data.msg)
       })
+      //  .catch(function (arg) {
+      //  Error
+      //  console.log(arg.data.msg)
+      //  })
     }
   }
 }
