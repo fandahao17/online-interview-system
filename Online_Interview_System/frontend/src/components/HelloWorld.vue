@@ -13,6 +13,11 @@
     </h2>
     <h2>
       Click
+      <router-link to="/interviewer">here</router-link>
+      to see interviewer page
+    </h2>
+    <h2>
+      Click
       <router-link to="/login">here</router-link>
       to see login page
     </h2>
