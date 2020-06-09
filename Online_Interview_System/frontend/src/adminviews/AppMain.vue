@@ -22,7 +22,7 @@
     <!-- 最后一行 -->
     <el-row v-if="lastRow > 0">
       <el-col :span="8" v-for="i in lastRow" v-bind:key="i">
-        <el-card class="box-card" shadow="hover">
+        <el-card class="box-card" shadow="hover" @click.native="clickCard">
           <div slot="header" class="clearfix">
             <span>候选人{{ intvweeNum - lastRow + i }}</span>
             <el-button style="float: right; padding: 3px 0" type="text">编辑</el-button>

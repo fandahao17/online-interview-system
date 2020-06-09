@@ -7,6 +7,7 @@ import LogRegHome from '@/login/Index'
 import RegisterHome from '@/register/Index'
 import HrHome from '@/hrs/Index'
 import IntvwerHome from '@/intvwerviews/Index'
+import ScheduleView from '@/intvwerviews/ScheduleView'
 
 Vue.use(Router)
 
@@ -31,6 +32,11 @@ var router = new Router({
       path: '/interviewer',
       name: 'Interviewer',
       component: IntvwerHome
+    },
+    {
+      path: '/schedule',
+      name: 'ScheduleView',
+      component: ScheduleView
     },
     {
       path: '/login',

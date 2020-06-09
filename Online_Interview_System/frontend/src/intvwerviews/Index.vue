@@ -6,31 +6,34 @@
       </el-header>
       <el-main>
         <el-col :span="12">
-          <h1>选择空闲时间段</h1>
-          <el-form ref="timeForm" :model="timeForm" label-width="140px">
-            <el-form-item label="日期">
-              <el-date-picker
-                v-model="timeForm.freeDate"
-                type="date"
-                placeholder="选择日期"
-                :picker-options="pickerOptions">
-              </el-date-picker>
-            </el-form-item>
-            <el-form-item label="空闲时间段">
-              <el-time-picker
-                is-range
-                v-model="timeForm.freeTime"
-                range-separator="至"
-                start-placeholder="开始时间"
-                end-placeholder="结束时间"
-                placeholder="选择时间范围"
-                style="width: 80%;">
-              </el-time-picker>
-            </el-form-item>
-            <el-form-item>
-              <el-button type="primary" @click="submitFreeTime">提交</el-button>
-            </el-form-item>
-          </el-form>
+          <el-col :span="23">
+            <h1>选择空闲时间段</h1>
+            <el-form ref="timeForm" :model="timeForm" label-width="140px">
+              <el-form-item label="日期">
+                <el-date-picker
+                  v-model="timeForm.freeDate"
+                  type="date"
+                  placeholder="选择日期"
+                  :picker-options="pickerOptions">
+                </el-date-picker>
+              </el-form-item>
+              <el-form-item label="空闲时间段">
+                <el-time-picker
+                  is-range
+                  v-model="timeForm.freeTime"
+                  range-separator="至"
+                  start-placeholder="开始时间"
+                  end-placeholder="结束时间"
+                  placeholder="选择时间范围"
+                  style="width: 90%;">
+                </el-time-picker>
+              </el-form-item>
+              <el-form-item>
+                <el-button type="primary" @click="submitFreeTime">提交</el-button>
+              </el-form-item>
+            </el-form>
+          </el-col>
+          <el-col :span="1"><div class="vertical-bar"></div></el-col>
         </el-col>
         <el-col :span="12">
           <h1>已选空闲时间段</h1>
@@ -142,7 +145,7 @@ export default {
   }
 
   .el-main {
-    background-color: #E9EEF3;
+    /*background-color: #E9EEF3;*/
     color: #333;
     /*text-align: center;*/
     /*line-height: 160px;*/
@@ -173,5 +176,14 @@ export default {
 
   .el-tree {
     font-size: 40px;
+  }
+
+  .vertical-bar {
+    width: 5px;
+    height: 600px;
+    background: lightgray;
+    display: inline-block;
+    margin-top: 15px;
+    vertical-align: top;
   }
 </style>
