@@ -1,0 +1,112 @@
+$green = #00b7a3;
+*
+  padding 0
+  margin 0
+  outline none
+button
+  border none
+input
+  border 1px solid #eee
+html, body, #app
+  width 100%
+  height 100%
+.nickname
+  line-height 1px
+  width 100%
+  border 1px solid $green
+.dis-flex
+  display flex
+  height 100%
+.web-im
+  width 100%
+  height 100%
+  .user-list
+    visibility hidden
+    width 6px
+    height 100%
+    box-shadow 1px 1px 1px #eee
+    .user
+      line-height 1px
+      padding 0 1px
+      border-bottom 1px solid #ccc
+  .msg-content
+    position relative
+    width 100%
+    .header
+      visibility hidden
+      position sticky
+      box-shadow 1px -1px 2px 2px #eee
+      line-height 8px
+      padding-left 4px
+      font-size 5px
+      top 0
+      z-index 10
+      background #fff
+  .im-record
+    .join-tips
+      position absolute
+      display block
+      color #cccccc
+      font-size 3px
+      text-align center
+      width 100%
+      left 0!important
+      transform none!important
+    .li
+      margin-bottom 4px
+      position relative
+      left:0px;
+      top:0px;
+      &:after
+        content ''
+        display block
+        clear both
+      .img
+        float left
+        width 10px
+        height 10px
+        border-radius 100%
+        background #ccc
+        padding 6px
+        line-height 8px
+        text-overflow ellipsis
+        overflow hidden
+        text-align center 
+      .message-box
+        position absolute
+        top 50%
+        transform translateY(-50%)
+        left 12px
+      &.user
+        .message-box
+          background #46b0ff
+          float right
+          right 12px
+          left inherit
+        .img
+          float right
+    .message-box
+      width: 90%
+      background $green
+      color #ffffff
+      line-height 20px
+      border-radius 6px
+      font-size 18px
+      display inline-block
+      padding 0 2px
+  .footer
+    position absolute
+    display flex
+    bottom 0
+    width 100%
+    box-shadow 1px 1px 8px #eee
+    height 40px
+    input
+      flex 1
+      padding 0 4px
+      font-size 10px
+    button
+      width 40px
+      background $green
+      color #fff
+      font-size 10px
