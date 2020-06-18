@@ -25,7 +25,7 @@ SECRET_KEY = 'nzz+r7-cz37jy(6tu(x2kd#&%%_pav2-gjbcvihl*6&&^tgs5w'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -104,9 +104,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'Online_Interview_System',
-        'USER': 'root', 
-        'PASSWORD': 'Cbn111156789!', 
-        'HOST': '127.0.0.1', 
+        'USER': 'interview',
+        'PASSWORD': 'interview',
+        'HOST': '127.0.0.1',
         'PORT': '3306', 
     }
 }

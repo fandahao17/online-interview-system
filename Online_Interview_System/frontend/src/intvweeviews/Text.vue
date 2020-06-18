@@ -119,7 +119,7 @@ export default {
     conWebSocket(){
       let vm = this;
       if(window.WebSocket){
-        vm.socket = new WebSocket('ws://localhost:8001');
+        vm.socket = new WebSocket('ws://106.14.227.202:8080');
         let socket = vm.socket;
 
         socket.onopen = function(e){
