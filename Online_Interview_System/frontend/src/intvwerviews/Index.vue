@@ -80,7 +80,7 @@ export default {
       },
       timeForm: {
         freeDate: '',
-        freeTime: []
+        freeTime: [new Date(), new Date()]
       },
       treeData: [{
         id: 1,
