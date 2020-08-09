@@ -13,12 +13,12 @@
       <div class="dis-flex">
         <div class="user-list">
           <div class="user" @click="triggerGroup">群1</div>
-          <div class="user" @click="triggerPersonal(item)" v-if="item.uid!=uid" v-for="item in users">{{item.nickname}}</div>
+          <div class="user" @click="triggerPersonal(item)" v-if="item.uid!=uid" v-for="item in users" v-bind:key="item">{{item.nickname}}</div>
         </div>
         <div class="msg-content">
           <div class="header im-title">{{title}}</div>
             <div class="content im-record">
-              <div class="li" :class="{user: item.uid == uid}" v-for="item in currentMessage">
+              <div class="li" :class="{user: item.uid == uid}" v-for="item in currentMessage" v-bind:key="item">
                 <template v-if="item.type===1">
                   <p class="join-tips">{{item.msg}}</p>
                 </template>
@@ -39,6 +39,7 @@
 </template>
 
 <script>
+/* eslint-disable */
 import Vue from 'vue'
 import moment from 'moment'
 
