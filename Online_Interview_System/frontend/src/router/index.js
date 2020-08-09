@@ -6,6 +6,8 @@ import IntvweeHome from '@/intvweeviews/Index'
 import LogRegHome from '@/login/Index'
 import RegisterHome from '@/register/Index'
 import HrHome from '@/hrs/Index'
+import HrWatch from '@/hrs/HrWatch'
+import HrRecall from '@/hrs/HrRecall'
 import IntvwerHome from '@/intvwerviews/Index'
 import ScheduleView from '@/intvwerviews/ScheduleView'
 import Error from '@/error/Error'
@@ -53,6 +55,16 @@ var router = new Router({
       path: '/hr',
       name: 'Hr',
       component: HrHome
+    },
+    {
+      path: '/watch',
+      name: 'Watch',
+      component: HrWatch
+    },
+    {
+      path: '/recall',
+      name: 'Recall',
+      component: HrRecall
     },
     {
       path: '*',
