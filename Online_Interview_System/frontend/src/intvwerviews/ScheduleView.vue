@@ -5,33 +5,33 @@
         <intvwer-headmenu></intvwer-headmenu>
       </el-header>
       <el-main>
-      <el-row v-for="rn in rowNum" v-bind:key="rn">
-        <el-col :span="8" v-for="i in 3" v-bind:key="i">
-          <el-card class="box-card" shadow="hover" @click.native="clickCard">
-            <div slot="header" class="clearfix">
-              <span>面试{{ (((rn-1) * 3) + i) }}</span>
-              <el-button style="float: right; padding: 3px 0" type="text">查看</el-button>
-            </div>
-            <div v-for="n in 3" :key="n" class="text item">
-              {{'列表内容 ' + n }}
-            </div>
-          </el-card>
-        </el-col>
-      </el-row>
-      <!-- 最后一行 -->
-      <el-row v-if="lastRow > 0">
-        <el-col :span="8" v-for="i in lastRow" v-bind:key="i">
-          <el-card class="box-card" shadow="hover" @click.native="clickCard">
-            <div slot="header" class="clearfix">
-              <span>面试{{ intvwNum - lastRow + i }}</span>
-              <el-button style="float: right; padding: 3px 0" type="text">查看</el-button>
-            </div>
-            <div v-for="n in 3" :key="n" class="text item">
-              {{'列表内容 ' + n }}
-            </div>
-          </el-card>
-        </el-col>
-      </el-row>
+        <el-row v-for="rn in rowNum" v-bind:key="rn">
+          <el-col :span="8" v-for="i in 3" v-bind:key="i">
+            <el-card class="box-card" shadow="hover" @click.native="clickCard">
+              <div slot="header" class="clearfix">
+                <span>面试{{ (((rn-1) * 3) + i) }}</span>
+                <el-button style="float: right; padding: 3px 0" type="text">查看</el-button>
+              </div>
+              <div v-for="n in 3" :key="n" class="text item">
+                {{'列表内容 ' + n }}
+              </div>
+            </el-card>
+          </el-col>
+        </el-row>
+        <!-- 最后一行 -->
+        <el-row v-if="lastRow > 0">
+          <el-col :span="8" v-for="i in lastRow" v-bind:key="i">
+            <el-card class="box-card" shadow="hover" @click.native="clickCard">
+              <div slot="header" class="clearfix">
+                <span>面试{{ intvwNum - lastRow + i }}</span>
+                <el-button style="float: right; padding: 3px 0" type="text">查看</el-button>
+              </div>
+              <div v-for="n in 3" :key="n" class="text item">
+                {{'列表内容 ' + n }}
+              </div>
+            </el-card>
+          </el-col>
+        </el-row>
       </el-main>
     </el-container>
 
@@ -81,8 +81,7 @@ export default {
         position: '开发',
         resume: '简历'
       },
-      formLabelWidth: '120px', // 弹出表单的宽度
-      pass: ''
+      formLabelWidth: '120px' // 弹出表单的宽度
     }
   },
   computed: {
