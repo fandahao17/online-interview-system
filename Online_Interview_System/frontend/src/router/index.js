@@ -27,7 +27,7 @@ var router = new Router({
       component: AdminHome
     },
     {
-      path: '/interviewee',
+      path: '/interviewee/:roomid',
       name: 'Interviewee',
       component: IntvweeHome
     },

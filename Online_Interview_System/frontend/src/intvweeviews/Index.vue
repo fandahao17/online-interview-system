@@ -1,11 +1,11 @@
 <template>
   <el-container>
-    <el-header>Header</el-header>
+    <el-header>Header<el-button type="primary" plain @click="clickButton">控制台输出房间信息</el-button></el-header>
     <el-main>
       <el-row :gutter="20">
         <el-col :span="6">
           <el-row class="grid-content bg-purple">
-            <video-window></video-window>
+            <video-window v-bind:room-info="roomInfo"></video-window>
           </el-row>
           <el-row class="text-window grid-content bg-purple">
             <text-window></text-window>
@@ -28,6 +28,7 @@
 </template>
 
 <script>
+import axios from 'axios'
 import VideoWindow from './Video'
 import TextWindow from './Text'
 import EditorWindow from './Editor'
@@ -40,6 +41,40 @@ export default {
     TextWindow,
     EditorWindow,
     BoardWindow
+  },
+  data: function () {
+    return {
+      roomInfo: [],
+      testInfo: 'aaaaa'
+    }
+  },
+  methods: {
+    // 获取房间信息：房间号、面试者等等
+    getRoomInfo: function (_this) {
+      axios.get('http://106.14.227.202/api/room/info/' + this.$route.params.roomid + '/', {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }).then(function (response) {
+        console.log(response.data)
+        console.log('type:', typeof (response.data))
+        _this.roomInfo = response.data
+        if (_this.roomInfo['roomid'] === '') {
+          _this.$message.error('This room id does not exist!')
+        }
+      }).catch(function (error) {
+        console.log('get room info error:')
+        console.log(error.response)
+      })
+    },
+    clickButton: function () {
+      console.log('roominfo:')
+      console.log(this.roomInfo)
+      console.log(this.roomInfo['roomid'])
+    }
+  },
+  mounted: function () {
+    this.getRoomInfo(this)
   }
 }
 </script>
