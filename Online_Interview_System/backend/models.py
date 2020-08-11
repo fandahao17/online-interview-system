@@ -50,7 +50,7 @@ class Interviewee(models.Model):
     name = models.CharField(max_length=128)
     mobile = models.CharField(max_length=20, default='11111111111')
     email = models.EmailField(primary_key=True)
-    accept = models.BooleanField(null=True, blank=True)
+    status = models.IntegerField(default=0)
 
     class Meta:
         verbose_name = '候选人'
@@ -74,8 +74,8 @@ class Room(models.Model):
     roomid = models.IntegerField(primary_key=True)
     time = models.IntegerField()
     # exam = models.CharField(max_length=128)
-    tempeval = models.IntegerField(null=True, blank=True)
-    finaleval = models.IntegerField(null=True, blank=True)
+    # tempeval = models.IntegerField(null=True, blank=True)
+    score = models.IntegerField(null=True, blank=True)
     remark = models.CharField(max_length=500, null=True, blank=True)
     tester = models.ForeignKey('Interviewer', on_delete=models.CASCADE)
     interviewee = models.ForeignKey('Interviewee', on_delete=models.CASCADE, null=True)

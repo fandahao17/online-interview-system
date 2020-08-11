@@ -174,7 +174,7 @@ def interviewee_get_unfinished(request):
 	用法：GET /api/itve/getun/
 	- 返回：[{ 'name': str, 'mobile': str, 'email': str }, ...]
 	"""
-	itves = Interviewee.objects.filter(accept__isnull=True).defer('accept')
+	itves = Interviewee.objects.filter(status=0).defer('status')
 	return JsonResponse(json.dumps(list(itves.values())), safe=False)
 
 
@@ -198,7 +198,7 @@ def room_get_unfinished(request):
 	用法：GET /api/room/getun/
 	- 返回：[{ 'roomid': 6位数字（str）, 'time': 时间（0-2）, 'tester': 面试官邮箱, 'interviewee': 候选人邮箱 }, ...]
 	"""
-	rooms = Room.objects.filter(interviewee__accept__isnull=True).only(
+	rooms = Room.objects.filter(interviewee__status=0).only(
 		'roomid', 'time', 'tester', 'interviewee')
 	return JsonResponse(json.dumps(list(rooms.values())), safe=False)
 
@@ -252,3 +252,95 @@ def room_add(request):
 		roomid = str(rid)
 
 	return JsonResponse({'roomid': roomid})
+
+
+@api_view(['POST'])
+def room_delete(request):
+	"""
+	删除面试。
+
+	用法：POST /api/room/delete/
+	- 请求内容：`{ 'roomid': int }`
+	- 返回内容：`{ 'success': bool }`
+	"""
+	rid = request.data.get('roomid')
+
+	success = True
+	try:
+		Room.objects.get(pk=rid).delete()
+	except:
+		success = False
+
+	return JsonResponse({'success': success})
+
+
+@api_view(['POST'])
+def room_rate(request):
+	"""
+	给面试打分。
+
+	用法：POST /api/room/rate/
+	- 请求内容：`{ 'roomid': int, 'score': int (0-100), 'remark': 评语（str）}`
+	- 返回内容：`{ 'success': bool }`
+	"""
+	d = request.data
+	rid, score, remark = d.get('roomid'), d.get('score'), d.get('remark')
+
+	success = True
+	try:
+		r = Room.objects.get(pk=rid)
+		r.score, r.remark = score, remark
+		r.save()
+	except Exception as e:
+		print(e)
+		success = False
+
+	return JsonResponse({'success': success})
+
+
+@api_view(['GET'])
+def room_review(request):
+	"""
+	返回面试结果（UI-ALL第28页）。
+
+	用法：GET /api/room/review/
+	- 返回内容：`[{ 'roomid': str, 'interviewee__name': 候选人姓名(str), 'interviewer__name': 面试官姓名(str), 'score': int(0-100), 'time': int(0-2), 'interviewee__status': int(0-2) }, ...]
+	- status：0代表未分配，1代表拒绝，2代表录用
+	"""
+	res = Room.objects.values('roomid', 'interviewee__name', 'tester__name', 'score', 'time', 'interviewee__status')
+	return JsonResponse(json.dumps(list(res)), safe=False)
+
+
+@api_view(['POST'])
+def room_get_remark(request):
+	"""
+	返回面试评语
+
+	用法：POST /api/room/remark/
+	- 请求内容：`{ 'roomid': int }`
+	- 返回内容：`{ 'remark': str }`
+	"""
+	res = Room.objects.get(pk=request.data.get('roomid')).remark
+	return JsonResponse({'remark': res})
+
+
+@api_view(['POST'])
+def room_decide(request):
+	"""
+	确定是否录用，支持批量修改
+
+	用法：POST /api/room/decide/
+	- 请求内容：`{ 'rooms': [int, int, ...], 'status': int(0-2) }`
+	- 返回内容：`{ 'success': bool }`
+	"""
+	rs, status = request.data.get('rooms'), request.data.get('status')
+
+	success = True
+	try:
+		ives = Room.objects.filter(pk__in=rs).values_list('interviewee', flat=True)
+		Interviewee.objects.filter(pk__in=ives).update(status=status)
+	except Exception as e:
+		print(e)
+		success = False
+
+	return JsonResponse({'success': success})
