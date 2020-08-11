@@ -33,9 +33,9 @@
 ### 6.面试房间获取roomid等信息的方式
 面试房间的 url 为`http://localhost:8080/#/interviewee/<roomid>/`，例如 `http://localhost:8080/#/interviewee/673841/`，其中最后一部分房间号需要手动输入，请在后端的 admin 界面（见上面的1(2)）中查看现有的房间号。
 
-在子组件中可以通过变量 `this.$route.params.roomid` 获取房间号。
+如果只需要获取房间号，则可以在子组件中可以通过变量 `this.$route.params.roomid` 获取房间号。
 
-若想获取该房间的详细信息，如被面试者姓名、面试官姓名等等，父组件 `Online_Interview_System/frontend/src/intvweeviews/Index.vue` 中的变量 `roomInfo` 存储了该房间的详细信息，需要在子组件中使用 `props` 来将该变量从父组件传至子组件。关于 `props` 的使用在 `Online_Interview_System/frontend/src/intvweeviews/Video.vue` 中有示例。
+如果除房间号外还需要获取该房间的详细信息，如被面试者姓名、面试官姓名等等，父组件 `Online_Interview_System/frontend/src/intvweeviews/Index.vue` 中的变量 `roomInfo` 存储了该房间的详细信息，需要在子组件中使用 `props` 来将该变量从父组件传至子组件。关于 `props` 的使用在 `Online_Interview_System/frontend/src/intvweeviews/Video.vue` 中有示例。
 
 **Note：其它api还未设计，有需求可以及时交流更新**
 ### 7.项目运行方式
