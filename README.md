@@ -18,9 +18,12 @@
 - 文字聊天：将整合好的组件添加到`Online_Interview_System/frontend/src/intvweeviews/Text.vue`内
 - 视屏：将整合好的组建添加到`Online_Interview_System/frontend/src/intvweeviews/Video.vue`内
 ### 4.api接口
-- `http://106.14.227.20/api/login`: 用户登陆api
-- `http://106.14.227.20/api/register`: 用户注册api
-- `http://106.14.227.20/api/statecheck`: 用户token前端验证api
+详细接口请见[api.md](API.md)。
+
+- `http://106.14.227.202/api/login`: 用户登陆api
+- `http://106.14.227.202/api/register`: 用户注册api
+- `http://106.14.227.202/api/statecheck`: 用户token前端验证api
+- `http://106.14.227.202/api/room/info/<int:roomid>/`: 获取面试房间的相关信息
 
 ### 5.api使用方法
 - login-api: 参考`LogIn.vue`实现
