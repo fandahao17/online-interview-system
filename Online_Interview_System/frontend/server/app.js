@@ -2,7 +2,7 @@ var app = require('http').createServer()
 var io = require('socket.io')(app)
 var _ = require('underscore')
 var PORT = 8002
-app.listen(PORT)
+app.listen(PORT,'0.0.0.0')
 var group = new Array()
 var grouplength = new Array()
 var groupcode = new Array()
@@ -18,7 +18,9 @@ io.on('connection', function (socket) {
     		continue
     	}
     	var toSocket = _.findWhere(io.sockets.sockets, {id: group[data.id][templength]})
-    	toSocket.emit('server_update', {code:data.code})
+        if (toSocket) {
+    	   toSocket.emit('server_update', {code:data.code})
+        }
     	templength++
     }
   })
