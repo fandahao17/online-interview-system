@@ -69,7 +69,7 @@ export default {
   },
   mounted () {
     //  recevie server data
-    this.$socket.emit('client_enter', {})
+    this.$socket.emit('client_enter', { id: this.$route.params.roomid })
   },
   methods: {
     onCmCodeChange (newCode) {
@@ -78,7 +78,7 @@ export default {
       console.log('this is new code', newCode)
       //  todo:where add roomid
       //  send to server
-      this.$socket.emit('client_update', {code: newCode})
+      this.$socket.emit('client_update', {id: this.$route.params.roomid, code: newCode})
       this.code = newCode
     },
     setLanguageMode () {
