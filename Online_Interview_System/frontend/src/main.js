@@ -8,7 +8,7 @@ import router from './router'
 import axios from 'axios'
 import store from './store/store'
 import VueSocketIO from 'vue-socket.io'
-Vue.use(VueSocketIO, 'http://localhost:8002')
+Vue.use(VueSocketIO, 'http://127.0.0.1:8002')
 // Vue.use(new VueSocketIO({
 //   debug: true,
 //   connection: 'http://localhost:8080'
