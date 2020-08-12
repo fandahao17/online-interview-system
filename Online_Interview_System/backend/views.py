@@ -175,7 +175,7 @@ def interviewee_get_unfinished(request):
 	- 返回：[{ 'name': str, 'mobile': str, 'email': str }, ...]
 	"""
 	itves = Interviewee.objects.filter(status=0).defer('status')
-	return JsonResponse(json.dumps(list(itves.values())), safe=False)
+	return JsonResponse(list(itves.values()), safe=False, json_dumps_params={'ensure_ascii':False})
 
 
 @api_view(['GET'])
@@ -187,7 +187,7 @@ def interviewer_getall(request):
 	- 返回：[{ 'name': str, 'mobile': str, 'email': str, free1: bool, free2: bool, free3: bool }, ...]
 	"""
 	itvrs = Interviewer.objects.defer('password').values()
-	return JsonResponse(json.dumps(list(itvrs)), safe=False)
+	return JsonResponse(list(itvrs), safe=False, json_dumps_params={'ensure_ascii':False})
 
 
 @api_view(['GET'])
@@ -200,7 +200,7 @@ def room_get_unfinished(request):
 	"""
 	rooms = Room.objects.filter(interviewee__status=0).only(
 		'roomid', 'time', 'tester', 'interviewee')
-	return JsonResponse(json.dumps(list(rooms.values())), safe=False)
+	return JsonResponse(list(rooms.values()), safe=False, json_dumps_params={'ensure_ascii':False})
 
 
 @api_view(['GET'])
@@ -210,7 +210,7 @@ def room_getinfo(request, roomid):
 
 	用法：GET /api/room/info/<int:roomid>/
 	- 返回：
-		- 成功：{ 'roomid': 6位数字（str）, 'time': 时间（0-2）, 'tester': 面试官邮箱, 'interviewee': 候选人邮箱, 'rname': 面试官名字, 'ename': 候选人名字 }
+		- 成功：{ 'roomid': 6位数字（str）, 'time': 时间（0-2）, 'tester': 面试官邮箱, 'interviewee': 候选人邮箱, 'interviewer__name': 面试官名字, 'interviewee__name': 候选人名字 }
 		- 失败：{ 'roomid': 空字符串 }
 	"""
 	try:
@@ -224,7 +224,7 @@ def room_getinfo(request, roomid):
 		j['rname'] = r.tester.name
 		j['ename'] = r.interviewee.name
 
-	return JsonResponse(j)
+	return JsonResponse(j, json_dumps_params={'ensure_ascii':False})
 
 
 @api_view(['POST'])
@@ -243,8 +243,17 @@ def room_add(request):
 	d = request.data
 	t, e, r = d.get('time'), d.get('itve'), d.get('itvr')
 	try:
-		r = Room.objects.create(roomid=rid, time=t, tester=Interviewer.objects.get(
-			pk=r), interviewee=Interviewee.objects.get(pk=e))
+		itvr = Interviewer.objects.get(pk=r)
+		r = Room.objects.create(roomid=rid, time=t, tester=itvr,
+		                        interviewee=Interviewee.objects.get(pk=e))
+		if t == 0:
+			itvr.free1 = False
+		elif t == 1:
+			itvr.free2 = False
+		else:
+			itvr.free3 = False
+
+		itvr.save()
 		r.save()
 	except Exception as e:
 		roomid = ''
@@ -308,7 +317,7 @@ def room_review(request):
 	- status：0代表未分配，1代表拒绝，2代表录用
 	"""
 	res = Room.objects.values('roomid', 'interviewee__name', 'tester__name', 'score', 'time', 'interviewee__status')
-	return JsonResponse(json.dumps(list(res)), safe=False)
+	return JsonResponse(list(res), safe=False, json_dumps_params={'ensure_ascii':False})
 
 
 @api_view(['POST'])
@@ -321,7 +330,7 @@ def room_get_remark(request):
 	- 返回内容：`{ 'remark': str }`
 	"""
 	res = Room.objects.get(pk=request.data.get('roomid')).remark
-	return JsonResponse({'remark': res})
+	return JsonResponse({'remark': res}, json_dumps_params={'ensure_ascii':False})
 
 
 @api_view(['POST'])
