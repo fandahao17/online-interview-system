@@ -1,7 +1,7 @@
 var app = require('http').createServer()
 var io = require('socket.io')(app)
 var _ = require('underscore')
-var PORT = 8002
+var PORT = 8011
 app.listen(PORT,'0.0.0.0')
 var group = new Array()
 var grouplength = new Array()

@@ -58,5 +58,5 @@ var server = ws.createServer(function(conn){
   conn.on("error", function (code, reason) {
     console.log("异常关闭")
   });
-}).listen(8080,'0.0.0.0')
+}).listen(8010,'0.0.0.0')
 console.log("WebSocket建立完毕")
