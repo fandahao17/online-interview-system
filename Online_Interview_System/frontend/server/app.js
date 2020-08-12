@@ -9,7 +9,7 @@ var groupcode = new Array()
 io.on('connection', function (socket) {
   socket.on('client_update', function (data) {
     console.log('someone change code')
-    console.log('data')
+    console.log(data)
     groupcode[data.id] = data.code
     var templength = 0
     while(templength != grouplength[data.id]) {
