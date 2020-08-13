@@ -63,13 +63,35 @@
 
 ## itve
 
+### `/api/itve/`
+修改候选人的信息，若`old_email`域为空字符串，则新建一个候选人。
+
+用法：POST /api/itve/
+请求内容：`{ 'name': str, 'mobile': str, 'old_email': str, 'new_email': str }`
+返回：`{ 'success': bool }`
+
+
 ### `/api/itve/getun/`
 返回所有尚未确定是否录用的候选人，HR可以给这些候选人安排面试。
 
 用法：GET /api/itve/getun/
 - 返回：`[{ 'name': str, 'mobile': str, 'email': str }, ...]`
 
+### `/api/itve/getall/`
+返回所有候选人。
+
+用法：GET /api/itve/getall/
+返回：`[{ 'name': str, 'mobile': str, 'email': str, 'status': int }, ...]`
+
 ## itvr
+
+### `/api/itvr/`
+修改面试官的信息，若`old_email`域为空字符串，则新建一个面试官。
+
+用法：POST /api/itvr/
+请求内容：`{ 'name': str, 'mobile': str, 'password': str, 'old_email': str, 'new_email': str, 'free1': bool, 'free2': bool, 'free3': bool }`
+返回：`{ 'success': bool }`
+
 
 ### `/api/itvr/getall/`
 返回所有面试官和他们在不同时间段是否空闲。
@@ -77,13 +99,17 @@
 用法：GET /api/itvr/getall/
 - 返回：`[{ 'name': str, 'mobile': str, 'email': str, free1: bool, free2: bool, free3: bool }, ...]`
 
+## HR
 
-## TODO
+### `/api/hr/`
+修改HR的信息，若`old_email`域为空字符串，则新建一个HR。
 
-### `/api/itve/getall/`, `/api/hr/getall/`
-GET method: 返回所有用户
+用法：POST /api/itve/
+请求内容：`{ 'name': str, 'mobile': str, 'password': str, 'old_email': str, 'new_email': str }`
+返回：`{ 'success': bool }`
 
-### `/api/itve/`, `/api/itvr/`, `/api/hr/`
-POST method: admin 添加一个用户
+### `/api/hr/getall/`
+返回所有HR
 
-PUT method: admin 修改一个用户的信息
+用法：GET /api/itve/getall/
+返回：`[{ 'name': str, 'mobile': str, 'email': str }, ...]`
