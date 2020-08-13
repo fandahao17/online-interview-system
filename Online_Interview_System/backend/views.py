@@ -378,3 +378,96 @@ def hr_getall(request):
 	"""
 	hrs = Hr.objects.values('name', 'mobile', 'email')
 	return JsonResponse(list(hrs), safe=False, json_dumps_params={'ensure_ascii': False})
+
+
+@api_view(['POST'])
+def itve_set(request):
+	"""
+	修改候选人的信息，若`old_email`域为空字符串，则新建一个候选人。
+
+	用法：POST /api/itve/
+	请求内容：`{ 'name': str, 'mobile': str, 'old_email': str, 'new_email': str }`
+	返回：`{ 'success': bool }`
+	"""
+	d = request.data
+	n, m, oe, ne = d.get('name'), d.get(
+		'mobile'), d.get('old_email'), d.get('new_email')
+
+	success = True
+	try:
+		if oe:
+			itve = Interviewee.objects.get(pk=oe)
+			itve.name, itve.mobile = n, m
+			if itve.email != ne:
+				itve.email = ne
+				Interviewee.objects.get(pk=oe).delete()
+			itve.save()
+		else:
+			Interviewee.objects.create(name=n, mobile=m, email=ne)
+	except:
+		success = False
+
+	return JsonResponse({'success': success})
+
+
+@api_view(['POST'])
+def hr_set(request):
+	"""
+	修改HR的信息，若`old_email`域为空字符串，则新建一个HR。
+
+	用法：POST /api/itve/
+	请求内容：`{ 'name': str, 'mobile': str, 'password': str, 'old_email': str, 'new_email': str }`
+	返回：`{ 'success': bool }`
+	"""
+	d = request.data
+	n, m, pw, oe, ne = d.get('name'), d.get('mobile'), d.get(
+		'password'), d.get('old_email'), d.get('new_email')
+
+	success = True
+	try:
+		if oe:
+			hr = Hr.objects.get(pk=oe)
+			hr.name, hr.mobile, hr.password = n, m, pw
+			if hr.email != ne:
+				hr.email = ne
+				Hr.objects.get(pk=oe).delete()
+			hr.save()
+		else:
+			Hr.objects.create(name=n, mobile=m, password=pw, email=ne)
+	except:
+		success = False
+
+	return JsonResponse({'success': success})
+
+
+@api_view(['POST'])
+def itvr_set(request):
+	"""
+	修改面试官的信息，若`old_email`域为空字符串，则新建一个面试官。
+
+	用法：POST /api/itvr/
+	请求内容：`{ 'name': str, 'mobile': str, 'password': str, 'old_email': str, 'new_email': str, 'free1': bool, 'free2': bool, 'free3': bool }`
+	返回：`{ 'success': bool }`
+	"""
+	d = request.data
+	n, m, pw, oe, ne = d.get('name'), d.get('mobile'), d.get(
+		'password'), d.get('old_email'), d.get('new_email')
+	f1, f2, f3 = d.get('free1'), d.get('free2'), d.get('free3')
+
+	success = True
+	try:
+		if oe:
+			itvr = Interviewer.objects.get(pk=oe)
+			itvr.name, itvr.mobile, itvr.password = n, m, pw
+			itvr.free1, itvr.free2, itvr.free3 = f1, f2, f3
+			if ne != itvr.email:
+				itvr.email = ne
+				Interviewer.objects.get(pk=oe).delete()
+			itvr.save()
+		else:
+			Interviewer.objects.create(
+				name=n, mobile=m, password=pw, email=ne, free1=f1, free2=f2, free3=f3)
+	except:
+		success = False
+
+	return JsonResponse({'success': success})
