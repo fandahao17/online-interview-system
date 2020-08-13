@@ -3,6 +3,7 @@
     <div class="container is-fluid dashboard">
       <div class="columns">
         <div class="column is-half code-editor">
+          <el-button @click="onSubmit">提交</el-button>
           <editor
             v-model="code"
             :options="cmOptions"
@@ -83,6 +84,12 @@ export default {
     },
     setLanguageMode () {
       this.cmOptions.mode = `text/${this.languageModes[this.language]}`
+    },
+    onSubmit () {
+      console.log('submit')
+      console.log(this.code)
+      console.log(this.language)
+      this.$socket.emit('code_run', {id: this.$route.params.roomid, code: this.code, language: this.language})
     }
   },
   sockets: {
