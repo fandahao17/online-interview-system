@@ -31,7 +31,7 @@
 - statecheck-api(前端使用localStorage存储token，其它设计暂未实现): (1)第一次登录的时候，前端调后端的登陆接口，发送用户名和密码; (2)后端收到请求，验证用户名和密码，验证成功，就给前端返回一个token; (3)前端拿到token，将token存储到localStorage和vuex中，并跳转路由页面; (4)前端每次跳转路由，就判断 localStroage 中有无 token ，没有就跳转到登录页面，有则跳转到对应路由页面; (5)每次调后端接口，都要在请求头中加token; (6)后端判断请求头中有无token，有token，就拿到token并验证token，验证成功就返回数据，验证失败（例如：token过期）就返回401，请求头中没有token也返回401; (7)如果前端拿到状态码为401，就清除token信息并跳转到登录页面
 
 ### 6.面试房间获取roomid等信息的方式
-面试房间的 url 为`http://localhost:8080/#/interviewee/<roomid>/`，例如 `http://localhost:8080/#/interviewee/673841/`，其中最后一部分房间号需要手动输入，请在后端的 admin 界面（见上面的1(2)）中查看现有的房间号。
+面试房间的 url 为`http://106.14.227.202/#/interviewee/<roomid>/`，例如 `http://106.14.227.202/#/interviewee/673841/`，其中最后一部分房间号需要手动输入，请在后端的 admin 界面（见上面的1(2)）中查看现有的房间号。
 
 如果只需要获取房间号，则可以在子组件中可以通过变量 `this.$route.params.roomid` 获取房间号。
 
