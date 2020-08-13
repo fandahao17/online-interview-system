@@ -1,6 +1,8 @@
 # 后端API
 
-## `/api/room/info/<int:roomid>/`
+## room
+
+### `/api/room/info/<int:roomid>/`
 
 返回对应面试房间的面试时间、面试者等信息
 
@@ -9,14 +11,14 @@
     - 成功：`{ 'roomid': 6位数字（str）, 'time': 时间（0-2）, 'tester': 面试官邮箱, 'interviewee': 候选人邮箱, 'rname': 面试官名字, 'ename': 候选人名字 }`
     - 失败（房间不存在等）：`{ 'roomid': 空字符串 }`
 
-## `/api/room/getun/`
+### `/api/room/getun/`
 
 返回所有未确定结果的面试
 
 用法：GET /api/room/getun/
 - 返回：`[{ 'roomid': 6位数字（str）, 'time': 时间（0-2）, 'tester': 面试官邮箱, 'interviewee': 候选人邮箱 }, ...]`
 
-## `/api/room/add/`
+### `/api/room/add/`
 
 新建一个面试
 
@@ -24,49 +26,63 @@
 - 请求内容：`{ 'itve': 候选人邮箱(str), 'itvr': 面试官邮箱(str), 'time': 面试时间，范围0-2(int) }`
 - 返回内容：`{ 'roomid': 6位数字房间号(str)，若失败则返回空 }`
 
-## `/api/itvr/getall/`
-返回所有面试官和他们在不同时间段是否空闲。
-
-用法：GET /api/itvr/getall/
-- 返回：`[{ 'name': str, 'mobile': str, 'email': str, free1: bool, free2: bool, free3: bool }, ...]`
-
-## `/api/itve/getun/`
-返回所有尚未确定是否录用的候选人，HR可以给这些候选人安排面试。
-
-用法：GET /api/itve/getun/
-- 返回：`[{ 'name': str, 'mobile': str, 'email': str }, ...]`
-
-## `/api/room/delete/`
+### `/api/room/delete/`
 删除面试。
 
 用法：POST /api/room/delete/
 - 请求内容：`{ 'roomid': int }`
 - 返回内容：`{ 'success': bool }`
 
-## `/api/room/rate/`
+### `/api/room/rate/`
 给面试打分。
 
 用法：POST /api/room/rate/
 - 请求内容：`{ 'roomid': int, 'score': int (0-100), 'remark': 评语（str）}`
 - 返回内容：`{ 'success': bool }`
 
-## `/api/room/review/`
+### `/api/room/review/`
 返回面试结果（UI-ALL第28页）。
 
 用法：GET /api/room/review/
 - 返回内容：`[{ 'roomid': str, 'interviewee__name': 候选人姓名(str), 'interviewer__name': 面试官姓名(str), 'score': int(0-100), 'time': int(0-2), 'interviewee__status': int(0-2) }, ...]`
 - status：0代表未分配，1代表拒绝，2代表录用
 
-## `/api/room/remark`
+### `/api/room/remark`
 返回面试评语
 
 用法：POST /api/room/remark/
 - 请求内容：`{ 'roomid': int }`
 - 返回内容：`{ 'remark': str }`
 
-## `/api/room/decide`
+### `/api/room/decide`
 确定是否录用，支持批量修改
 
 用法：POST /api/room/decide/
 - 请求内容：`{ 'rooms': [int, int, ...], 'status': int(0-2) }`
 - 返回内容：`{ 'success': bool }`
+
+## itve
+
+### `/api/itve/getun/`
+返回所有尚未确定是否录用的候选人，HR可以给这些候选人安排面试。
+
+用法：GET /api/itve/getun/
+- 返回：`[{ 'name': str, 'mobile': str, 'email': str }, ...]`
+
+## itvr
+
+### `/api/itvr/getall/`
+返回所有面试官和他们在不同时间段是否空闲。
+
+用法：GET /api/itvr/getall/
+- 返回：`[{ 'name': str, 'mobile': str, 'email': str, free1: bool, free2: bool, free3: bool }, ...]`
+
+
+## TODO
+
+### `/api/itve/getall/`, `/api/hr/getall/`
+GET method: 返回所有用户
+
+### `/api/itve/`, `/api/itvr/`, `/api/hr/`
+POST method: admin 添加一个用户
+PUT method: admin 修改一个用户的信息
