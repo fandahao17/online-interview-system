@@ -3,22 +3,47 @@
     <el-container>
       <el-header><head-menu></head-menu></el-header>
       <el-main>
+        <div>
+          <el-button type="primary" plain size="medium" @click="clickHire">录用</el-button>
+          <el-button type="primary" plain size="medium" @click="clickReject">拒绝</el-button>
+          <el-button type="primary" plain size="medium" @click="clickNextRound">下一轮</el-button>
+        </div>
         <el-table
-          :data="tableData"
-          style="width: 100%">
+          :data="intvTableData"
+          style="width: 100%"
+          @selection-change="handleSelectionChange">
           <el-table-column
-            prop="date"
-            label="日期"
+            type="selection"
+            width="55">
+          </el-table-column>
+          <el-table-column
+            prop="itvwee"
+            label="候选人"
             width="180">
           </el-table-column>
           <el-table-column
-            prop="name"
-            label="姓名"
+            prop="itvwer"
+            label="面试官"
             width="180">
           </el-table-column>
           <el-table-column
-            prop="address"
-            label="地址">
+            prop="grade"
+            label="评级"
+            width="180">
+          </el-table-column>
+          <el-table-column
+            prop="start"
+            label="开始时间"
+            width="180">
+          </el-table-column>
+          <el-table-column
+            prop="end"
+            label="结束时间"
+            width="180">
+          </el-table-column>
+          <el-table-column
+            prop="status"
+            label="状态">
           </el-table-column>
         </el-table>
       </el-main>
@@ -36,23 +61,44 @@ export default {
   },
   data: function () {
     return {
-      tableData: [{
-        date: '2016-05-02',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄'
+      intvTableData: [{
+        itvwee: '王小虎',
+        itvwer: '王大虎',
+        grade: 'A',
+        start: '2016-05-02 14:01:22',
+        end: '2016-05-02 15:01:22',
+        status: '未分配'
       }, {
-        date: '2016-05-04',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1517 弄'
+        itvwee: '王小虎',
+        itvwer: '王大虎',
+        grade: 'A',
+        start: '2016-05-02 14:01:22',
+        end: '2016-05-02 15:01:22',
+        status: '未分配'
       }, {
-        date: '2016-05-01',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1519 弄'
-      }, {
-        date: '2016-05-03',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1516 弄'
-      }]
+        itvwee: '王小虎',
+        itvwer: '王大虎',
+        grade: 'A',
+        start: '2016-05-02 14:01:22',
+        end: '2016-05-02 15:01:22',
+        status: '未分配'
+      }],
+      multipleSelection: []
+    }
+  },
+  methods: {
+    handleSelectionChange: function (val) {
+      this.multipleSelection = val
+      console.log('multipleSelection = ', this.multipleSelection)
+    },
+    clickHire: function () {
+      console.log('clickHire')
+    },
+    clickReject: function () {
+      console.log('clickReject')
+    },
+    clickNextRound: function () {
+      console.log('clickNextRound')
     }
   }
 }
@@ -67,7 +113,6 @@ export default {
 
   .el-main {
     color: #333;
-    text-align: center;
   }
 
   body > .el-container {
