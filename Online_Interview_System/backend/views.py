@@ -89,7 +89,7 @@ def register(request):
 				ret["msg"] = 'Repeat registration, change your please change the registration information or log in'
 				return JsonResponse(ret)
 			b = Interviewer(name=name, mobile=mobile,
-			                       email=email, password=password)
+                            email=email, password=password)
 			b.save()
 		elif identity == 2:
 			obj = Super.objects.filter(
@@ -174,8 +174,8 @@ def interviewee_get_unfinished(request):
 	用法：GET /api/itve/getun/
 	- 返回：[{ 'name': str, 'mobile': str, 'email': str }, ...]
 	"""
-	itves = Interviewee.objects.filter(status=0).defer('status')
-	return JsonResponse(list(itves.values()), safe=False, json_dumps_params={'ensure_ascii':False})
+	itves = Interviewee.objects.filter(status=0).values('name', 'mobile', 'email')
+	return JsonResponse(list(itves), safe=False, json_dumps_params={'ensure_ascii': False})
 
 
 @api_view(['GET'])
@@ -186,8 +186,9 @@ def interviewer_getall(request):
 	用法：GET /api/itvr/getall/
 	- 返回：[{ 'name': str, 'mobile': str, 'email': str, free1: bool, free2: bool, free3: bool }, ...]
 	"""
-	itvrs = Interviewer.objects.defer('password').values()
-	return JsonResponse(list(itvrs), safe=False, json_dumps_params={'ensure_ascii':False})
+	itvrs = Interviewer.objects.values(
+		'name', 'mobile', 'email', 'free1', 'free2', 'free3')
+	return JsonResponse(list(itvrs), safe=False, json_dumps_params={'ensure_ascii': False})
 
 
 @api_view(['GET'])
@@ -196,11 +197,10 @@ def room_get_unfinished(request):
 	返回所有未确定结果的面试
 
 	用法：GET /api/room/getun/
-	- 返回：[{ 'roomid': 6位数字（str）, 'time': 时间（0-2）, 'tester': 面试官邮箱, 'interviewee': 候选人邮箱 }, ...]
+	- 返回：[{ 'roomid': 6位数字（str）, 'time': 时间（0-2）, 'tester__email': 面试官邮箱, 'interviewee__email': 候选人邮箱 }, ...]
 	"""
-	rooms = Room.objects.filter(interviewee__status=0).only(
-		'roomid', 'time', 'tester', 'interviewee')
-	return JsonResponse(list(rooms.values()), safe=False, json_dumps_params={'ensure_ascii':False})
+	rooms = Room.objects.filter(interviewee__status=0)
+	return JsonResponse(list(rooms.values('roomid', 'time', 'tester__email', 'interviewee__email')), safe=False, json_dumps_params={'ensure_ascii': False})
 
 
 @api_view(['GET'])
@@ -224,7 +224,7 @@ def room_getinfo(request, roomid):
 		j['rname'] = r.tester.name
 		j['ename'] = r.interviewee.name
 
-	return JsonResponse(j, json_dumps_params={'ensure_ascii':False})
+	return JsonResponse(j, json_dumps_params={'ensure_ascii': False})
 
 
 @api_view(['POST'])
@@ -316,8 +316,9 @@ def room_review(request):
 	- 返回内容：`[{ 'roomid': str, 'interviewee__name': 候选人姓名(str), 'interviewer__name': 面试官姓名(str), 'score': int(0-100), 'time': int(0-2), 'interviewee__status': int(0-2) }, ...]
 	- status：0代表未分配，1代表拒绝，2代表录用
 	"""
-	res = Room.objects.values('roomid', 'interviewee__name', 'tester__name', 'score', 'time', 'interviewee__status')
-	return JsonResponse(list(res), safe=False, json_dumps_params={'ensure_ascii':False})
+	res = Room.objects.values('roomid', 'interviewee__name',
+	                          'tester__name', 'score', 'time', 'interviewee__status')
+	return JsonResponse(list(res), safe=False, json_dumps_params={'ensure_ascii': False})
 
 
 @api_view(['POST'])
@@ -330,7 +331,7 @@ def room_get_remark(request):
 	- 返回内容：`{ 'remark': str }`
 	"""
 	res = Room.objects.get(pk=request.data.get('roomid')).remark
-	return JsonResponse({'remark': res}, json_dumps_params={'ensure_ascii':False})
+	return JsonResponse({'remark': res}, json_dumps_params={'ensure_ascii': False})
 
 
 @api_view(['POST'])
@@ -353,3 +354,27 @@ def room_decide(request):
 		success = False
 
 	return JsonResponse({'success': success})
+
+
+@api_view(['GET'])
+def itve_getall(request):
+	"""
+	返回所有候选人。
+
+	用法：GET /api/itve/getall/
+	返回：`[{ 'name': str, 'mobile': str, 'email': str, 'status': int }, ...]`
+	"""
+	itves = Interviewee.objects.values()
+	return JsonResponse(list(itves), safe=False, json_dumps_params={'ensure_ascii': False})
+
+
+@api_view(['GET'])
+def hr_getall(request):
+	"""
+	返回所有HR
+
+	用法：GET /api/itve/getall/
+	返回：`[{ 'name': str, 'mobile': str, 'email': str }, ...]`
+	"""
+	hrs = Hr.objects.values('name', 'mobile', 'email')
+	return JsonResponse(list(hrs), safe=False, json_dumps_params={'ensure_ascii': False})
