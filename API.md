@@ -67,8 +67,8 @@
 修改候选人的信息，若`old_email`域为空字符串，则新建一个候选人。
 
 用法：POST /api/itve/
-请求内容：`{ 'name': str, 'mobile': str, 'old_email': str, 'new_email': str }`
-返回：`{ 'success': bool }`
+- 请求内容：`{ 'name': str, 'mobile': str, 'old_email': str, 'new_email': str }`
+- 返回：`{ 'success': bool }`
 
 
 ### `/api/itve/getun/`
@@ -81,7 +81,7 @@
 返回所有候选人。
 
 用法：GET /api/itve/getall/
-返回：`[{ 'name': str, 'mobile': str, 'email': str, 'status': int }, ...]`
+- 返回：`[{ 'name': str, 'mobile': str, 'email': str, 'status': int }, ...]`
 
 ## itvr
 
@@ -89,8 +89,8 @@
 修改面试官的信息，若`old_email`域为空字符串，则新建一个面试官。
 
 用法：POST /api/itvr/
-请求内容：`{ 'name': str, 'mobile': str, 'password': str, 'old_email': str, 'new_email': str, 'free1': bool, 'free2': bool, 'free3': bool }`
-返回：`{ 'success': bool }`
+- 请求内容：`{ 'name': str, 'mobile': str, 'password': str, 'old_email': str, 'new_email': str, 'free1': bool, 'free2': bool, 'free3': bool }`
+- 返回：`{ 'success': bool }`
 
 
 ### `/api/itvr/getall/`
@@ -105,11 +105,11 @@
 修改HR的信息，若`old_email`域为空字符串，则新建一个HR。
 
 用法：POST /api/itve/
-请求内容：`{ 'name': str, 'mobile': str, 'password': str, 'old_email': str, 'new_email': str }`
-返回：`{ 'success': bool }`
+- 请求内容：`{ 'name': str, 'mobile': str, 'password': str, 'old_email': str, 'new_email': str }`
+- 返回：`{ 'success': bool }`
 
 ### `/api/hr/getall/`
 返回所有HR
 
 用法：GET /api/itve/getall/
-返回：`[{ 'name': str, 'mobile': str, 'email': str }, ...]`
+- 返回：`[{ 'name': str, 'mobile': str, 'email': str }, ...]`

@@ -386,8 +386,8 @@ def itve_set(request):
 	修改候选人的信息，若`old_email`域为空字符串，则新建一个候选人。
 
 	用法：POST /api/itve/
-	请求内容：`{ 'name': str, 'mobile': str, 'old_email': str, 'new_email': str }`
-	返回：`{ 'success': bool }`
+	- 请求内容：`{ 'name': str, 'mobile': str, 'old_email': str, 'new_email': str }`
+	- 返回：`{ 'success': bool }`
 	"""
 	d = request.data
 	n, m, oe, ne = d.get('name'), d.get(
@@ -416,8 +416,8 @@ def hr_set(request):
 	修改HR的信息，若`old_email`域为空字符串，则新建一个HR。
 
 	用法：POST /api/itve/
-	请求内容：`{ 'name': str, 'mobile': str, 'password': str, 'old_email': str, 'new_email': str }`
-	返回：`{ 'success': bool }`
+	- 请求内容：`{ 'name': str, 'mobile': str, 'password': str, 'old_email': str, 'new_email': str }`
+	- 返回：`{ 'success': bool }`
 	"""
 	d = request.data
 	n, m, pw, oe, ne = d.get('name'), d.get('mobile'), d.get(
@@ -446,8 +446,8 @@ def itvr_set(request):
 	修改面试官的信息，若`old_email`域为空字符串，则新建一个面试官。
 
 	用法：POST /api/itvr/
-	请求内容：`{ 'name': str, 'mobile': str, 'password': str, 'old_email': str, 'new_email': str, 'free1': bool, 'free2': bool, 'free3': bool }`
-	返回：`{ 'success': bool }`
+	- 请求内容：`{ 'name': str, 'mobile': str, 'password': str, 'old_email': str, 'new_email': str, 'free1': bool, 'free2': bool, 'free3': bool }`
+	- 返回：`{ 'success': bool }`
 	"""
 	d = request.data
 	n, m, pw, oe, ne = d.get('name'), d.get('mobile'), d.get(
