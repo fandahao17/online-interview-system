@@ -16,10 +16,10 @@
               <span>email: </span>
               {{ cardDataAll[(((rn-1) * 3) + i - 1)]['email'] }}
             </div>
-            <div class="text item"  v-if="currentMenu !== 'itve'">
+            <!-- <div class="text item"  v-if="currentMenu !== 'itve'">
               <span>password: </span>
               {{ cardDataAll[(((rn-1) * 3) + i - 1)]['password'] }}
-            </div>
+            </div> -->
           </el-col>
           <el-col :span="6">
             <el-checkbox v-model="checked" v-if="isDeleting"></el-checkbox>
@@ -44,10 +44,10 @@
               <span>email: </span>
               {{ cardDataAll[peopleNum - lastRow + i - 1]['email'] }}
             </div>
-            <div class="text item"  v-if="currentMenu !== 'itve'">
+            <!-- <div class="text item"  v-if="currentMenu !== 'itve'">
               <span>password: </span>
               {{ cardDataAll[peopleNum - lastRow + i - 1]['password'] }}
-            </div>
+            </div> -->
           </el-col>
           <el-col :span="6">
             <el-checkbox v-model="checked" v-if="isDeleting"></el-checkbox>
@@ -72,13 +72,13 @@
         <el-form-item label="email" :label-width="formLabelWidth">
           <el-input v-model="userForm.email" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="password" :label-width="formLabelWidth" v-if="currentMenu !== 'itve'">
+        <!-- <el-form-item label="password" :label-width="formLabelWidth" v-if="currentMenu !== 'itve'">
           <el-input v-model="userForm.password" autocomplete="off"></el-input>
-        </el-form-item>
+        </el-form-item> -->
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="userDialogFormVisible = false">取消</el-button>
-        <el-button type="primary" @click="userDialogFormVisible = false">确定</el-button>
+        <el-button @click="closeUserDialog">取消</el-button>
+        <el-button type="primary" @click="commitUserDialog">确定</el-button>
       </div>
     </el-dialog>
 
@@ -87,14 +87,14 @@
       <el-row :gutter="20">
         <el-col :span="7">
           <h3>HR 信息</h3>
-          <el-form :model="form">
+          <el-form :model="hrForm">
             <el-form-item label="姓名" :label-width="hrFormLabelWidth">
-              <span v-if="editHrInfo === false" > {{ form.name }} </span>
-              <el-input v-else v-model="form.name" autocomplete="off"></el-input>
+              <span v-if="editHrInfo === false" > {{ hrForm.name }} </span>
+              <el-input v-else v-model="hrForm.name" autocomplete="off"></el-input>
             </el-form-item>
             <el-form-item label="email" :label-width="hrFormLabelWidth">
-              <span v-if="editHrInfo === false" > {{ form.email }} </span>
-              <el-input v-else v-model="form.email" autocomplete="off"></el-input>
+              <span v-if="editHrInfo === false" > {{ hrForm.email }} </span>
+              <el-input v-else v-model="hrForm.email" autocomplete="off"></el-input>
             </el-form-item>
           </el-form>
           <div class="hrinfo-footer">
@@ -297,14 +297,10 @@ export default {
       addIntvwerDialogFormVisible: false,
       // peopleNum: 11, // 从 API 请求到的 interviewee 的数量
       userDialogFormVisible: false, // 是否显示弹出表单
-      hrDialogFormVisible: true, // 是否显示弹出表单
-      form: { // 弹出表单的内容
-        name: 'default',
-        email: 'default@default.com',
-        region: 'default'
-      },
       userForm: {},
       formLabelWidth: '120px', // 弹出表单的宽度
+      hrDialogFormVisible: false, // 是否显示弹出表单
+      hrForm: {},
       hrFormLabelWidth: '70px', // 弹出表单的宽度
       checked: false, // 复选框是否选中
       isDeleting: false, // 现在是否在删除过程中
@@ -356,7 +352,7 @@ export default {
   },
   methods: {
     getItveInfo: function (_this) {
-      axios.get('http://106.14.227.202/api/itve/getun/', { // 应改为 getall
+      axios.get('http://106.14.227.202/api/itve/getall/', {
         headers: {
           'Content-Type': 'application/json'
         }
@@ -398,8 +394,15 @@ export default {
       })
     },
     clickCard: function (index) {
-      this.userDialogFormVisible = true
-      this.userForm = this.cardDataAll[index]
+      if (this.currentMenu === 'hr') {
+        this.hrDialogFormVisible = true
+        // this.hrForm = this.cardDataAll[index]
+        this.hrForm = Object.assign({}, this.cardDataAll[index]) // 复制
+      } else {
+        this.userDialogFormVisible = true
+        // this.userForm = this.cardDataAll[index]
+        this.userForm = Object.assign({}, this.cardDataAll[index]) // 复制
+      }
     },
     handleDelete: function () {
       // 处理 RightMenu 中“删除”按钮被点击的事件
@@ -424,6 +427,40 @@ export default {
       } else {
         console.log('[error] unknown user type')
       }
+    },
+    closeUserDialog: function () {
+      this.userDialogFormVisible = false
+    },
+    commitUserDialog: function () {
+      let _this = this
+      axios.post('http://106.14.227.202/api/' + this.currentMenu + '/', this.userForm, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }).then(function (response) {
+        console.log('edit ' + this.currentMenu + ' info successfully:')
+        console.log(response.data)
+        _this.$message('编辑 ' + this.currentMenu + ' 成功')
+        if (_this.currentMenu === 'itve') {
+          _this.getItveInfo(_this)
+        } else {
+          _this.getItvrInfo(_this)
+        }
+      }).catch(function (error) {
+        console.log('edit ' + this.currentMenu + ' info error:')
+        console.log(error.response)
+        _this.$alert(error.response.data.errmsg, '编辑 ' + this.currentMenu + ' 出错')
+      })
+      this.userDialogFormVisible = false
+      if (this.currentMenu === 'itve') {
+        this.getItveInfo(this)
+      } else if (this.currentMenu === 'itvr') {
+        this.getItvrInfo(this)
+      }
+    },
+    closeHrDialog: function () {
+      this.hrDialogFormVisible = false
+      this.getHrInfo(this)
     }
   },
   created: function () {
