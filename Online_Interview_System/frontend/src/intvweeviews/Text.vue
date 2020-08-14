@@ -40,7 +40,8 @@ import Vue from 'vue'
 import moment from 'moment'
 
 export default {
-  name: 'App',
+  name: 'Text',
+  props: ['roomInfo'],
   components: {
     'c-dialog': Vue.extend(require('@/components/dialog/index.vue').default)
   },
@@ -59,15 +60,12 @@ export default {
   mounted() {
     let vm = this;
     let user = localStorage.getItem('WEB_IM_USER');
+    console.log(vm.roomInfo);
     user = user && JSON.parse(user) || {};
     vm.uid = user.uid;
     vm.nickname = user.nickname;
-
-    if(!vm.uid){
-      vm.$refs.loginDialog.show()
-    } else {
-      vm.conWebSocket();
-    }
+    vm.nickname = "测试员" + Math.floor(Math.random()*1000);
+    vm.conWebSocket();
 
     document.onkeydown = function (event) {
         var e = event || window.event;
