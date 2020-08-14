@@ -11,10 +11,6 @@
 
     <div class="web-im">
       <div class="dis-flex">
-        <div class="user-list">
-          <div class="user" @click="triggerGroup">群1</div>
-          <div class="user" @click="triggerPersonal(item)" v-if="item.uid!=uid" v-for="item in users" v-bind:key="item">{{item.nickname}}</div>
-        </div>
         <div class="msg-content">
           <div class="header im-title">{{title}}</div>
             <div class="content im-record">
@@ -86,6 +82,9 @@ export default {
       let data = vm.messageList.filter(item=>{
         return item.bridge.sort().join(',') == vm.bridge.sort().join(',')
       })
+      if(vm.messageList.length>12){
+        vm.messageList.shift();
+      }
       return data;
     }
   },
