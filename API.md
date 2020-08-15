@@ -1,5 +1,41 @@
 # 后端API
 
+## register
+
+### `/api/register`
+
+注册登陆者信息，返回是否注册成功相关信息
+
+用法：POST /api/register
+
+- 返回：
+  - 成功：`{"code": 1000, "msg": 'Register success', "type": 注册时的身份信息}`
+  - 失败：`{"code": 失败时的状态码, "msg": 失败时的信息, "type": "-1"}`
+
+- `code & msg`
+  - `1000: Register success`
+  - `1001: Search error`
+  - `1002: Exception error, please try again`
+  - `1003: Repeat registration, change your please change the registration information or log in`
+
+## login
+
+### `/api/login`
+
+用户登陆，返回是否登陆成功和token
+
+用法：POST /api/login
+
+- 返回：
+  - 成功：`{"code": 1000, "msg": "Login success", "type": 登陆时选择的身份信息, "token": 根据用户登陆生成的token}`
+  - 失败：`{"code": 失败时的状态码, "msg": 失败时的信息, "type": "-1", "token": ""}`
+
+- `code & msg`
+  - `1000: Login success`
+  - `1001: Name or password or identity error`
+  - `1002: Request Error`
+  - `1003: Search Error`
+
 ## room
 
 ### `/api/room/info/<int:roomid>/`
