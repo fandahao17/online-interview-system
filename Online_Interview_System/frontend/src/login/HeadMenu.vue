@@ -3,9 +3,9 @@
     <div class="tag">首页</div>
     <div class="menu-right">
       <el-menu default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect" router>
-        <el-menu-item index="/login">登陆</el-menu-item>
+        <el-menu-item index="/login">登录</el-menu-item>
         <el-menu-item index="/register">注册</el-menu-item>
-        <el-menu-item class="el-icon-user-solid" index="/login"> 未登陆</el-menu-item>
+        <el-menu-item class="el-icon-user-solid" index="/login"> 未登录</el-menu-item>
       </el-menu>
     </div>
   </div>

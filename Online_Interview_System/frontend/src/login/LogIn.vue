@@ -1,9 +1,9 @@
 <template>
   <div>
-      <div class="title">登陆界面</div>
+      <div class="title">登录界面</div>
       <el-row>
           <el-col :span="12">
-              <el-select v-model="value" size="200px" clearable placeholder="请选择登陆身份">
+              <el-select v-model="value" size="200px" clearable placeholder="请选择登录身份">
                 <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"></el-option>
               </el-select>
           </el-col>
@@ -20,7 +20,7 @@
         </el-row>
         <el-row>
           <el-col :span="6">
-              <el-button type="primary" @click.native="onLogin" round>登陆</el-button>
+              <el-button type="primary" @click.native="onLogin" round>登录</el-button>
           </el-col>
           <el-col :span="6">
             <el-button type="danger" round>取消</el-button>
