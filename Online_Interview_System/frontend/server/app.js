@@ -54,20 +54,91 @@ io.on('connection', function (socket) {
   socket.on('code_run', function (data) {
     console.log('一个用户提交了代码')
     console.log(data)
-    fs.writeFile(`./server/roomfile/${data.id}/codefile`,data.code, function(err) {
-        if(err) {
-            console.log(err)
-        }
-    })
     if (data.language === 'python') {
+        fs.writeFile(`./server/roomfile/${data.id}/codefile`,data.code, function(err) {
+            if(err) {
+                console.log(err)
+            }
+        })
         exec(`python3 ./server/roomfile/${data.id}/codefile`, (error, stdout, stderr) => {
             if (error) {
                 console.log(`error: ${error.message}`);
+                socket.emit('server_result', {msg: error.message});
+                return
             }
             if (stderr) {
                 console.log(`stderr: ${stderr}`);
+                socket.emit('server_result', {msg: stderr});
+                return
             }
             console.log(`stdout: ${stdout}`);
+            socket.emit('server_result', {msg: stdout});
+        });
+    } else if (data.language === 'c') {
+        fs.writeFile(`./server/roomfile/${data.id}/codefile.c`,data.code, function(err) {
+            if(err) {
+                console.log(err)
+            }
+        })
+        exec(`gcc ./server/roomfile/${data.id}/codefile.c -o ./server/roomfile/${data.id}/a.out`, (error, stdout, stderr) => {
+            if (error) {
+                console.log(`error: ${error.message}`);
+                socket.emit('server_result', {msg: error.message});
+                return
+            }
+            if (stderr) {
+                console.log(`stderr: ${stderr}`);
+                socket.emit('server_result', {msg: stderr});
+                return
+            }
+            console.log(`stdout: ${stdout}`);
+        });
+        exec(`././server/roomfile/${data.id}/a.out`, (error, stdout, stderr) => {
+            if (error) {
+                console.log(`error: ${error.message}`);
+                socket.emit('server_result', {msg: error.message});
+                return
+                }
+            if (stderr) {
+                console.log(`stderr: ${stderr}`);
+                socket.emit('server_result', {msg: stderr});
+                return
+            }
+            console.log(`stdout: ${stdout}`);
+            socket.emit('server_result', {msg: stdout});
+        });
+    } else if (data.language === 'cplus') {
+        fs.writeFile(`./server/roomfile/${data.id}/codefile.cpp`,data.code, function(err) {
+            if(err) {
+                console.log(err)
+            }
+        })
+        exec(`g++ ./server/roomfile/${data.id}/codefile.cpp -o ./server/roomfile/${data.id}/a.out`, (error, stdout, stderr) => {
+            if (error) {
+                console.log(`error: ${error.message}`);
+                socket.emit('server_result', {msg: error.message});
+                return
+            }
+            if (stderr) {
+                console.log(`stderr: ${stderr}`);
+                socket.emit('server_result', {msg: stderr});
+                return
+            }
+            console.log(`stdout: ${stdout}`);
+        });
+        exec(`./server/roomfile/${data.id}/a.out`, (error, stdout, stderr) => {
+            if (error) {
+                console.log(`error: ${error.message}`);
+                socket.emit('server_result', {msg: error.message});
+                return
+                }
+            if (stderr) {
+                console.log(`stderr: ${stderr}`);
+                socket.emit('server_result', {msg: stderr});
+                return
+            }
+            console.log(`stdout: ${stdout}`);
+            socket.emit('server_result', {msg: stdout});
         });
     }
   })

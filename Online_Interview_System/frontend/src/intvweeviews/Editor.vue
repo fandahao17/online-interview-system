@@ -3,7 +3,11 @@
     <div class="container is-fluid dashboard">
       <div class="columns">
         <div class="column is-half code-editor">
-          <el-button @click="onSubmit">提交</el-button>
+          <el-card>
+              <el-button @click="onSubmit">提交</el-button>
+              <el-button @click="onClear">清空</el-button>
+              {{this.resultMsg}}
+          </el-card>
           <editor
             v-model="code"
             :options="cmOptions"
@@ -37,6 +41,7 @@ import 'codemirror/lib/codemirror.css'
 // import language js
 import 'codemirror/mode/javascript/javascript.js'
 import 'codemirror/mode/python/python.js'
+import 'codemirror/mode/clike/clike.js'
 // import theme style
 import 'codemirror/theme/monokai.css'
 export default {
@@ -49,7 +54,7 @@ export default {
     return {
       code: '',
       language: '',
-      languages: ['javascript', 'python'],
+      languages: ['javascript', 'python', 'c', 'cplus'],
       cmOptions: {
         tabSize: 4,
         mode: 'text/javascript',
@@ -59,8 +64,11 @@ export default {
       },
       languageModes: {
         python: 'x-python',
-        javascript: 'javascript'
-      }
+        javascript: 'javascript',
+        c: 'x-csrc',
+        cplus: 'x-c++src'
+      },
+      resultMsg: ''
     }
   },
   computed: {
@@ -90,6 +98,10 @@ export default {
       console.log(this.code)
       console.log(this.language)
       this.$socket.emit('code_run', {id: this.$route.params.roomid, code: this.code, language: this.language})
+    },
+    onClear () {
+      this.code = ''
+      this.resultMsg = ''
     }
   },
   sockets: {
@@ -99,6 +111,9 @@ export default {
     server_update (data) {
       console.log('change code')
       this.code = data.code
+    },
+    server_result (data) {
+      this.resultMsg = data.msg
     }
   }
 }
@@ -120,7 +135,7 @@ export default {
   background: #001528;
 }
 .vue-codemirror {
-  height: 80vh;
+  height: 50vh;
   border-radius: 4px;
 }
 .vue-codemirror >>> .CodeMirror {
