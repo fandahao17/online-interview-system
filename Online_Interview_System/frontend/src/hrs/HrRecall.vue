@@ -62,22 +62,22 @@ export default {
   data: function () {
     return {
       intvTableData: [{
-        itvwee: '王小虎',
-        itvwer: '王大虎',
+        itvwee: '曹宇昂',
+        itvwer: '张俊霞',
         grade: 'A',
         start: '2016-05-02 14:01:22',
         end: '2016-05-02 15:01:22',
         status: '未分配'
       }, {
-        itvwee: '王小虎',
-        itvwer: '王大虎',
+        itvwee: '樊金昊',
+        itvwer: '包信和',
         grade: 'A',
         start: '2016-05-02 14:01:22',
         end: '2016-05-02 15:01:22',
         status: '未分配'
       }, {
-        itvwee: '王小虎',
-        itvwer: '王大虎',
+        itvwee: '刘硕',
+        itvwer: '潘建伟',
         grade: 'A',
         start: '2016-05-02 14:01:22',
         end: '2016-05-02 15:01:22',

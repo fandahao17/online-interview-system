@@ -13,7 +13,7 @@
                 <el-button style="float: right; padding: 3px 0" type="text">查看</el-button>
               </div>
               <div v-for="n in 3" :key="n" class="text item">
-                {{'列表内容 ' + n }}
+                {{'面试信息 ' + n }}
               </div>
             </el-card>
           </el-col>
@@ -27,7 +27,7 @@
                 <el-button style="float: right; padding: 3px 0" type="text">查看</el-button>
               </div>
               <div v-for="n in 3" :key="n" class="text item">
-                {{'列表内容 ' + n }}
+                {{'面试信息 ' + n }}
               </div>
             </el-card>
           </el-col>
