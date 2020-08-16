@@ -82,11 +82,11 @@ export default {
     currentMessage() {
       let vm = this;
       let data = vm.messageList.filter(item=>{
-        return (item.bridge.sort().join(',') == vm.bridge.sort().join(','))
+        return (item.bridge.sort().join(',') == vm.bridge.sort().join(','))&&(item.roomid == vm.roomid)
       })
-      if(vm.messageList.length>12){
-        vm.messageList.shift();
-      }
+      //if(vm.messageList.length>12){
+      //  vm.messageList.shift();
+      //}
       return data;
     }
   },
