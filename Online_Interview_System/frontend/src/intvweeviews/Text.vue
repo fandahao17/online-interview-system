@@ -9,11 +9,11 @@
       <input class="nickname" v-model="nickname" type="text" placeholder="请输入你的昵称">
     </c-dialog>
 
-    <div class="web-im">
+    <div class="web-im" id="web-im">
       <div class="dis-flex">
         <div class="msg-content">
           <div class="header im-title">{{title}}</div>
-            <div class="content im-record">
+            <div class="body im-record" id="im-record">
               <div class="li" :class="{user: item.uid == uid}" v-for="item in currentMessage" v-bind:key="item">
                 <template v-if="item.type===1">
                   <p class="join-tips">{{item.msg}}</p>
@@ -23,13 +23,13 @@
                   <p class="message-box">{{item.msg}}</p>
                 </template>
               </div>
-            </div>
-            <div class="footer im-input">
-              <input type="text" v-model="msg" placeholder="请输入内容">
-              <button @click="send">发送</button>
-            </div>
+            </div> 
         </div>
       </div>
+    </div>
+    <div class="footer im-input">
+      <input type="text" v-model="msg" placeholder="请输入内容">
+      <button @click="send">发送</button>
     </div>
   </div>
 </template>

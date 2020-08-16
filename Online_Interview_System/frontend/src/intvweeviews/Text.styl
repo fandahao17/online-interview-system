@@ -19,7 +19,8 @@ html, body, #app
   height 100%
 .web-im
   width 100%
-  height 100%
+  height 90%
+  overflow-y auto
   .user-list
     visibility hidden
     width 6px
@@ -44,7 +45,6 @@ html, body, #app
       background #fff
   .im-record
     height 85%
-    overflow-y auto
     .join-tips
       position absolute
       display block
@@ -97,20 +97,20 @@ html, body, #app
       font-size 18px
       display inline-block
       padding 0 2px
-  .footer
-    position absolute
-    display flex
-    bottom 0
-    width 100%
-    box-shadow 1px 1px 8px #eee
-    height 40px
-    padding 350px 0 0 0
-    input
-      flex 1
-      padding 0 4px
-      font-size 10px
-    button
-      width 40px
-      background $green
-      color #fff
-      font-size 10px
+.footer
+  position absolute
+  display flex
+  bottom 0
+  width 100%
+  box-shadow 1px 1px 8px #eee
+  height 40px
+  padding 0 0 0 0
+  input
+    flex 1
+    padding 0 4px
+    font-size 10px
+  button
+    width 40px
+    background $green
+    color #fff
+    font-size 10px
