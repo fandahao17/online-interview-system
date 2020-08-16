@@ -47,6 +47,7 @@ export default {
   },
   data(){
     return {
+      roomid: '',
       title: '群聊',
       uid: '',
       nickname: '',
@@ -62,6 +63,9 @@ export default {
     let user = localStorage.getItem('WEB_IM_USER');
     console.log(vm.roomInfo);
     user = user && JSON.parse(user) || {};
+    user.roomid = vm.$route.params.roomid;
+    vm.roomid = vm.$route.params.roomid;
+    console.log("item.roomid:"+vm.roomid);
     vm.uid = user.uid;
     vm.nickname = user.nickname;
     vm.nickname = "测试员" + Math.floor(Math.random()*1000);
@@ -78,7 +82,7 @@ export default {
     currentMessage() {
       let vm = this;
       let data = vm.messageList.filter(item=>{
-        return item.bridge.sort().join(',') == vm.bridge.sort().join(',')
+        return (item.bridge.sort().join(',') == vm.bridge.sort().join(','))
       })
       if(vm.messageList.length>12){
         vm.messageList.shift();
@@ -89,7 +93,7 @@ export default {
   methods: {
     triggerGroup() {
       this.bridge = [];
-      this.title = '群聊';
+      this.title = this.roomid;
     },
     triggerPersonal(item) {
       if(this.uid === item.uid){
@@ -106,6 +110,7 @@ export default {
     },
     sendMessage(type, msg){
       this.socket.send(JSON.stringify({
+        roomid: this.roomid,
         uid: this.uid,
         type: type,
         nickname: this.nickname,
@@ -126,6 +131,7 @@ export default {
             vm.uid = 'web_im_' + moment().valueOf();
             localStorage.setItem('WEB_IM_USER', JSON.stringify({
               uid: vm.uid,
+              roomid: vm.roomid,
               nickname: vm.nickname
             }))
           }
@@ -139,6 +145,7 @@ export default {
         }
         // 接收服务器的消息
         socket.onmessage = function(e){
+          console.log(vm.messageList);
           let message = JSON.parse(e.data);
           vm.messageList.push(message);
           if(message.users) {

@@ -21,6 +21,7 @@ function boardcast(obj) {
 var server = ws.createServer(function(conn){
   conn.on("text", function (obj) {
     obj = JSON.parse(obj);
+    //console.log(obj.roomid);
     conns[''+obj.uid+''] = conn;
     if(obj.type===1){
       let isuser = users.some(item=>{
@@ -28,6 +29,7 @@ var server = ws.createServer(function(conn){
       })
       if(!isuser){
         users.push({
+          roomid: obj.roomid,
           nickname: obj.nickname,
           uid: obj.uid
         });
@@ -36,6 +38,7 @@ var server = ws.createServer(function(conn){
         type: 1,
         date: moment().format('YYYY-MM-DD HH:mm:ss'),
         msg: obj.nickname+'加入聊天室',
+        roomid: obj.roomid,
         users: users,
         uid: obj.uid,
         nickname: obj.nickname,
@@ -46,6 +49,7 @@ var server = ws.createServer(function(conn){
         type: 2,
         date: moment().format('YYYY-MM-DD HH:mm:ss'),
         msg: obj.msg,
+        roomid: obj.roomid,
         uid: obj.uid,
         nickname: obj.nickname,
         bridge: obj.bridge
