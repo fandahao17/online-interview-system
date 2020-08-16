@@ -31,7 +31,6 @@
       <input type="text" v-model="msg" placeholder="请输入内容">
       <button @click="send">发送</button>
     </div>
-  </div>
 </template>
 
 <script>
