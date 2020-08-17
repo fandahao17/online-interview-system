@@ -4,8 +4,8 @@ var _ = require('underscore')
 const { exec } = require("child_process")
 var fs=require('fs');
 var PORT = 8011
-app.listen(PORT,'0.0.0.0')
-//app.listen(PORT)
+//app.listen(PORT,'0.0.0.0')
+app.listen(PORT)
 var group = new Array()
 var grouplength = new Array()
 var groupcode = new Array()
@@ -127,6 +127,39 @@ io.on('connection', function (socket) {
             console.log(`stdout: ${stdout}`);
         });
         exec(`./server/roomfile/${data.id}/a.out`, (error, stdout, stderr) => {
+            if (error) {
+                console.log(`error: ${error.message}`);
+                socket.emit('server_result', {msg: error.message});
+                return
+                }
+            if (stderr) {
+                console.log(`stderr: ${stderr}`);
+                socket.emit('server_result', {msg: stderr});
+                return
+            }
+            console.log(`stdout: ${stdout}`);
+            socket.emit('server_result', {msg: stdout});
+        });
+    } else if (data.language === 'java') {
+        fs.writeFile(`./server/roomfile/${data.id}/Solution.java`,data.code, function(err) {
+            if(err) {
+                console.log(err)
+            }
+        })
+        exec(`javac server/roomfile/${data.id}/Solution.java`, (error, stdout, stderr) => {
+            if (error) {
+                console.log(`error: ${error.message}`);
+                socket.emit('server_result', {msg: error.message});
+                return
+            }
+            if (stderr) {
+                console.log(`stderr: ${stderr}`);
+                socket.emit('server_result', {msg: stderr});
+                return
+            }
+            console.log(`stdout: ${stdout}`);
+        });
+        exec(`cd ./server/roomfile/${data.id} && java Solution`, (error, stdout, stderr) => {
             if (error) {
                 console.log(`error: ${error.message}`);
                 socket.emit('server_result', {msg: error.message});

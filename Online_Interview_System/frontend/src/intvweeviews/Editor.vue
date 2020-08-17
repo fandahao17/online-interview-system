@@ -24,6 +24,7 @@
                   placeholder="Select a language"
                   @input="setLanguageMode"
                 ></multiselect>
+                <el-text style="color:red">{{this.hint}}</el-text>
               </div>
             </div>
           </div>
@@ -54,7 +55,7 @@ export default {
     return {
       code: '',
       language: '',
-      languages: ['javascript', 'python', 'c', 'cplus'],
+      languages: ['javascript', 'python', 'c', 'cplus', 'java'],
       cmOptions: {
         tabSize: 4,
         mode: 'text/javascript',
@@ -66,9 +67,11 @@ export default {
         python: 'x-python',
         javascript: 'javascript',
         c: 'x-csrc',
-        cplus: 'x-c++src'
+        cplus: 'x-c++src',
+        java: 'x-java'
       },
-      resultMsg: ''
+      resultMsg: '',
+      hint: ''
     }
   },
   computed: {
@@ -92,6 +95,11 @@ export default {
     },
     setLanguageMode () {
       this.cmOptions.mode = `text/${this.languageModes[this.language]}`
+      if (this.language === 'java') {
+        this.hint = 'class name should be "Solution"'
+      } else {
+        this.hint = ''
+      }
     },
     onSubmit () {
       console.log('submit')
