@@ -4,8 +4,8 @@ var _ = require('underscore')
 const { exec } = require("child_process")
 var fs=require('fs');
 var PORT = 8011
-//app.listen(PORT,'0.0.0.0')
-app.listen(PORT)
+app.listen(PORT,'0.0.0.0')
+//app.listen(PORT)
 var group = new Array()
 var grouplength = new Array()
 var groupcode = new Array()
