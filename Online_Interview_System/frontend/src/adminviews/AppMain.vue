@@ -66,10 +66,10 @@
         <el-form-item label="姓名" :label-width="formLabelWidth">
           <el-input v-model="userForm.name" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="mobile" :label-width="formLabelWidth">
+        <el-form-item label="电话" :label-width="formLabelWidth">
           <el-input v-model="userForm.mobile" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="email" :label-width="formLabelWidth">
+        <el-form-item label="邮箱" :label-width="formLabelWidth">
           <el-input v-model="userForm.email" autocomplete="off"></el-input>
         </el-form-item>
         <!-- <el-form-item label="password" :label-width="formLabelWidth" v-if="currentMenu !== 'itve'">
@@ -92,7 +92,11 @@
               <span v-if="editHrInfo === false" > {{ hrForm.name }} </span>
               <el-input v-else v-model="hrForm.name" autocomplete="off"></el-input>
             </el-form-item>
-            <el-form-item label="email" :label-width="hrFormLabelWidth">
+            <el-form-item label="电话" :label-width="hrFormLabelWidth">
+              <span v-if="editHrInfo === false" > {{ hrForm.mobile }} </span>
+              <el-input v-else v-model="hrForm.mobile" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="邮箱" :label-width="hrFormLabelWidth">
               <span v-if="editHrInfo === false" > {{ hrForm.email }} </span>
               <el-input v-else v-model="hrForm.email" autocomplete="off"></el-input>
             </el-form-item>
@@ -281,6 +285,25 @@
         <el-button type="primary" @click="addIntvwerDialogFormVisible = false">确定</el-button>
       </div>
     </el-dialog>
+
+    <!-- 点击“添加”弹出的表单 -->
+    <el-dialog title="详细信息" :visible.sync="addDialogFormVisible">
+      <el-form :model="addForm">
+        <el-form-item label="姓名" :label-width="formLabelWidth">
+          <el-input v-model="addForm.name" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="电话" :label-width="formLabelWidth">
+          <el-input v-model="addForm.mobile" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="邮箱" :label-width="formLabelWidth">
+          <el-input v-model="addForm.new_email" autocomplete="off"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="addDialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="commitAddDialog">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -304,6 +327,13 @@ export default {
       hrForm: {},
       oldHrForm: {},
       hrFormLabelWidth: '70px', // 弹出表单的宽度
+      addForm: {
+        name: '',
+        mobile: '',
+        new_email: '',
+        old_email: ''
+      },
+      addDialogFormVisible: false,
       checked: false, // 复选框是否选中
       isDeleting: false, // 现在是否在删除过程中
       intvweeTableData: [{
@@ -490,15 +520,55 @@ export default {
       })
       this.hrDialogFormVisible = false
       this.getHrInfo(this)
+    },
+    handleAdminAdd: function () {
+      this.addDialogFormVisible = true
+    },
+    closeAddDialog: function () {
+      this.addDialogFormVisible = false
+      this.addForm = { name: '', mobile: '', new_email: '', old_email: '' }
+    },
+    commitAddDialog: function () {
+      let _this = this
+      console.log('this.addForm = ', this.addForm)
+      axios.post('http://106.14.227.202/api/' + _this.currentMenu + '/', this.addForm, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }).then(function (response) {
+        if (response.data['success'] === true) {
+          console.log('add ' + _this.currentMenu + ' successfully:')
+          _this.$message('添加 ' + _this.currentMenu + ' 信息成功')
+        } else {
+          console.log('add ' + _this.currentMenu + ' error:')
+          _this.$alert('添加 ' + _this.currentMenu + ' 信息出错')
+        }
+      }).catch(function (error) {
+        console.log('add ' + _this.currentMenu + ' info error:')
+        console.log(error.response)
+        _this.$alert(error.response.data.errmsg, '添加 ' + _this.currentMenu + ' 信息出错')
+      })
+      this.addDialogFormVisible = false
+      // this.getHrInfo(this)
+      if (this.currentMenu === 'itve') {
+        this.getItveInfo(this)
+      } else if (this.currentMenu === 'itvr') {
+        this.getItvrInfo(this)
+      } else {
+        this.getHrInfo(this)
+      }
+      this.addForm = { name: '', mobile: '', new_email: '', old_email: '' }
     }
   },
   created: function () {
     this.$eventHub.$on('click-delete', this.handleDelete)
     this.$eventHub.$on('menu-change', this.handleMenuChange)
+    this.$eventHub.$on('admin-add', this.handleAdminAdd)
   },
   beforeDestory: function () {
     this.$eventHub.$off('click-delete')
     this.$eventHub.$off('menu-change')
+    this.$eventHub.$off('admin-add')
   },
   mounted: function () {
     this.getItveInfo(this)
