@@ -10,6 +10,7 @@ import HrWatch from '@/hrs/HrWatch'
 import HrRecall from '@/hrs/HrRecall'
 import IntvwerHome from '@/intvwerviews/Index'
 import ScheduleView from '@/intvwerviews/ScheduleView'
+import ItvrRoom from '@/itvrroom/Index'
 import Error from '@/error/Error'
 
 Vue.use(Router)
@@ -30,6 +31,11 @@ var router = new Router({
       path: '/interviewee/:roomid',
       name: 'Interviewee',
       component: IntvweeHome
+    },
+    {
+      path: '/interviewer/:roomid',
+      name: 'InterviewerRoom',
+      component: ItvrRoom
     },
     {
       path: '/interviewer',

@@ -8,8 +8,13 @@
     </h2>
     <h2>
       Click
-      <router-link to="/interviewee">here</router-link>
-      to see interviewee page
+      <router-link to="/interviewee/123">here</router-link>
+      to see the room from the interviewee's perspective
+    </h2>
+    <h2>
+      Click
+      <router-link to="/interviewer/123">here</router-link>
+      to see the room from the interviewer's perspective
     </h2>
     <h2>
       Click
