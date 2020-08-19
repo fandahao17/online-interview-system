@@ -22,7 +22,7 @@
             </div> -->
           </el-col>
           <el-col :span="6">
-            <el-checkbox v-model="checked" v-if="isDeleting"></el-checkbox>
+            <el-checkbox v-model="checked[((rn-1) * 3) + i - 1]" v-if="isDeleting"></el-checkbox>
           </el-col>
         </el-card>
       </el-col>
@@ -50,7 +50,7 @@
             </div> -->
           </el-col>
           <el-col :span="6">
-            <el-checkbox v-model="checked" v-if="isDeleting"></el-checkbox>
+            <el-checkbox v-model="checked[peopleNum - lastRow + i - 1]" v-if="isDeleting"></el-checkbox>
           </el-col>
         </el-card>
       </el-col>
@@ -334,7 +334,7 @@ export default {
         old_email: ''
       },
       addDialogFormVisible: false,
-      checked: false, // 复选框是否选中
+      checked: [false], // 复选框是否选中
       isDeleting: false, // 现在是否在删除过程中
       intvweeTableData: [{
         id: '1',
@@ -392,6 +392,7 @@ export default {
         console.log(response.data)
         console.log('type:', typeof (response.data))
         _this.cardDataAll = response.data
+        _this.checked = Array(_this.cardDataAll.length).fill(false)
       }).catch(function (error) {
         console.log('get itve info error:')
         console.log(error.response)
@@ -406,6 +407,7 @@ export default {
         console.log(response.data)
         console.log('type:', typeof (response.data))
         _this.cardDataAll = response.data
+        _this.checked = Array(_this.cardDataAll.length).fill(false)
       }).catch(function (error) {
         console.log('get itvr info error:')
         console.log(error.response)
@@ -420,22 +422,25 @@ export default {
         console.log(response.data)
         console.log('type:', typeof (response.data))
         _this.cardDataAll = response.data
+        _this.checked = Array(_this.cardDataAll.length).fill(false)
       }).catch(function (error) {
         console.log('get hr info error:')
         console.log(error.response)
       })
     },
     clickCard: function (index) {
-      if (this.currentMenu === 'hr') {
-        this.hrDialogFormVisible = true
-        // this.hrForm = this.cardDataAll[index]
-        this.hrForm = Object.assign({}, this.cardDataAll[index]) // 复制
-        this.oldHrForm = Object.assign({}, this.cardDataAll[index]) // 复制
-      } else {
-        this.userDialogFormVisible = true
-        // this.userForm = this.cardDataAll[index]
-        this.userForm = Object.assign({}, this.cardDataAll[index]) // 复制
-        this.oldUserForm = Object.assign({}, this.cardDataAll[index]) // 复制
+      if (this.isDeleting === false) { // 当正在删除时不要弹出卡片来
+        if (this.currentMenu === 'hr') {
+          this.hrDialogFormVisible = true
+          // this.hrForm = this.cardDataAll[index]
+          this.hrForm = Object.assign({}, this.cardDataAll[index]) // 复制
+          this.oldHrForm = Object.assign({}, this.cardDataAll[index]) // 复制
+        } else {
+          this.userDialogFormVisible = true
+          // this.userForm = this.cardDataAll[index]
+          this.userForm = Object.assign({}, this.cardDataAll[index]) // 复制
+          this.oldUserForm = Object.assign({}, this.cardDataAll[index]) // 复制
+        }
       }
     },
     handleDelete: function () {
@@ -445,9 +450,12 @@ export default {
     },
     clickCancelDelete: function () {
       this.isDeleting = false
+      this.checked = Array(this.cardDataAll.length).fill(false)
     },
     clickConfirmDelete: function () {
       this.isDeleting = false
+      console.log('delete commit')
+      console.log(this.checked)
     },
     handleMenuChange: function (key) {
       console.log('catch menu change to ', key)
