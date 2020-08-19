@@ -4,6 +4,7 @@ from django.http import JsonResponse
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view
 from .models import *
+from .email import room_send_email
 import time
 import json
 import random
@@ -244,7 +245,7 @@ def room_add(request):
 	t, e, r = d.get('time'), d.get('itve'), d.get('itvr')
 	try:
 		itvr = Interviewer.objects.get(pk=r)
-		r = Room.objects.create(roomid=rid, time=t, tester=itvr,
+		room = Room.objects.create(roomid=rid, time=t, tester=itvr,
 		                        interviewee=Interviewee.objects.get(pk=e))
 		if t == 0:
 			itvr.free1 = False
@@ -254,11 +255,12 @@ def room_add(request):
 			itvr.free3 = False
 
 		itvr.save()
-		r.save()
+		room.save()
 	except Exception as e:
 		roomid = ''
 	else:
 		roomid = str(rid)
+		room_send_email(e, r, roomid, t)
 
 	return JsonResponse({'roomid': roomid})
 
