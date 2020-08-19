@@ -61,7 +61,7 @@
     <el-button icon="el-icon-delete" type="danger" plain class="confirm-delete" v-if="isDeleting" @click="clickConfirmDelete">删除</el-button>
 
     <!-- 点击候选人、面试官卡片弹出的表单 -->
-    <el-dialog title="候选人信息" :visible.sync="userDialogFormVisible">
+    <el-dialog title="详细信息" :visible.sync="userDialogFormVisible">
       <el-form :model="userForm">
         <el-form-item label="姓名" :label-width="formLabelWidth">
           <el-input v-model="userForm.name" autocomplete="off"></el-input>
@@ -99,8 +99,8 @@
           </el-form>
           <div class="hrinfo-footer">
             <el-button size="medium" type="primary" plain v-if="editHrInfo === false" @click="editHrInfo = true">编 辑</el-button>
-            <el-button size="medium" v-if="editHrInfo" @click="editHrInfo = false">取 消</el-button>
-            <el-button size="medium" type="primary" plain v-if="editHrInfo" @click="editHrInfo = false">确 定</el-button>
+            <el-button size="medium" v-if="editHrInfo" @click="closeHrDialog">取 消</el-button>
+            <el-button size="medium" type="primary" plain v-if="editHrInfo" @click="commitHrDialog">确 定</el-button>
           </div>
         </el-col>
         <el-col :span="1">
@@ -298,9 +298,11 @@ export default {
       // peopleNum: 11, // 从 API 请求到的 interviewee 的数量
       userDialogFormVisible: false, // 是否显示弹出表单
       userForm: {},
+      oldUserForm: {},
       formLabelWidth: '120px', // 弹出表单的宽度
       hrDialogFormVisible: false, // 是否显示弹出表单
       hrForm: {},
+      oldHrForm: {},
       hrFormLabelWidth: '70px', // 弹出表单的宽度
       checked: false, // 复选框是否选中
       isDeleting: false, // 现在是否在删除过程中
@@ -398,10 +400,12 @@ export default {
         this.hrDialogFormVisible = true
         // this.hrForm = this.cardDataAll[index]
         this.hrForm = Object.assign({}, this.cardDataAll[index]) // 复制
+        this.oldHrForm = Object.assign({}, this.cardDataAll[index]) // 复制
       } else {
         this.userDialogFormVisible = true
         // this.userForm = this.cardDataAll[index]
         this.userForm = Object.assign({}, this.cardDataAll[index]) // 复制
+        this.oldUserForm = Object.assign({}, this.cardDataAll[index]) // 复制
       }
     },
     handleDelete: function () {
@@ -433,23 +437,26 @@ export default {
     },
     commitUserDialog: function () {
       let _this = this
+      this.userForm['old_email'] = this.oldUserForm['email']
+      this.userForm['new_email'] = this.userForm['email']
+      console.log('this.userForm = ', this.userForm)
       axios.post('http://106.14.227.202/api/' + this.currentMenu + '/', this.userForm, {
         headers: {
           'Content-Type': 'application/json'
         }
       }).then(function (response) {
-        console.log('edit ' + this.currentMenu + ' info successfully:')
+        console.log('edit ' + _this.currentMenu + ' info successfully:')
         console.log(response.data)
-        _this.$message('编辑 ' + this.currentMenu + ' 成功')
+        _this.$message('编辑 ' + _this.currentMenu + ' 成功')
         if (_this.currentMenu === 'itve') {
           _this.getItveInfo(_this)
         } else {
           _this.getItvrInfo(_this)
         }
       }).catch(function (error) {
-        console.log('edit ' + this.currentMenu + ' info error:')
+        console.log('edit ' + _this.currentMenu + ' info error:')
         console.log(error.response)
-        _this.$alert(error.response.data.errmsg, '编辑 ' + this.currentMenu + ' 出错')
+        _this.$alert(error.response.data.errmsg, '编辑 ' + _this.currentMenu + ' 出错')
       })
       this.userDialogFormVisible = false
       if (this.currentMenu === 'itve') {
@@ -459,6 +466,28 @@ export default {
       }
     },
     closeHrDialog: function () {
+      this.editHrInfo = false
+      this.getHrInfo(this)
+    },
+    commitHrDialog: function () {
+      let _this = this
+      this.editHrInfo = false
+      this.hrForm['old_email'] = this.oldHrForm['email']
+      this.hrForm['new_email'] = this.hrForm['email']
+      console.log('this.hrForm = ', this.hrForm)
+      axios.post('http://106.14.227.202/api/hr/', this.hrForm, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }).then(function (response) {
+        console.log('edit hr info successfully:')
+        console.log(response.data)
+        _this.$message('编辑 hr 信息成功')
+      }).catch(function (error) {
+        console.log('edit hr info error:')
+        console.log(error.response)
+        _this.$alert(error.response.data.errmsg, '编辑 hr 信息出错')
+      })
       this.hrDialogFormVisible = false
       this.getHrInfo(this)
     }
