@@ -1,5 +1,13 @@
-from django.core.mail import send_mail
 from .models import Interviewee
+from email.mime.text import MIMEText
+import smtplib, ssl
+
+port = 465  # For SSL
+smtp_server = "email-smtp.ap-northeast-1.amazonaws.com"
+sender_email = "fandahao17@mail.ustc.edu.cn"  # Enter your address
+username = 'AKIAX3SUJJO7YMLKVPWI'
+password = 'BEuwtJ6h20pdOLVZ//9Qh+h7xK5OyVKL4UyHiat6s3jy'
+
 
 TIME_OPTIONS = [
     '周六上午9:30-10:30',
@@ -7,26 +15,24 @@ TIME_OPTIONS = [
     '周日上午9:30-10:30'
 ]
 
-EMAIL_FROM = "jobs@interview.ustc.edu.cn"
 ITVE_SUBJECT = "面试通知"
 ITVE_MESSAGE = "\
-尊敬的{}：\n\
+尊敬的{}：\n\n\
     您好！欢迎您参加interview.com公司的在线面试，面试时间为{}，届时请点击以下链接进入面试页面：\n\n{}"
 ITVE_URL_PAT = "http://106.14.227.202/#/interviewee/{}/"
-
-ITVR_SUBJECT = "新面试安排"
-ITVR_MESSAGE = "\
-尊敬的面试官：\n\
-    刚刚为您新增了面试安排。面试编号为{}，时间为{}，请查收。"
 
 def room_send_email(itve, itvr, roomid, time):
     """
     Send notification emails to interviewer & interviewee
     """
-    itve_url = ITVE_URL_PAT.format(roomid)
-    itve_name = Interviewee.objects.get(pk=itve)
-    itve_msg = ITVE_MESSAGE.format(itve_name, TIME_OPTIONS[time], itve_url)
-    send_mail(ITVE_SUBJECT, itve_msg, EMAIL_FROM, [itve], fail_silently=False)
+    url = ITVE_URL_PAT.format(roomid)
+    name = Interviewee.objects.get(pk=itve)
+    msg = MIMEText(ITVE_MESSAGE.format(name, TIME_OPTIONS[time], url), 'plain', 'utf-8')
+    msg['Subject'] = ITVE_SUBJECT
+    msg['From'] = 'Jobs <fandahao17@mail.ustc.edu.cn>'
+    msg['To'] = itve
 
-    itvr_msg = ITVR_MESSAGE.format(roomid, TIME_OPTIONS[time])
-    send_mail(ITVR_SUBJECT, itvr_msg, EMAIL_FROM, [itvr], fail_silently=False)
+    context = ssl.create_default_context()
+    with smtplib.SMTP_SSL(smtp_server, port, context=context) as server:
+        server.login(username, password)
+        server.sendmail(sender_email, [itve], msg.as_string())
