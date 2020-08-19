@@ -446,27 +446,27 @@ def itvr_set(request):
 	修改面试官的信息，若`old_email`域为空字符串，则新建一个面试官。
 
 	用法：POST /api/itvr/
-	- 请求内容：`{ 'name': str, 'mobile': str, 'password': str, 'old_email': str, 'new_email': str, 'free1': bool, 'free2': bool, 'free3': bool }`
+	- 请求内容：`{ 'name': str, 'mobile': str, 'old_email': str, 'new_email': str, 'free1': bool, 'free2': bool, 'free3': bool }`
 	- 返回：`{ 'success': bool }`
 	"""
 	d = request.data
-	n, m, pw, oe, ne = d.get('name'), d.get('mobile'), d.get(
-		'password'), d.get('old_email'), d.get('new_email')
+	# n, m, pw, oe, ne = d.get('name'), d.get('mobile'), d.get(
+	# 	'password'), d.get('old_email'), d.get('new_email')
+	n, m, oe, ne = d.get('name'), d.get('mobile'), d.get('old_email'), d.get('new_email')
 	f1, f2, f3 = d.get('free1'), d.get('free2'), d.get('free3')
 
 	success = True
 	try:
 		if oe:
 			itvr = Interviewer.objects.get(pk=oe)
-			itvr.name, itvr.mobile, itvr.password = n, m, pw
+			itvr.name, itvr.mobile = n, m
 			itvr.free1, itvr.free2, itvr.free3 = f1, f2, f3
 			if ne != itvr.email:
 				itvr.email = ne
 				Interviewer.objects.get(pk=oe).delete()
 			itvr.save()
 		else:
-			Interviewer.objects.create(
-				name=n, mobile=m, password=pw, email=ne, free1=f1, free2=f2, free3=f3)
+			Interviewer.objects.create(name=n, mobile=m, email=ne)
 	except:
 		success = False
 
