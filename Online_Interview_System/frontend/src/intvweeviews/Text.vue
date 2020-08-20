@@ -61,6 +61,8 @@ export default {
   mounted() {
     let vm = this;
     let user = localStorage.getItem('WEB_IM_USER');
+    let path = vm.$route.path;
+    var str = path;
     console.log(vm.roomInfo);
     user = user && JSON.parse(user) || {};
     user.roomid = vm.$route.params.roomid;
@@ -68,7 +70,12 @@ export default {
     console.log("item.roomid:"+vm.roomid);
     vm.uid = user.uid;
     vm.nickname = user.nickname;
-    vm.nickname = "测试员" + Math.floor(Math.random()*1000);
+    if(str.indexOf("interviewee") != -1){
+      vm.nickname = "候选人";
+    }
+    else{
+      vm.nickname = "面试官";
+    }
     vm.conWebSocket();
 
     document.onkeydown = function (event) {
