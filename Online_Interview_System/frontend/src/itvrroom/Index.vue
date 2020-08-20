@@ -1,6 +1,6 @@
 <template>
   <el-container>
-    <el-header>Header 这是面试官的房间<el-button type="primary" :disabled="isStart" @click="onStartBtn">开始录制</el-button><el-button type="primary" :disabled="!isStart" @click="onEndBtn">结束录制</el-button><el-button type="primary" :disabled="!isFinish" @click="onDownloadBtn">下载</el-button><el-button type="primary" plain @click="clickButton">控制台输出房间信息</el-button></el-header>
+    <el-header>Header 这是面试官的房间<el-button type="primary" :disabled="isStart" @click="onStartBtn">开始录制</el-button><el-button type="primary" :disabled="!isStart" @click="onEndBtn">结束录制</el-button><el-button type="primary" :disabled="!isFinish" @click="onDownloadBtn">下载</el-button><el-button type="primary" :disabled="!isFinish||isUpload" @click="onUploadBtn">上传</el-button><el-button type="primary" plain @click="clickButton">控制台输出房间信息</el-button></el-header>
     <el-main>
       <el-row :gutter="20">
         <el-col :span="6">
@@ -48,9 +48,11 @@ export default {
       testInfo: 'aaaaa',
       isStart: false,
       isFinish: false,
+      isUpload: false,
       data: [],
       mediaRecorder: null,
-      stream: null
+      stream: null,
+      uploadResult: ''
     }
   },
   methods: {
@@ -80,6 +82,7 @@ export default {
     async onStartBtn () {
       this.isStart = true
       this.isFinish = false
+      this.data = []
       this.stream = await navigator.mediaDevices.getDisplayMedia({
         video: true,
         audio: false
@@ -109,6 +112,19 @@ export default {
       a.download = `${new Date().getTime()}.webm`
       a.click()
       a.remove()
+    },
+    onUploadBtn () {
+      var file = new File([this.data], 'msr-' + (new Date()).toISOString().replace(/:|\./g, '-') + '.mp4', {
+        type: 'video/mp4'
+      })
+      var data = new FormData()
+      data.append('userfile', file)
+      console.log(data)
+      axios.post('http://106.14.227.202/api/room/video/' + this.$route.params.roomid + '/', data)
+        .then(response => {
+          this.uploadResult = response.result
+          alert(this.uploadResult)
+        })
     }
   },
   mounted: function () {

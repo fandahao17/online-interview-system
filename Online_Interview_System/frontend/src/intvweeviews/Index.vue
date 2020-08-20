@@ -1,6 +1,6 @@
 <template>
   <el-container>
-    <el-header>Header<el-button type="primary" :disabled="isStart" @click="onStartBtn">开始录制</el-button><el-button type="primary" :disabled="!isStart" @click="onEndBtn">结束录制</el-button><el-button type="primary" :disabled="!isFinish" @click="onDownloadBtn">下载</el-button><el-button type="primary" plain @click="clickButton">控制台输出房间信息</el-button></el-header>
+    <el-header>Header<el-button type="primary" plain @click="clickButton">控制台输出房间信息</el-button></el-header>
     <el-main>
       <el-row :gutter="20">
         <el-col :span="6">
@@ -45,12 +45,7 @@ export default {
   data () {
     return {
       roomInfo: [],
-      testInfo: 'aaaaa',
-      isStart: false,
-      isFinish: false,
-      data: [],
-      mediaRecorder: null,
-      stream: null
+      testInfo: 'aaaaa'
     }
   },
   methods: {
@@ -76,39 +71,6 @@ export default {
       console.log('roominfo:')
       console.log(this.roomInfo)
       console.log(this.roomInfo['roomid'])
-    },
-    async onStartBtn () {
-      this.isStart = true
-      this.isFinish = false
-      this.stream = await navigator.mediaDevices.getDisplayMedia({
-        video: true,
-        audio: false
-      })
-      this.mediaRecorder = new MediaRecorder(this.stream, {
-        mimeType: 'video/webm'
-      })
-      this.mediaRecorder.ondataavailable = e => {
-        this.data.push(e.data)
-      }
-      this.mediaRecorder.start()
-    },
-    onEndBtn () {
-      this.isStart = false
-      this.isFinish = true
-      this.mediaRecorder.pause()
-      this.mediaRecorder.stop()
-      this.stream.getTracks().forEach(track => {
-        track.stop()
-      })
-    },
-    onDownloadBtn () {
-      let res = new Blob(this.data, { type: 'video/webm' })
-      let url = URL.createObjectURL(res)
-      let a = document.createElement('a')
-      a.href = url
-      a.download = `${new Date().getTime()}.webm`
-      a.click()
-      a.remove()
     }
   },
   mounted: function () {

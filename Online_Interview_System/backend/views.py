@@ -227,6 +227,29 @@ def room_getinfo(request, roomid):
 
 	return JsonResponse(j, json_dumps_params={'ensure_ascii': False})
 
+@api_view(['POST'])
+def room_storevideo(request, roomid):
+	"""
+	存储对应房间的代码
+
+	用法：POST /api/room/info/<int:roomid>/
+	- 返回：
+		- 成功：{ 'result': 成功上传 }
+		- 失败：{ 'result': 上传失败 }
+	"""
+	try:
+		myFile = request.FILES.get('userfile')
+	except Exception as e:
+		print(e)
+		return JsonResponse({'result': 'upload failure'})
+	else:
+		if myFile:
+			print(myFile)
+		else:
+			return JsonResponse({'result': 'upload failure'})
+
+	return JsonResponse(j, json_dumps_params={'ensure_ascii': False})
+
 
 @api_view(['POST'])
 def room_add(request):
