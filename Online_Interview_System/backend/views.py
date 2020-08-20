@@ -8,6 +8,7 @@ from .email import room_send_email
 import time
 import json
 import random
+import os
 # Create your views here.
 
 
@@ -244,11 +245,18 @@ def room_storevideo(request, roomid):
 		return JsonResponse({'result': 'upload failure'})
 	else:
 		if myFile:
-			print(myFile)
+			BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+			dir = os.path.join(os.path.join(BASE_DIR, 'static'),str(roomid))
+			if (not os.path.exists(dir) ):
+				os.makedirs(dir)
+			destination = open(os.path.join(dir, myFile.name), 'wb+')
+			for chunk in myFile.chunks():
+				destination.write(chunk)
+			destination.close()
 		else:
 			return JsonResponse({'result': 'upload failure'})
 
-	return JsonResponse(j, json_dumps_params={'ensure_ascii': False})
+	return JsonResponse({'result': 'upload successfully'})
 
 
 @api_view(['POST'])

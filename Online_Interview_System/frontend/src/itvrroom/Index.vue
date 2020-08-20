@@ -114,16 +114,17 @@ export default {
       a.remove()
     },
     onUploadBtn () {
-      var file = new File([this.data], 'msr-' + (new Date()).toISOString().replace(/:|\./g, '-') + '.mp4', {
-        type: 'video/mp4'
+      let res = new Blob(this.data, { type: 'video/webm' })
+      var file = new File([res], 'msr-' + (new Date()).toISOString().replace(/:|\./g, '-') + '.webm', {
+        type: 'video/webm'
       })
       var data = new FormData()
       data.append('userfile', file)
       console.log(data)
       axios.post('http://106.14.227.202/api/room/video/' + this.$route.params.roomid + '/', data)
         .then(response => {
-          this.uploadResult = response.result
-          alert(this.uploadResult)
+          this.uploadResult = response.data
+          alert(this.uploadResult.result)
         })
     }
   },
