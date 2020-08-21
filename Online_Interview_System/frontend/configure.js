@@ -1,6 +1,6 @@
 const API_PORT = '3000';
 
-const API_ROOT = `http://localhost:${API_PORT}`;
+const API_ROOT = `http://106.14.227.202:${API_PORT}`;
 
 const DEFAULT_ICE_SERVER = {
   url: 'turn:106.14.227.202:3478',
