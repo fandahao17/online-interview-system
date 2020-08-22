@@ -33,7 +33,7 @@ window.RTCIceCandidate = window.RTCIceCandidate || window.mozRTCIceCandidate || 
 window.RTCSessionDescription =
   window.RTCSessionDescription || window.mozRTCSessionDescription || window.webkitRTCSessionDescription
 
-const socket = io.connect('https://106.14.227.202:3000');
+const socket = io.connect('https://106.14.227.202');
 const configuration = {
   iceServers: [config.DEFAULT_ICE_SERVER],
 };
