@@ -93,7 +93,7 @@ io.on('connection', function (socket) {
             }
             console.log(`stdout: ${stdout}`);
         });
-        exec(`././server/roomfile/${data.id}/a.out`, (error, stdout, stderr) => {
+        exec(`./server/roomfile/${data.id}/a.out`, (error, stdout, stderr) => {
             if (error) {
                 console.log(`error: ${error.message}`);
                 socket.emit('server_result', {msg: error.message});
