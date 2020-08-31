@@ -13,6 +13,7 @@ urlpatterns = [
 	path('itvr/', views.itvr_set),
 	path('itvr/setfreetime', views.itvr_set_time),
 	path('itvr/getall/', views.interviewer_getall),
+	path('itvr/getitves/<str:pk>', views.itvr_get_itves),
 	path('itvr/delete/', views.itvr_delete),
 	path('hr/', views.hr_set),
 	path('hr/getall/', views.hr_getall),
@@ -26,4 +27,6 @@ urlpatterns = [
 	path('room/review/', views.room_review),
 	path('room/remark/', views.room_get_remark),
 	path('room/decide/', views.room_decide),
+	path('problem/<int:pid>/', views.problem_get),
+	path('problem/getall/', views.problem_getall),
 ]
