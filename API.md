@@ -1,5 +1,21 @@
 # 后端API
 
+## 关于身份验证过程的补充说明
+
+我们使用的是token验证而非传统的cookie验证，这在之前引起了我们的不少疑惑，在此补充说明一下。
+
+在用户登陆成功后，我们的前端使用localStorage存储用户的身份（identity）、用户email（主键）、token，可以参考前端代码[LogIn.vue #L54](https://git.lug.ustc.edu.cn/fandahao17/online-interview-system/-/blob/dev/Online_Interview_System/frontend/src/login/LogIn.vue#L54)来理解这个过程。因此，**当其他页面需要确定用户的身份（如主键email）时，可以在localStorage里面读取**。
+
+具体来讲，用户身份验证的过程为：
+
+1. 第一次登录的时候，前端调后端的登陆接口，发送用户名和密码; 
+2. 后端收到请求，验证用户名和密码，验证成功，就给前端返回一个token; 
+3. 前端拿到token，将token存储到localStorage和vuex中，并跳转路由页面; 
+4. 前端每次跳转路由，就判断 localStroage 中有无 token ，没有就跳转到登录页面，有则跳转到对应路由页面; **（未完全实现）**
+5. 每次调后端接口，都要在请求头中加token; **（暂未实现）**
+6. 后端判断请求头中有无token，有token，就拿到token并验证token，验证成功就返回数据，验证失败（例如：token过期）就返回401，请求头中没有token也返回401; **（暂未实现）**
+7. 如果前端拿到状态码为401，就清除token信息并跳转到登录页面 **（暂未实现）**
+
 ## register
 
 ### `/api/register`
@@ -148,4 +164,5 @@
 返回所有HR
 
 用法：GET /api/itve/getall/
+
 - 返回：`[{ 'name': str, 'mobile': str, 'email': str }, ...]`
