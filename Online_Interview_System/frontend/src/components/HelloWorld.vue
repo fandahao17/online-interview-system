@@ -1,125 +1,37 @@
 <template>
   <div class="hello">
-    <h1>This is hello world page</h1>
-    <h2>
-      Click
-      <router-link to="/admin">here</router-link>
-      to see admin page
-    </h2>
-    <h2>
-      Click
-      <router-link to="/interviewee/123">here</router-link>
-      to see the room from the interviewee's perspective
-    </h2>
-    <h2>
-      Click
-      <router-link to="/interviewer/123">here</router-link>
-      to see the room from the interviewer's perspective
-    </h2>
-    <h2>
-      Click
-      <router-link to="/interviewer">here</router-link>
-      to see interviewer page
-    </h2>
-    <h2>
-      Click
-      <router-link to="/login">here</router-link>
-      to see login page
-    </h2>
-    <h2>
-      Click
-      <router-link to="/hr">here</router-link>
-      to see Hr page
-    </h2>
-    <h1>{{ msg }}</h1>
-    <h2>Essential Links</h2>
-    <ul>
-      <li>
-        <a
-          href="https://vuejs.org"
-          target="_blank"
-        >
-          Core Docs
-        </a>
-      </li>
-      <li>
-        <a
-          href="https://forum.vuejs.org"
-          target="_blank"
-        >
-          Forum
-        </a>
-      </li>
-      <li>
-        <a
-          href="https://chat.vuejs.org"
-          target="_blank"
-        >
-          Community Chat
-        </a>
-      </li>
-      <li>
-        <a
-          href="https://twitter.com/vuejs"
-          target="_blank"
-        >
-          Twitter
-        </a>
-      </li>
-      <br>
-      <li>
-        <a
-          href="http://vuejs-templates.github.io/webpack/"
-          target="_blank"
-        >
-          Docs for This Template
-        </a>
-      </li>
-    </ul>
-    <h2>Ecosystem</h2>
-    <ul>
-      <li>
-        <a
-          href="http://router.vuejs.org/"
-          target="_blank"
-        >
-          vue-router
-        </a>
-      </li>
-      <li>
-        <a
-          href="http://vuex.vuejs.org/"
-          target="_blank"
-        >
-          vuex
-        </a>
-      </li>
-      <li>
-        <a
-          href="http://vue-loader.vuejs.org/"
-          target="_blank"
-        >
-          vue-loader
-        </a>
-      </li>
-      <li>
-        <a
-          href="https://github.com/vuejs/awesome-vue"
-          target="_blank"
-        >
-          awesome-vue
-        </a>
-      </li>
-    </ul>
+    <div>
+      <img id="logo" src="../assets/name.png" alt="logo">
+    </div>
+    <div id="div-login">
+      <el-button type="success" round @click="$router.push('/login/')">点击登陆</el-button>
+    </div>
+
+    <div id="enter-room-test">
+      <input v-model="roomid" placeholder="房间号">
+      <el-button type="success" round @click="$router.push('/interviewee/' + roomid + '/')">进入候选人房间（调试用）</el-button>
+      <el-button type="info" round @click="$router.push('/interviewer/' + roomid + '/')">进入面试官房间（调试用）</el-button>
+    </div>
+
+    <div id="hr-test">
+      <el-button type="primary" round @click="$router.push('/hr')">进入HR页面（调试用）</el-button>
+    </div>
+
+    <div id="admin-test">
+      <el-button type="primary" round @click="$router.push('/admin')">进入管理员页面（调试用）</el-button>
+    </div>
+
+    <img src="../assets/logo.jpg" alt="">
   </div>
 </template>
 
 <script>
+// document.body.style.backgroundImage = `url($(../assests/bg.jpg))`
 export default {
   name: 'HelloWorld',
   data () {
     return {
-      msg: 'Welcome to Your Vue.js App'
+      roomid: ''
     }
   }
 }
@@ -127,6 +39,18 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+div {
+    padding-bottom: 20px;
+}
+.hello {
+  background: #eef3f7;
+  width:100%;
+  height:100%;
+  top:0px;
+  left:0px;
+  z-index:1000;
+  text-align: center;
+}
 h1, h2 {
   font-weight: normal;
 }
