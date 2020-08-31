@@ -133,7 +133,7 @@ export default {
     submitFreeTime: function () {
       var thisemail = localStorage.getItem('email')
       var ft1, ft2, ft3
-      if (this.checkList.indexOf('上午') !== -1) ft1 = true         //ft1=true表示此上午时间段被选中
+      if (this.checkList.indexOf('上午') !== -1) ft1 = true
       else ft1 = false
       if (this.checkList.indexOf('下午') !== -1) ft2 = true
       else ft2 = false
