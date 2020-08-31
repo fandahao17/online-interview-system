@@ -18,15 +18,11 @@
                 </el-date-picker>
               </el-form-item>
               <el-form-item label="空闲时间段">
-                <el-time-picker
-                  is-range
-                  v-model="timeForm.freeTime"
-                  range-separator="至"
-                  start-placeholder="开始时间"
-                  end-placeholder="结束时间"
-                  placeholder="选择时间范围"
-                  style="width: 90%;">
-                </el-time-picker>
+                <el-checkbox-group v-model="checkList">
+                  <el-checkbox label="上午"></el-checkbox>
+                  <el-checkbox label="下午"></el-checkbox>
+                  <el-checkbox label="晚上"></el-checkbox>
+                </el-checkbox-group>
               </el-form-item>
               <el-form-item>
                 <el-button type="primary" @click="submitFreeTime">提交</el-button>
@@ -35,33 +31,13 @@
           </el-col>
           <el-col :span="1"><div class="vertical-bar"></div></el-col>
         </el-col>
-        <el-col :span="12">
-          <h1>已选空闲时间段</h1>
-          <el-tree
-            :data="treeData1"
-            node-key="id"
-            default-expand-all
-            :expand-on-click-node="false">
-            <span class="custom-tree-node" slot-scope="{ node, data }">
-              <span>{{ node.label }}</span>
-              <span>
-                <el-button
-                  type="text"
-                  size="mini"
-                  @click="() => remove(node, data)">
-                  Delete
-                </el-button>
-              </span>
-            </span>
-          </el-tree>
-        </el-col>
       </el-main>
     </el-container>
   </div>
 </template>
 
 <script>
-//  import axios from 'axios'
+import axios from 'axios'
 import IntvwerHeadmenu from '@/intvwerviews/HeadMenu'
 
 export default {
@@ -73,6 +49,7 @@ export default {
     return {
       freeDate: '',
       freeTime: [],
+      checkList: [],
       pickerOptions: {
         disabledDate (time) { // 只能选择 30 天之内的日期
           return (time.getTime() < (Date.now() - 86400000)) || (time.getTime() > (Date.now() + 2592000000))
@@ -154,6 +131,29 @@ export default {
   },
   methods: {
     submitFreeTime: function () {
+      var thisemail = localStorage.getItem('email')
+      var ft1, ft2, ft3
+      if (this.checkList.indexOf('上午') !== -1) ft1 = true         //ft1=true表示此上午时间段被选中
+      else ft1 = false
+      if (this.checkList.indexOf('下午') !== -1) ft2 = true
+      else ft2 = false
+      if (this.checkList.indexOf('晚上') !== -1) ft3 = true
+      else ft3 = false
+      axios.request({
+        url: '/api/itvr/setfreetime',
+        method: 'POST',
+        data: {
+          email: thisemail,
+          free1: ft1,
+          free2: ft2,
+          free3: ft3
+        },
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }).then(function (arg) {
+        console.log(arg.data.success)
+      })
       console.log('submit free time')
     },
     remove: function (node, data) {
