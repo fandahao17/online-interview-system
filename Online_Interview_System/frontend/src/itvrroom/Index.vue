@@ -30,7 +30,20 @@
             </el-tabs>
           </el-col>
           <el-col :span="5">
-            <div class="grid-content bg-purple question-window">这里是展示问题的窗口</div>
+            <div class="grid-content bg-purple question-window">
+              <p4>题目</p4><br/>
+              {{ queDetail['name'] }}<br/><br/>
+              <p4>描述</p4><br/>
+              {{ queDetail['desc'] }}<br/><br/>
+              <p4>输入描述</p4><br/>
+              {{ queDetail['input'] }}<br/><br/>
+              <p4>输出描述</p4><br/>
+              {{ queDetail['output'] }}<br/><br/>
+              <p4>样例输入</p4><br/>
+              {{ queDetail['input_sample'] }}<br/><br/>
+              <p4>样例输出</p4><br/>
+              {{ queDetail['output_sample'] }}<br/><br/>
+            </div>
             <div class="bottom-toolbar">
               <el-button type="primary" plain @click="addQuestion">添加题目</el-button>
               <el-button type="primary" plain @click="endInterview">结束面试</el-button>
@@ -55,16 +68,29 @@
     </el-dialog>
 
     <el-dialog title="选择题目" :visible.sync="chooseQueDialogFormVisible">
-      <el-form :model="queForm">
-        <el-form-item label="编号" :label-width="chooseQueFormLabelWidth">
-          <span>13</span>
-        </el-form-item>
-        <el-form-item label="名字" :label-width="chooseQueFormLabelWidth">
-          <span>BFS</span>
-        </el-form-item>
-      </el-form>
+      <el-table
+        :data="queTableData"
+        style="width: 90%">
+        <el-table-column
+          prop="id"
+          label="编号"
+          width="180">
+        </el-table-column>
+        <el-table-column
+          prop="name"
+          label="题目"
+          width="230">
+        </el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-button
+              size="mini"
+              @click="handleChooseQue(scope.$index, scope.row)">选择</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="commitJudge">提 交</el-button>
+        <el-button type="primary" size="medium" @click="chooseQueDialogFormVisible = false">关 闭</el-button>
       </div>
     </el-dialog>
   </div>
@@ -105,7 +131,9 @@ export default {
       textsList: ['D', 'C', 'B', 'A', 'S'],
       chooseQueDialogFormVisible: false,
       chooseQueFormLabelWidth: '120px',
-      queForm: {}
+      queForm: {},
+      queTableData: [],
+      queDetail: {}
     }
   },
   methods: {
@@ -208,7 +236,37 @@ export default {
       })
     },
     addQuestion: function () {
-      //
+      let _this = this
+      axios.get('http://106.14.227.202/api/problem/getall/', {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }).then(function (response) {
+        console.log(response.data)
+        console.log('type:', typeof (response.data))
+        _this.queTableData = response.data
+      }).catch(function (error) {
+        console.log('get problems info error:')
+        console.log(error.response)
+      })
+      this.chooseQueDialogFormVisible = true
+    },
+    handleChooseQue: function (index, row) {
+      console.log(index, row)
+      console.log(this.queTableData[index] === row) // true
+      let _this = this
+      axios.get('http://106.14.227.202/api/problem/' + row['id'] + '/', {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }).then(function (response) {
+        console.log(response.data)
+        console.log('type:', typeof (response.data))
+        _this.queDetail = response.data
+      }).catch(function (error) {
+        console.log('get problems detail error:')
+        console.log(error.response)
+      })
     }
   },
   mounted: function () {
@@ -226,7 +284,7 @@ export default {
 
 .question-window {
   height: 540px;
-  line-height: 500px;
+  /* line-height: 500px; */
 }
 
 .card {
