@@ -111,3 +111,19 @@ class superToken(models.Model):
     class Meta:
         verbose_name = 'Super_token'
         verbose_name_plural = verbose_name
+
+class Problem(models.Model):
+    id = models.IntegerField(primary_key=True)
+    name = models.CharField(max_length=100)
+    description = models.CharField(max_length=2000)
+    input_desc = models.CharField(max_length=2000)
+    output_desc = models.CharField(max_length=2000)
+    input_sample = models.CharField(max_length=2000)
+    output_sample = models.CharField(max_length=2000)
+
+    class Meta:
+        verbose_name = '编程题'
+        verbose_name_plural = verbose_name
+
+    def __str__(self):
+        return self.name

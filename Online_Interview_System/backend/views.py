@@ -573,3 +573,36 @@ def hr_delete(request):
 
 	return JsonResponse({'success': success})
 
+
+@api_view(['GET'])
+def problem_get(request, pid):
+	"""
+	获取某一编程题目。
+	
+	用法：GET /api/problem/《id》/
+	- 成功返回：`{ 'name': str, 'desc': str, 'input': 输入描述（str）,'output': 输出描述（str）,'input_sample': 样例输入（str）, 'output_sample': 样例输出（str）}`
+	- 失败返回：`{}`
+	"""
+	try:
+		prob = Problem.objects.get(pk=pid)
+	except Exception as e:
+		print(e)
+		return JsonResponse({})
+	else:
+		j = {'name': prob.name, 'desc': prob.description,
+				'input': prob.input_desc, 'output': prob.output_desc,
+				'input_sample': prob.input_sample, 'output_sample': prob.output_sample}
+
+	return JsonResponse(j, json_dumps_params={'ensure_ascii': False})
+
+
+@api_view(['GET'])
+def problem_getall(request):
+	"""
+	获取全部编程题目列表，按题目号升序排列
+	
+	用法：GET /api/problem/getall/
+	- 返回：`[ { 'id': 题目编号（int）, 'name': 题目名（str）}, ...]`
+	"""
+	probs = Problem.objects.order_by('id').values('id', 'name')
+	return JsonResponse(list(probs), safe=False, json_dumps_params={'ensure_ascii': False})

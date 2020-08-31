@@ -25,4 +25,6 @@ urlpatterns = [
 	path('room/review/', views.room_review),
 	path('room/remark/', views.room_get_remark),
 	path('room/decide/', views.room_decide),
+	path('problem/<int:pid>/', views.problem_get),
+	path('problem/getall/', views.problem_getall),
 ]
