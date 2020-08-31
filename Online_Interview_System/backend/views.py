@@ -206,7 +206,7 @@ def itvr_get_itves(request, pk):
 		'roomid', 'time', 'interviewee__email', 'interviewee__name', 'interviewee__mobile'
 	)
 
-	return JsonResponse(list(itvrs), json_dumps_params={'ensure_ascii': False})
+	return JsonResponse(list(itvrs), safe=False, json_dumps_params={'ensure_ascii': False})
 
 
 

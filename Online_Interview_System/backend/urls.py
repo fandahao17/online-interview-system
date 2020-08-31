@@ -12,7 +12,7 @@ urlpatterns = [
 	path('itve/delete/', views.itve_delete),
 	path('itvr/', views.itvr_set),
 	path('itvr/getall/', views.interviewer_getall),
-	path('itvr/getitves/<int:pk>', views.itvr_get_itves),
+	path('itvr/getitves/<str:pk>', views.itvr_get_itves),
 	path('itvr/delete/', views.itvr_delete),
 	path('hr/', views.hr_set),
 	path('hr/getall/', views.hr_getall),
