@@ -507,3 +507,69 @@ def itvr_set(request):
 		success = False
 
 	return JsonResponse({'success': success})
+
+
+@api_view(['DELETE'])
+def itve_delete(request):
+	"""
+	删除候选人，接收候选人列表，将列表中的所有候选人删除。
+
+	DELETE /api/itve/delete
+	- 请求内容：`[{ 'name': str, 'mobile': str, email': str }, { 'name': str, 'mobile': str, email': str }, ...]`
+	- 返回：`{ 'success': bool }`
+	"""
+	# print('------------ itve_delete receives DELETE method ------------')
+	# print('request.data:')
+	# print(request.data)
+	# print(type(request.data))
+	success = True
+	try:
+		for item in request.data:
+			n, m, e = item.get('name'), item.get('mobile'), item.get('email')
+			Interviewee.objects.get(pk=e).delete()
+	except:
+		success = False
+
+	return JsonResponse({'success': success})
+
+
+@api_view(['DELETE'])
+def itvr_delete(request):
+	"""
+	删除面试官，接收面试官列表，将列表中的所有面试官删除。
+
+	DELETE /api/itvr/delete
+	- 请求内容：`[{ 'name': str, 'mobile': str, email': str }, { 'name': str, 'mobile': str, email': str }, ...]`
+	- 返回：`{ 'success': bool }`
+	"""
+	success = True
+	try:
+		for item in request.data:
+			n, m, e = item.get('name'), item.get('mobile'), item.get('email')
+			Interviewer.objects.get(pk=e).delete()
+	except Exception as e:
+		success = False
+		print(e)
+
+	return JsonResponse({'success': success})
+
+
+@api_view(['DELETE'])
+def hr_delete(request):
+	"""
+	删除 hr，接收 hr 列表，将列表中的所有 hr 删除。
+
+	DELETE /api/hr/delete
+	- 请求内容：`[{ 'name': str, 'mobile': str, email': str }, { 'name': str, 'mobile': str, email': str }, ...]`
+	- 返回：`{ 'success': bool }`
+	"""
+	success = True
+	try:
+		for item in request.data:
+			n, m, e = item.get('name'), item.get('mobile'), item.get('email')
+			Hr.objects.get(pk=e).delete()
+	except:
+		success = False
+
+	return JsonResponse({'success': success})
+

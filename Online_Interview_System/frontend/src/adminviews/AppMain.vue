@@ -453,9 +453,40 @@ export default {
       this.checked = Array(this.cardDataAll.length).fill(false)
     },
     clickConfirmDelete: function () {
+      let _this = this
       this.isDeleting = false
       console.log('delete commit')
       console.log(this.checked)
+      let uselessUser = []
+      for (let i = 0; i < this.checked.length; i++) {
+        if (this.checked[i]) { // true 是要删除的
+          uselessUser.push(this.cardDataAll[i])
+        }
+      }
+      console.log('uselessUser = ', uselessUser)
+      axios.delete('http://106.14.227.202/api/' + this.currentMenu + '/delete/', { // note: 这里应换成对 server 的请求  localhost:8000 改成 106.14.227.202/api
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        data: uselessUser
+      }).then(function (response) {
+        console.log('received info for delete user method: ', response)
+        if (_this.currentMenu === 'itve') {
+          _this.getItveInfo(_this)
+        } else if (_this.currentMenu === 'itvr') {
+          _this.getItvrInfo(_this)
+        } else {
+          _this.getHrInfo(_this)
+        }
+        if (response.data.success === true) {
+          _this.$message('删除 ' + _this.currentMenu + ' 成功')
+        } else {
+          _this.$message.error('删除 ' + _this.currentMenu + ' 失败')
+        }
+      }).catch(function (error) {
+        console.log('delete ', _this.currentMenu, ' error: ' + error)
+        _this.$alert('删除' + _this.currentMenu + '出错', '删除出错')
+      })
     },
     handleMenuChange: function (key) {
       console.log('catch menu change to ', key)
