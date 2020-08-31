@@ -8,7 +8,6 @@
         <el-button type="primary" :disabled="!isFinish" @click="onDownloadBtn">下载</el-button>
         <el-button type="primary" :disabled="!isFinish||isUpload" @click="onUploadBtn">上传</el-button>
         <el-button type="primary" plain @click="clickButton">控制台输出房间信息</el-button>
-        <el-button type="primary" plain @click="endInterview">结束面试</el-button>
       </el-header>
       <el-main>
         <el-row :gutter="20">
@@ -30,7 +29,13 @@
               </el-tab-pane>
             </el-tabs>
           </el-col>
-          <el-col :span="5" class="question-window"><div class="grid-content bg-purple question-window">这里是展示问题的窗口</div></el-col>
+          <el-col :span="5">
+            <div class="grid-content bg-purple question-window">这里是展示问题的窗口</div>
+            <div class="bottom-toolbar">
+              <el-button type="primary" plain @click="addQuestion">添加题目</el-button>
+              <el-button type="primary" plain @click="endInterview">结束面试</el-button>
+            </div>
+          </el-col>
         </el-row>
       </el-main>
     </el-container>
@@ -42,6 +47,20 @@
         </el-form-item>
         <el-form-item label="评价" :label-width="judgeFormLabelWidth">
           <el-input type="textarea" v-model="judgeForm.remark"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="commitJudge">提 交</el-button>
+      </div>
+    </el-dialog>
+
+    <el-dialog title="选择题目" :visible.sync="chooseQueDialogFormVisible">
+      <el-form :model="queForm">
+        <el-form-item label="编号" :label-width="chooseQueFormLabelWidth">
+          <span>13</span>
+        </el-form-item>
+        <el-form-item label="名字" :label-width="chooseQueFormLabelWidth">
+          <span>BFS</span>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -83,7 +102,10 @@ export default {
         score: 1,
         remark: ''
       },
-      textsList: ['D', 'C', 'B', 'A', 'S']
+      textsList: ['D', 'C', 'B', 'A', 'S'],
+      chooseQueDialogFormVisible: false,
+      chooseQueFormLabelWidth: '120px',
+      queForm: {}
     }
   },
   methods: {
@@ -184,6 +206,9 @@ export default {
         console.log(error.response)
         _this.$alert(error.response.data.errmsg, '评价面试出错')
       })
+    },
+    addQuestion: function () {
+      //
     }
   },
   mounted: function () {
@@ -200,8 +225,8 @@ export default {
 }
 
 .question-window {
-  height: 600px;
-  line-height: 600px;
+  height: 540px;
+  line-height: 500px;
 }
 
 .card {
@@ -249,5 +274,10 @@ body > .el-container {
 
 .el-rate {
   line-height: 2.6;
+}
+
+.bottom-toolbar {
+  text-align: center;
+  padding-top: 15px;
 }
 </style>
