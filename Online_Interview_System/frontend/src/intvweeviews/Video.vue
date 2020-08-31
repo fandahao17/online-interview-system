@@ -44,9 +44,6 @@ let connectedUser = null;
 export default {
   name: 'VideoWindow',
   props: ['roomInfo'],
-  mounted: function () {
-    // 36 挪到这里试试看
-  },
   data() {
     return {
       user_name: '',
@@ -56,6 +53,9 @@ export default {
       remote_video: '',
       accept_video: false,
     };
+  },
+  created () {
+    // 36 挪到这里试试看
   },
   mounted() {
     var path = this.$route.path;
