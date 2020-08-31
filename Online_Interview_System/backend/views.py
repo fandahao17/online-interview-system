@@ -194,6 +194,23 @@ def interviewer_getall(request):
 
 
 @api_view(['GET'])
+def itvr_get_itves(request, pk):
+	"""
+	返回某一面试官的所有面试及相关候选人信息。
+
+	用法：GET /api/itvr/getitve/《面试官email》/
+	- 成功返回：`[{ 'roomid': str, 'time': int(0-2), 'interviewee__email': str, 'interviewee__name': str, 'interviewee__mobile': str }]`
+	- 失败返回：`[]`
+	"""
+	itvrs = Room.objects.filter(tester__email=pk).values(
+		'roomid', 'time', 'interviewee__email', 'interviewee__name', 'interviewee__mobile'
+	)
+
+	return JsonResponse(list(itvrs), json_dumps_params={'ensure_ascii': False})
+
+
+
+@api_view(['GET'])
 def room_get_unfinished(request):
 	"""
 	返回所有未确定结果的面试
