@@ -525,6 +525,31 @@ def itvr_set(request):
 
 	return JsonResponse({'success': success})
 
+@api_view(['POST'])
+def itvr_set_time(request):
+	"""
+	修改面试官的空闲时间信息
+
+	用法：POST /api/itvr/setfreetime
+
+	- 请求内容：`{ 'email': str, 'free1': bool, 'free2': bool, 'free3': bool }`
+	- 返回：`{ 'success': bool }`
+	"""
+	d = request.data
+	em = d.get('email')
+	f1, f2, f3 = d.get('free1'), d.get('free2'), d.get('free3')
+	success = True
+	try:
+		if em:
+			itvr = Interviewer.objects.get(pk=em)
+			itvr.free1, itvr.free2, itvr.free3 = f1, f2, f3
+			itvr.save()
+		else:
+			success = False
+	except:
+		success = False
+
+	return JsonResponse({'success': success})
 
 @api_view(['DELETE'])
 def itve_delete(request):

@@ -11,6 +11,7 @@ urlpatterns = [
 	path('itve/getall/', views.itve_getall),
 	path('itve/delete/', views.itve_delete),
 	path('itvr/', views.itvr_set),
+	path('itvr/setfreetime', views.itvr_set_time),
 	path('itvr/getall/', views.interviewer_getall),
 	path('itvr/getitves/<str:pk>', views.itvr_get_itves),
 	path('itvr/delete/', views.itvr_delete),

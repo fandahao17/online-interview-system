@@ -144,12 +144,30 @@
 - 请求内容：`{ 'name': str, 'mobile': str, 'password': str, 'old_email': str, 'new_email': str, 'free1': bool, 'free2': bool, 'free3': bool }`
 - 返回：`{ 'success': bool }`
 
+### `/api/itvr/setfreetime`
+
+修改面试官的空闲时间信息
+
+用法：POST /api/itvr/setfreetime
+
+- 请求内容：`{ 'email': str, 'free1': bool, 'free2': bool, 'free3': bool }`
+- 返回：`{ 'success': bool }`
+
 
 ### `/api/itvr/getall/`
 返回所有面试官和他们在不同时间段是否空闲。
 
 用法：GET /api/itvr/getall/
 - 返回：`[{ 'name': str, 'mobile': str, 'email': str, free1: bool, free2: bool, free3: bool }, ...]`
+
+
+### `/api/itvr/getitves/<pk>`
+返回某一面试官的所有面试及相关候选人信息。
+
+用法：GET /api/itvr/getitve/《面试官email》/
+- 成功返回：`[{ 'roomid': str, 'time': int(0-2), 'interviewee__email': str, 'interviewee__name': str, 'interviewee__mobile': str }]`
+- 失败返回：`[]`
+
 
 ## HR
 
@@ -166,3 +184,18 @@
 用法：GET /api/itve/getall/
 
 - 返回：`[{ 'name': str, 'mobile': str, 'email': str }, ...]`
+
+## 编程题
+
+### `/api/problem/getall/`
+获取全部编程题目列表，按题目号升序排列
+
+用法：GET /api/problem/getall/
+- 返回：`[ { 'id': 题目编号（int）, 'name': 题目名（str）}, ...]`
+
+### `/api/problem/<id>/`
+获取某一编程题目。
+
+用法：GET /api/problem/《id》/
+- 成功返回：`{ 'name': str, 'desc': str, 'input': 输入描述（str）,'output': 输出描述（str）,'input_sample': 样例输入（str）, 'output_sample': 样例输出（str）}`
+- 失败返回：`{}`
