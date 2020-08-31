@@ -128,6 +128,15 @@
 - 请求内容：`{ 'name': str, 'mobile': str, 'password': str, 'old_email': str, 'new_email': str, 'free1': bool, 'free2': bool, 'free3': bool }`
 - 返回：`{ 'success': bool }`
 
+### `/api/itvr/setfreetime`
+
+修改面试官的空闲时间信息
+
+用法：POST /api/itvr/setfreetime
+
+- 请求内容：`{ 'email': str, 'free1': bool, 'free2': bool, 'free3': bool }`
+- 返回：`{ 'success': bool }`
+
 
 ### `/api/itvr/getall/`
 返回所有面试官和他们在不同时间段是否空闲。
@@ -148,4 +157,5 @@
 返回所有HR
 
 用法：GET /api/itve/getall/
+
 - 返回：`[{ 'name': str, 'mobile': str, 'email': str }, ...]`
