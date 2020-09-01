@@ -1,7 +1,7 @@
 var app = require('http').createServer()
 var io = require('socket.io')(app)
 var _ = require('underscore')
-const { exec } = require("child_process")
+const { execSync } = require("child_process")
 var fs=require('fs');
 var PORT = 8011
 app.listen(PORT,'0.0.0.0')
@@ -34,7 +34,7 @@ io.on('connection', function (socket) {
     	group[data.id][grouplength[data.id]] = socket.id
     	grouplength[data.id]++
     } else {
-        exec(`mkdir -p server/roomfile/${data.id}`, (error, stdout, stderr) => {
+        execSync(`mkdir -p server/roomfile/${data.id}`, (error, stdout, stderr) => {
             if (error) {
                 console.log(`error: ${error.message}`);
             }
@@ -60,7 +60,7 @@ io.on('connection', function (socket) {
                 console.log(err)
             }
         })
-        exec(`python3 ./server/roomfile/${data.id}/codefile`, (error, stdout, stderr) => {
+        execSync(`python3 ./server/roomfile/${data.id}/codefile`, (error, stdout, stderr) => {
             if (error) {
                 console.log(`error: ${error.message}`);
                 socket.emit('server_result', {msg: error.message});
@@ -80,7 +80,7 @@ io.on('connection', function (socket) {
                 console.log(err)
             }
         })
-        exec(`gcc ./server/roomfile/${data.id}/codefile.c -o ./server/roomfile/${data.id}/a.out`, (error, stdout, stderr) => {
+        execSync(`gcc ./server/roomfile/${data.id}/codefile.c -o ./server/roomfile/${data.id}/a.out`, (error, stdout, stderr) => {
             if (error) {
                 console.log(`error: ${error.message}`);
                 socket.emit('server_result', {msg: error.message});
@@ -93,7 +93,7 @@ io.on('connection', function (socket) {
             }
             console.log(`stdout: ${stdout}`);
         });
-        exec(`./server/roomfile/${data.id}/a.out`, (error, stdout, stderr) => {
+        execSync(`./server/roomfile/${data.id}/a.out`, (error, stdout, stderr) => {
             if (error) {
                 console.log(`error: ${error.message}`);
                 socket.emit('server_result', {msg: error.message});
@@ -113,7 +113,7 @@ io.on('connection', function (socket) {
                 console.log(err)
             }
         })
-        exec(`g++ ./server/roomfile/${data.id}/codefile.cpp -o ./server/roomfile/${data.id}/a.out`, (error, stdout, stderr) => {
+        execSync(`g++ ./server/roomfile/${data.id}/codefile.cpp -o ./server/roomfile/${data.id}/a.out`, (error, stdout, stderr) => {
             if (error) {
                 console.log(`error: ${error.message}`);
                 socket.emit('server_result', {msg: error.message});
@@ -126,7 +126,7 @@ io.on('connection', function (socket) {
             }
             console.log(`stdout: ${stdout}`);
         });
-        exec(`./server/roomfile/${data.id}/a.out`, (error, stdout, stderr) => {
+        execSync(`./server/roomfile/${data.id}/a.out`, (error, stdout, stderr) => {
             if (error) {
                 console.log(`error: ${error.message}`);
                 socket.emit('server_result', {msg: error.message});
@@ -146,7 +146,7 @@ io.on('connection', function (socket) {
                 console.log(err)
             }
         })
-        exec(`javac server/roomfile/${data.id}/Solution.java`, (error, stdout, stderr) => {
+        execSync(`javac server/roomfile/${data.id}/Solution.java`, (error, stdout, stderr) => {
             if (error) {
                 console.log(`error: ${error.message}`);
                 socket.emit('server_result', {msg: error.message});
@@ -159,7 +159,7 @@ io.on('connection', function (socket) {
             }
             console.log(`stdout: ${stdout}`);
         });
-        exec(`cd ./server/roomfile/${data.id} && java Solution`, (error, stdout, stderr) => {
+        execSync(`cd ./server/roomfile/${data.id} && java Solution`, (error, stdout, stderr) => {
             if (error) {
                 console.log(`error: ${error.message}`);
                 socket.emit('server_result', {msg: error.message});
