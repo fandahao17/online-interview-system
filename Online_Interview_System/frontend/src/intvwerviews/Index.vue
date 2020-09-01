@@ -139,7 +139,7 @@ export default {
       if (this.checkList.indexOf('晚上') !== -1) ft3 = true
       else ft3 = false
       axios.request({
-        url: '/api/itvr/setfreetime',
+        url: '/api/itvr/setfreetime/',
         method: 'POST',
         data: {
           email: thisemail,
