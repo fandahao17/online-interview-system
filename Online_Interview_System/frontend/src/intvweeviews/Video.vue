@@ -33,7 +33,9 @@ window.RTCIceCandidate = window.RTCIceCandidate || window.mozRTCIceCandidate || 
 window.RTCSessionDescription =
   window.RTCSessionDescription || window.mozRTCSessionDescription || window.webkitRTCSessionDescription
 
-const socket = io.connect('http://106.14.227.202:3000');
+// const socket = io.connect('http://106.14.227.202:3000');
+// var socket;
+
 const configuration = {
   iceServers: [config.DEFAULT_ICE_SERVER],
 };
@@ -46,6 +48,7 @@ export default {
   props: ['roomInfo'],
   data() {
     return {
+      socket: '',
       user_name: '',
       show: true,
       users: '',
@@ -55,6 +58,7 @@ export default {
     };
   },
   created () {
+    this.socket = io.connect('http://106.14.227.202:3000');
     // 36 挪到这里试试看
   },
   mounted() {
@@ -76,7 +80,7 @@ export default {
       event: 'join',
       name: this.user_name,
     });
-    socket.on(
+    this.socket.on(
       'message',
       function(data) {
         console.log(data);
@@ -119,7 +123,7 @@ export default {
       if (connectedUser !== null) {
         message.connectedUser = connectedUser;
       }
-      socket.send(JSON.stringify(message));
+      this.socket.send(JSON.stringify(message));
     },
     handleLogin(data) {
       if (data.success === false) {
