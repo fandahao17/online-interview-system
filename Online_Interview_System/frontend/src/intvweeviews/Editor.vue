@@ -71,7 +71,8 @@ export default {
         java: 'x-java'
       },
       resultMsg: '',
-      hint: ''
+      hint: '',
+      isOtherChanges: false
     }
   },
   computed: {
@@ -85,13 +86,17 @@ export default {
   },
   methods: {
     onCmCodeChange (newCode) {
-      //  when change, send changed code to the server here
-      //  maybe needed to send all codes or part
-      console.log('this is new code', newCode)
-      //  todo:where add roomid
-      //  send to server
-      this.$socket.emit('client_update', {id: this.$route.params.roomid, code: newCode})
-      this.code = newCode
+      if (this.isOtherChanges) {
+        //  when change, send changed code to the server here
+        //  maybe needed to send all codes or part
+        console.log('this is new code', newCode)
+        //  todo:where add roomid
+        //  send to server
+        this.$socket.emit('client_update', {id: this.$route.params.roomid, code: newCode})
+        this.code = newCode
+      }else {
+        this.isOtherChanges = false
+      }
     },
     setLanguageMode () {
       this.cmOptions.mode = `text/${this.languageModes[this.language]}`
@@ -119,6 +124,7 @@ export default {
     server_update (data) {
       console.log('change code')
       this.code = data.code
+      this.isOtherChanges = true
     },
     server_result (data) {
       this.resultMsg = data.msg
