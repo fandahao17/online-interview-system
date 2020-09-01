@@ -276,7 +276,7 @@ export default {
     conWebSocket: function () {
       let vm = this
       if (window.WebSocket) {
-        vm.socket = new WebSocket('ws://106.14.227.202:8011')
+        vm.socket = new WebSocket('ws://106.14.227.202:8088')
         let socket = vm.socket
 
         socket.onopen = function (e) {
