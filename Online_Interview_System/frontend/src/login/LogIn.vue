@@ -10,7 +10,7 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-              <el-input v-model="input1" prefix-icon="el-icon-user" placeholder="Name" clearable ></el-input>
+              <el-input v-model="input1" prefix-icon="el-icon-user" placeholder="电子邮箱" clearable ></el-input>
           </el-col>
         </el-row>
         <el-row>
@@ -58,7 +58,7 @@ export default {
         url: '/api/login',
         method: 'POST',
         data: {
-          name: _this.input1,
+          email: _this.input1,
           password: _this.input2,
           identity: Number(_this.value.charAt(_this.value.length - 1))
         },
