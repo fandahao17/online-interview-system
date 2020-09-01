@@ -29,7 +29,6 @@
               </el-form-item>
             </el-form>
           </el-col>
-          <el-col :span="1"><div class="vertical-bar"></div></el-col>
         </el-col>
       </el-main>
     </el-container>
