@@ -86,7 +86,7 @@ export default {
   },
   methods: {
     onCmCodeChange (newCode) {
-      if (this.isOtherChanges) {
+      if (!this.isOtherChanges) {
         //  when change, send changed code to the server here
         //  maybe needed to send all codes or part
         console.log('this is new code', newCode)
