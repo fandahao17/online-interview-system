@@ -133,7 +133,9 @@ export default {
       chooseQueFormLabelWidth: '120px',
       queForm: {},
       queTableData: [],
-      queDetail: {}
+      queDetail: {},
+      messageList: '',
+      bridge: []
     }
   },
   methods: {
@@ -267,10 +269,53 @@ export default {
         console.log('get problems detail error:')
         console.log(error.response)
       })
+      // 发送给候选人
+      console.log('send que id')
+      this.send(row['id'])
+    },
+    conWebSocket: function () {
+      let vm = this
+      if (window.WebSocket) {
+        vm.socket = new WebSocket('ws://localhost:8011')
+        let socket = vm.socket
+
+        socket.onopen = function (e) {
+          console.log('连接发送题目服务器成功')
+        }
+        socket.onclose = function (e) {
+          console.log('发送题目服务器关闭')
+        }
+        socket.onerror = function () {
+          console.log('发送题目连接出错')
+        }
+        // 接收服务器的消息
+        socket.onmessage = function (e) {
+          console.log(vm.messageList)
+          let message = JSON.parse(e.data)
+          vm.messageList.push(message)
+        }
+      }
+    },
+    send: function (msg) {
+      // if(!this.msg){
+      //   return
+      // }
+      this.sendMessage(msg)
+    },
+    sendMessage: function (queId) {
+      this.socket.send(JSON.stringify({
+        roomid: this.$route.params.roomid,
+        msg: queId,
+        bridge: this.bridge
+      }))
+      console.log('msg = ', queId)
+      // this.msg = ''
     }
   },
   mounted: function () {
     this.getRoomInfo(this)
+    let vm = this
+    vm.conWebSocket()
   }
 }
 </script>

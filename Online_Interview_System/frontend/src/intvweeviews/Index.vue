@@ -21,7 +21,22 @@
             </el-tab-pane>
           </el-tabs>
         </el-col>
-        <el-col :span="5" class="question-window"><div class="grid-content bg-purple question-window">这里是展示问题的窗口</div></el-col>
+        <el-col :span="5" class="question-window">
+          <div class="grid-content bg-purple question-window">
+            <p4>题目</p4><br/>
+              {{ queDetail['name'] }}<br/><br/>
+              <p4>描述</p4><br/>
+              {{ queDetail['desc'] }}<br/><br/>
+              <p4>输入描述</p4><br/>
+              {{ queDetail['input'] }}<br/><br/>
+              <p4>输出描述</p4><br/>
+              {{ queDetail['output'] }}<br/><br/>
+              <p4>样例输入</p4><br/>
+              {{ queDetail['input_sample'] }}<br/><br/>
+              <p4>样例输出</p4><br/>
+              {{ queDetail['output_sample'] }}<br/><br/>
+          </div>
+        </el-col>
       </el-row>
     </el-main>
   </el-container>
@@ -45,7 +60,9 @@ export default {
   data () {
     return {
       roomInfo: [],
-      testInfo: 'aaaaa'
+      testInfo: 'aaaaa',
+      queDetail: {},
+      messageList: []
     }
   },
   methods: {
@@ -71,10 +88,70 @@ export default {
       console.log('roominfo:')
       console.log(this.roomInfo)
       console.log(this.roomInfo['roomid'])
+    },
+    conWebSocket: function () {
+      let vm = this
+      let _this = this
+      if (window.WebSocket) {
+        vm.socket = new WebSocket('ws://localhost:8011')
+        let socket = vm.socket
+
+        socket.onopen = function (e) {
+          console.log('候选人连接题目服务器成功')
+        }
+        socket.onclose = function (e) {
+          console.log('候选人发送题目服务器关闭')
+        }
+        socket.onerror = function () {
+          console.log('候选人发送题目连接出错')
+        }
+        // 接收服务器的消息
+        socket.onmessage = function (e) {
+          console.log(vm.messageList)
+          let message = JSON.parse(e.data)
+          console.log('message = ', message)
+          vm.messageList.push(message)
+          // if(message.users) {
+          //   vm.users = message.users;
+          // }
+          axios.get('http://106.14.227.202/api/problem/' + message['msg'] + '/', {
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          }).then(function (response) {
+            console.log(response.data)
+            console.log('type:', typeof (response.data))
+            _this.queDetail = response.data
+            console.log(_this.queDetail)
+          }).catch(function (error) {
+            console.log('get problems detail error:')
+            console.log(error.response)
+          })
+        }
+      }
+    },
+    send: function (msg) {
+      // if(!this.msg){
+      //   return
+      // }
+      this.sendMessage(this.msg)
+    },
+    sendMessage: function (msg) {
+      this.socket.send(JSON.stringify({
+        roomid: this.roomid,
+        // uid: this.uid,
+        // type: type,
+        // nickname: this.nickname,
+        msg: msg,
+        bridge: this.bridge
+      }))
+      // this.msg = ''
     }
   },
   mounted: function () {
     this.getRoomInfo(this)
+    let vm = this
+    vm.conWebSocket()
   }
 }
 </script>
@@ -88,7 +165,6 @@ export default {
 
 .question-window {
   height: 600px;
-  line-height: 600px;
 }
 
 .card {
