@@ -22,10 +22,12 @@
     "child_process": "^1.0.2",
     "element-ui": "^2.13.1",
     "fs": "0.0.1-security",
+    "https": "^1.0.0",
     "moment": "^2.26.0",
     "nodejs-websocket": "^1.7.2",
     "socket.io": "^2.3.0",
     "stylus": "^0.54.7",
+    "uglify-js": "^3.6.0",
     "underscore": "^1.10.2",
     "vue": "^2.5.2",
     "vue-codemirror": "^4.0.6",
@@ -34,9 +36,8 @@
     "vue-socket.io": "^2.1.1-b",
     "vuex": "^3.4.0",
     "webpack-dev-server": "^2.9.1",
-    "https": "^1.0.0",
-    "ws": "^3.1.0",
-    "uglify-js": "^3.6.0"
+    "webuploader": "^0.1.8",
+    "ws": "^3.1.0"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",

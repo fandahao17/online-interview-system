@@ -11,11 +11,11 @@ var grouplength = new Array()
 var groupcode = new Array()
 io.on('connection', function (socket) {
   socket.on('client_update', function (data) {
-    console.log('someone change code')
+    console.log(socket.id+'change code')
     console.log(data)
     groupcode[data.id] = data.code
     var templength = 0
-    while(templength != grouplength[data.id]) {
+    while(templength <= grouplength[data.id]) {
     	if (group[data.id][templength] == socket.id) {
     		templength++
     		continue
