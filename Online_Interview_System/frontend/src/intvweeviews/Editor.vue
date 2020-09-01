@@ -94,7 +94,7 @@ export default {
         //  send to server
         this.$socket.emit('client_update', {id: this.$route.params.roomid, code: newCode})
         this.code = newCode
-      }else {
+      } else {
         this.isOtherChanges = false
       }
     },
