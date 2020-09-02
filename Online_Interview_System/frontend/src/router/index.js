@@ -8,6 +8,7 @@ import RegisterHome from '@/register/Index'
 import HrHome from '@/hrs/Index'
 import HrWatch from '@/hrs/HrWatch'
 import HrRecall from '@/hrs/HrRecall'
+import HrVideo from '@/hrs/HrVideo'
 import IntvwerHome from '@/intvwerviews/Index'
 import ScheduleView from '@/intvwerviews/ScheduleView'
 import ItvrRoom from '@/itvrroom/Index'
@@ -77,6 +78,11 @@ var router = new Router({
       path: '/recall',
       name: 'Recall',
       component: HrRecall
+    },
+    {
+      path: '/recall/:roomid/:filename',
+      name: 'RecallVideo',
+      component: HrVideo
     },
     {
       path: '*',

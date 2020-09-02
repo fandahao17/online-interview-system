@@ -22,6 +22,7 @@ urlpatterns = [
 	path('room/info/<int:roomid>/', views.room_getinfo),
 	path('room/video/<int:roomid>/', views.room_storevideo),
 	path('room/videolist/<int:roomid>/', views.room_getvideolist),
+	path('room/getvideo/<int:roomid>/', views.room_getvideo),
 	path('room/add/', views.room_add),
 	path('room/delete/', views.room_delete),
 	path('room/rate/', views.room_rate),

@@ -1,6 +1,8 @@
 from django.shortcuts import render, HttpResponse
 from django.core import serializers
 from django.http import JsonResponse
+from django.http import StreamingHttpResponse
+from wsgiref.util import FileWrapper
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view
 from .models import *
@@ -9,6 +11,8 @@ import time
 import json
 import random
 import os
+import re
+
 # Create your views here.
 
 
@@ -278,7 +282,7 @@ def room_storevideo(request, roomid):
 @api_view(['GET'])
 def room_getvideolist(request, roomid):
 	"""
-	存储对应房间的代码
+	获得对应房间的视频列表
 
 	用法：GET /api/room/videolist/<int:roomid>/
 	- 返回：
@@ -297,6 +301,51 @@ def room_getvideolist(request, roomid):
 		else:
 			videolist.append(file)
 	return JsonResponse({'result': 'successfully','videolist':videolist})
+
+def file_iterator(file_name, chunk_size=8192, offset=0, length=None):
+  	with open(file_name, "rb") as f:
+    	f.seek(offset, os.SEEK_SET)
+    	remaining = length
+    	while True:
+     		bytes_length = chunk_size if remaining is None else min(remaining, chunk_size)
+      		data = f.read(bytes_length)
+      		if not data:
+        		break
+      		if remaining:
+        		remaining -= len(data)
+      		yield data
+
+@api_view(['GET'])
+def room_getvideo(request, roomid):
+	"""
+	获得对应房间的视频
+
+	用法：GET /api/room/getvideo/<int:roomid>/
+	- 返回：
+		- 成功：{ 'result': 成功, }
+		- 失败：{ 'result': 失败 }
+	"""
+	BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+	dir = os.path.join(os.path.join(BASE_DIR, 'static'),str(roomid))
+	path = os.path.join(dir, request.data.filename)
+	range_header = request.META.get('HTTP_RANGE', '').strip()
+  	range_re = re.compile(r'bytes\s*=\s*(\d+)\s*-\s*(\d*)', re.I)
+  	range_match = range_re.match(range_header)
+  	size = os.path.getsize(path)
+  	content_type, encoding = mimetypes.guess_type(path)
+  	content_type = content_type or 'application/octet-stream'
+  	if range_match:
+    	first_byte, last_byte = range_match.groups()
+    	first_byte = int(first_byte) if first_byte else 0
+    	last_byte = first_byte + 1024 * 1024 * 8    # 8M 每片,响应体最大体积
+    	if last_byte >= size:
+      	last_byte = size - 1
+    	length = last_byte - first_byte + 1
+    	resp = StreamingHttpResponse(file_iterator(path, offset=first_byte, length=length), status=206, content_type=content_type)
+    	resp['Content-Length'] = str(length)
+    	resp['Content-Range'] = 'bytes %s-%s/%s' % (first_byte, last_byte, size)
+    resp['Accept-Ranges'] = 'bytes'
+	return 
 
 @api_view(['POST'])
 def room_add(request):

@@ -80,7 +80,8 @@ export default {
         status: ''
       },
       videoListVisible: false,
-      videolist: []
+      videolist: [],
+      curRoom: ''
     }
   },
   computed: {
@@ -104,6 +105,7 @@ export default {
     clickVideoList: function (row) {
       let _this = this
       console.log(row.roomid)
+      _this.curRoom = row.roomid
       _this.videoListVisible = true
       axios.get('http://106.14.227.202/api/room/videolist/' + row.roomid + '/', {
         headers: {
@@ -118,6 +120,7 @@ export default {
     },
     watchVideo: function (videoname) {
       console.log(videoname)
+      this.$router.push('/recall/' + this.curRoom + '/' + videoname)
     },
     clickHire: function () {
       console.log('clickHire')

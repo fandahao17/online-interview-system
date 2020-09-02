@@ -8,7 +8,9 @@ import router from './router'
 import axios from 'axios'
 import store from './store/store'
 import VueSocketIO from 'vue-socket.io'
+import VideoPlayer from 'vue-video-player'
 Vue.use(VueSocketIO, 'http://106.14.227.202:8011')
+Vue.use(VideoPlayer)
 // Vue.use(VueSocketIO, 'http://localhost:8011')
 // Vue.use(new VueSocketIO({
 //   debug: true,
