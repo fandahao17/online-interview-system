@@ -51,7 +51,10 @@
         </el-table>
       </el-main>
     </el-container>
-    <el-dialog title="选择视频" :visible.sync="VideoListVisible">
+    <el-dialog title="选择视频" :visible.sync="videoListVisible">
+      <div v-for= "(item , i) in videolist" v-bind:key="i">
+        <el-button @click="watchVideo(item)">{{item}}</el-button>
+      </div>
     </el-dialog>
   </div>
 </template>
@@ -76,7 +79,8 @@ export default {
         rooms: [],
         status: ''
       },
-      VideoListVisible: false
+      videoListVisible: false,
+      videolist: []
     }
   },
   computed: {
@@ -98,8 +102,22 @@ export default {
       this.postData.status = Decide
     },
     clickVideoList: function (row) {
+      let _this = this
       console.log(row.roomid)
-      this.VideoListVisible = true
+      _this.videoListVisible = true
+      axios.get('http://106.14.227.202/api/room/videolist/' + row.roomid + '/', {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }).then(function (response) {
+        console.log(response.data)
+        _this.videolist = response.data.videolist
+      }).catch(function (error) {
+        console.log(error)
+      })
+    },
+    watchVideo: function (videoname) {
+      console.log(videoname)
     },
     clickHire: function () {
       console.log('clickHire')
@@ -110,7 +128,7 @@ export default {
           'Content-Type': 'application/json'
         }
       }).then(function (response) {
-        console.log(response.data)
+        this.VideoList = response.data.videolist
       }).catch(function (error) {
         console.log(error)
       })

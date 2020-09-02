@@ -296,7 +296,7 @@ def room_getvideolist(request, roomid):
 			continue
 		else:
 			videolist.append(file)
-	return JsonResponse({'result': 'upload successfully','videolist':videolist})
+	return JsonResponse({'result': 'successfully','videolist':videolist})
 
 @api_view(['POST'])
 def room_add(request):
