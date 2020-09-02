@@ -276,7 +276,7 @@ def room_storevideo(request, roomid):
 	return JsonResponse({'result': 'upload successfully'})
 
 @api_view(['POST'])
-def room_getVideoList(request, roomid):
+def room_getvideolist(request, roomid):
 	"""
 	存储对应房间的代码
 
