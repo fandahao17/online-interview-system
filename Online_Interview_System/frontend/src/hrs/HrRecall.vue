@@ -6,10 +6,11 @@
         <div>
           <el-button type="primary" plain size="medium" @click="clickHire">录用</el-button>
           <el-button type="primary" plain size="medium" @click="clickReject">拒绝</el-button>
-          <el-button type="primary" plain size="medium" @click="clickNextRound">下一轮</el-button>
+          <el-button type="primary" plain size="medium" @click="clickReset">重置</el-button>
         </div>
         <el-table
-          :data="intvTableData"
+          v-if="isDataRecevie"
+          :data="posterData"
           style="width: 100%"
           @selection-change="handleSelectionChange">
           <el-table-column
@@ -17,32 +18,27 @@
             width="55">
           </el-table-column>
           <el-table-column
-            prop="itvwee"
+            prop="interviewee__name"
             label="候选人"
             width="180">
           </el-table-column>
           <el-table-column
-            prop="itvwer"
+            prop="tester__name"
             label="面试官"
             width="180">
           </el-table-column>
           <el-table-column
-            prop="grade"
-            label="评级"
+            prop="score"
+            label="评分"
             width="180">
           </el-table-column>
           <el-table-column
-            prop="start"
-            label="开始时间"
+            prop="time"
+            label="时间"
             width="180">
           </el-table-column>
           <el-table-column
-            prop="end"
-            label="结束时间"
-            width="180">
-          </el-table-column>
-          <el-table-column
-            prop="status"
+            prop="interviewee__status"
             label="状态">
           </el-table-column>
         </el-table>
@@ -53,6 +49,7 @@
 
 <script>
 import HeadMenu from '@/hrs/HeadMenu'
+import axios from 'axios'
 
 export default {
   name: 'HrRecall',
@@ -61,29 +58,20 @@ export default {
   },
   data: function () {
     return {
-      intvTableData: [{
-        itvwee: '曹宇昂',
-        itvwer: '张俊霞',
-        grade: 'A',
-        start: '2016-05-02 14:01:22',
-        end: '2016-05-02 15:01:22',
-        status: '未分配'
-      }, {
-        itvwee: '樊金昊',
-        itvwer: '包信和',
-        grade: 'A',
-        start: '2016-05-02 14:01:22',
-        end: '2016-05-02 15:01:22',
-        status: '未分配'
-      }, {
-        itvwee: '刘硕',
-        itvwer: '潘建伟',
-        grade: 'A',
-        start: '2016-05-02 14:01:22',
-        end: '2016-05-02 15:01:22',
-        status: '未分配'
-      }],
-      multipleSelection: []
+      multipleSelection: [],
+      recevieData: '',
+      isDataRecevie: false,
+      status: ['未分配', '拒绝', '录用'],
+      time: ['早上', '中午', '晚上'],
+      postData: {
+        rooms: [],
+        status: ''
+      }
+    }
+  },
+  computed: {
+    posterData: function () {
+      return this.recevieData
     }
   },
   methods: {
@@ -91,15 +79,88 @@ export default {
       this.multipleSelection = val
       console.log('multipleSelection = ', this.multipleSelection)
     },
+    processDecide: function (Decide) {
+      this.postData.rooms = []
+      this.postData.status = ''
+      for (let item in this.multipleSelection) {
+        this.postData.rooms.push(this.multipleSelection[item].roomid)
+      }
+      this.postData.status = Decide
+    },
     clickHire: function () {
       console.log('clickHire')
+      this.processDecide(2)
+      console.log(this.postData)
+      axios.post('http://106.14.227.202/api/room/decide/', this.postData, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }).then(function (response) {
+        console.log(response.data)
+      }).catch(function (error) {
+        console.log(error)
+      })
+      this.getReview()
     },
     clickReject: function () {
       console.log('clickReject')
+      this.processDecide(1)
+      console.log(this.postData)
+      axios.post('http://106.14.227.202/api/room/decide/', this.postData, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }).then(function (response) {
+        console.log(response.data)
+      }).catch(function (error) {
+        console.log(error)
+      })
+      this.getReview()
+    },
+    clickReset: function () {
+      console.log('clickReject')
+      this.processDecide(0)
+      console.log(this.postData)
+      axios.post('http://106.14.227.202/api/room/decide/', this.postData, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }).then(function (response) {
+        console.log(response.data)
+      }).catch(function (error) {
+        console.log(error)
+      })
+      this.getReview()
     },
     clickNextRound: function () {
       console.log('clickNextRound')
+    },
+    getReview: function () {
+      let _this = this
+      _this.isDataRecevie = false
+      axios.get('http://106.14.227.202/api/room/review/', {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }).then(function (response) {
+        console.log(response.data)
+        _this.recevieData = response.data
+        _this.processData()
+        _this.isDataRecevie = true
+      }).catch(function (error) {
+        console.log(error)
+      })
+    },
+    processData: function () {
+      let _this = this
+      for (let item in _this.recevieData) {
+        _this.recevieData[item].time = _this.time[_this.recevieData[item].time]
+        _this.recevieData[item].interviewee__status = _this.status[_this.recevieData[item].interviewee__status]
+      }
     }
+  },
+  created: function () {
+    this.getReview()
   }
 }
 </script>
