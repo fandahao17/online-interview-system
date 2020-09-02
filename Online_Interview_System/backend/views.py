@@ -325,6 +325,7 @@ def room_getvideo(request, roomid):
 		- 成功：{ 'result': 成功, }
 		- 失败：{ 'result': 失败 }
 	"""
+	print(request.data.filename)
 	BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 	dir = os.path.join(os.path.join(BASE_DIR, 'static'),str(roomid))
 	path = os.path.join(dir, request.data.filename)
