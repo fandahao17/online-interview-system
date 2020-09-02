@@ -345,6 +345,10 @@ def room_getvideo(request, roomid):
 		resp = StreamingHttpResponse(file_iterator(path, offset=first_byte, length=length), status=206, content_type=content_type)
 		resp['Content-Length'] = str(length)
 		resp['Content-Range'] = 'bytes %s-%s/%s' % (first_byte, last_byte, size)
+	else:
+		# 不是以视频流方式的获取时，以生成器方式返回整个文件，节省内存
+    	resp = StreamingHttpResponse(FileWrapper(open(path, 'rb')), content_type=content_type)
+    	resp['Content-Length'] = str(size)
 	resp['Accept-Ranges'] = 'bytes'
 	return resp
 
