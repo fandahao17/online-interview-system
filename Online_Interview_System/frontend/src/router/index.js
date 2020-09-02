@@ -12,6 +12,7 @@ import IntvwerHome from '@/intvwerviews/Index'
 import ScheduleView from '@/intvwerviews/ScheduleView'
 import ItvrRoom from '@/itvrroom/Index'
 import Error from '@/error/Error'
+import HrWatchHome from '@/hrviews/Index'
 
 Vue.use(Router)
 
@@ -66,6 +67,11 @@ var router = new Router({
       path: '/watch',
       name: 'Watch',
       component: HrWatch
+    },
+    {
+      path: '/hr/:roomid',
+      name: 'HrviewRoom',
+      component: HrWatchHome
     },
     {
       path: '/recall',
