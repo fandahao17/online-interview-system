@@ -12,6 +12,7 @@ import json
 import random
 import os
 import re
+import mimetypes
 
 # Create your views here.
 
