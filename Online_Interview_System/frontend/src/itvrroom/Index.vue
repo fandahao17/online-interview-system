@@ -30,20 +30,22 @@
             </el-tabs>
           </el-col>
           <el-col :span="5">
-            <div class="grid-content bg-purple question-window">
-              <p4>题目</p4><br/>
-              {{ queDetail['name'] }}<br/><br/>
-              <p4>描述</p4><br/>
-              {{ queDetail['desc'] }}<br/><br/>
-              <p4>输入描述</p4><br/>
-              {{ queDetail['input'] }}<br/><br/>
-              <p4>输出描述</p4><br/>
-              {{ queDetail['output'] }}<br/><br/>
-              <p4>样例输入</p4><br/>
-              {{ queDetail['input_sample'] }}<br/><br/>
-              <p4>样例输出</p4><br/>
-              {{ queDetail['output_sample'] }}<br/><br/>
-            </div>
+            <el-scrollbar>
+              <div class="grid-content bg-purple question-window">
+                <p4>题目</p4><br/>
+                {{ queDetail['name'] }}<br/><br/>
+                <p4>描述</p4><br/>
+                {{ queDetail['desc'] }}<br/><br/>
+                <p4>输入描述</p4><br/>
+                {{ queDetail['input'] }}<br/><br/>
+                <p4>输出描述</p4><br/>
+                {{ queDetail['output'] }}<br/><br/>
+                <p4>样例输入</p4><br/>
+                {{ queDetail['input_sample'] }}<br/><br/>
+                <p4>样例输出</p4><br/>
+                {{ queDetail['output_sample'] }}<br/><br/>
+              </div>
+            </el-scrollbar>
             <div class="bottom-toolbar">
               <el-button type="primary" plain @click="addQuestion">添加题目</el-button>
               <el-button type="primary" plain @click="endInterview">结束面试</el-button>
@@ -269,6 +271,7 @@ export default {
         console.log('get problems detail error:')
         console.log(error.response)
       })
+      this.chooseQueDialogFormVisible = false
       // 发送给候选人
       console.log('send que id')
       this.send(row['id'])
