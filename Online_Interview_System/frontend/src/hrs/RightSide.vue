@@ -1,51 +1,24 @@
 <template>
   <div>
     <el-row>
-      <el-col :span="20" offset="3">
+      <el-col :span="20" :offset="3">
         <div class="title">面试官</div>
       </el-col>
     </el-row>
     <el-row>
-      <el-col :span="5" offset="5">
+      <el-col :span="5" :offset="5">
         <el-checkbox v-model="checked1">有空闲时间</el-checkbox>
       </el-col>
-      <el-col :span="5" offset="5">
+      <el-col :span="5" :offset="5">
         <el-checkbox v-model="checked2">无空闲时间</el-checkbox>
       </el-col>
     </el-row>
-    <el-row>
-      <el-col :span="18" offset="6">
+    <el-row v-for="num in itveNum" v-bind:key="num">
+      <el-col :span="18" :offset="6">
         <el-card class="box-card" shadow="hover">
           <div class="icon"><el-avatar :size="50" :src="circleUrl"></el-avatar></div>
-          <div class="item">Name:{{ name1 }}</div>
-          <div class="item">Email:{{email1}}</div>
-        </el-card>
-      </el-col>
-    </el-row>
-    <el-row>
-      <el-col :span="18" offset="6">
-        <el-card class="box-card" shadow="hover">
-          <div class="icon"><el-avatar :size="50" :src="circleUrl"></el-avatar></div>
-          <div class="item">Name:{{ name2 }}</div>
-          <div class="item">Email:{{email2}}</div>
-        </el-card>
-      </el-col>
-    </el-row>
-    <el-row>
-      <el-col :span="18" offset="6">
-        <el-card class="box-card" shadow="hover">
-          <div class="icon"><el-avatar :size="50" :src="circleUrl"></el-avatar></div>
-          <div class="item">Name:{{ name3 }}</div>
-          <div class="item">Email:{{email3}}</div>
-        </el-card>
-      </el-col>
-    </el-row>
-    <el-row>
-      <el-col :span="18" offset="6">
-        <el-card class="box-card" shadow="hover">
-          <div class="icon"><el-avatar :size="50" :src="circleUrl"></el-avatar></div>
-          <div class="item">Name:{{ name4 }}</div>
-          <div class="item">Email:{{email4}}</div>
+          <div class="item">Name: {{ cardDataAll[num-1]['name'] }}</div>
+          <div class="item">Email: {{ cardDataAll[num-1]['email'] }}</div>
         </el-card>
       </el-col>
     </el-row>
@@ -53,22 +26,38 @@
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
   name: 'RightSide',
-  data () {
+  data: function () {
     return {
-      name1: '面试官1',
-      email1: 'fir@ustc.edu.cn',
-      name2: '面试官2',
-      email2: 'sec@ustc.edu.cn',
-      name3: '面试官3',
-      email3: 'thi@ustc.edu.cn',
-      name4: '面试官4',
-      email4: 'for@ustc.edu.cn',
       circleUrl: 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png',
       checked1: false,
-      checked2: false
+      checked2: false,
+      cardDataAll: [{}]
     }
+  },
+  computed: {
+    itveNum: function () {
+      return this.cardDataAll.length
+    }
+  },
+  mounted: function () {
+    let _this = this
+    axios.get('http://106.14.227.202/api/itvr/getall/', {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }).then(function (response) {
+      console.log(response.data)
+      console.log('type:', typeof (response.data))
+      _this.cardDataAll = response.data
+      // _this.checked = Array(_this.cardDataAll.length).fill(false)
+    }).catch(function (error) {
+      console.log('get itvr info error:')
+      console.log(error.response)
+    })
   }
 }
 </script>
@@ -76,9 +65,6 @@ export default {
 <style scoped>
   .el-row {
     margin-bottom: 25px;
-    &:last-child {
-      margin-bottom: 0;
-    }
   }
   .el-col {
     border-radius: 4px;
