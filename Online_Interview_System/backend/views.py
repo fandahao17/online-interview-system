@@ -325,11 +325,11 @@ def room_getvideo(request, roomid):
 		- 成功：{ 'result': 成功, }
 		- 失败：{ 'result': 失败 }
 	"""
-	print(request.data.filename)
+	#print(request)
 	BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 	dir = os.path.join(os.path.join(BASE_DIR, 'static'),str(roomid))
-	path = os.path.join(dir, request.data.filename)
-	range_header = request.META.get('HTTP_RANGE', '').strip()
+        path = os.path.join(dir, request.GET.get('filename'))
+        range_header = request.META.get('HTTP_RANGE', '').strip()
 	range_re = re.compile(r'bytes\s*=\s*(\d+)\s*-\s*(\d*)', re.I)
 	range_match = range_re.match(range_header)
 	size = os.path.getsize(path)

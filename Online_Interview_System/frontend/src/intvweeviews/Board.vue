@@ -13,7 +13,7 @@ export default {
     }
   },
   mounted: function () {
-    this.privateurl = 'http://localhost:8001/boards/' + this.$route.params.roomid
+    this.privateurl = 'http://106.14.227.202:8001/boards/' + this.$route.params.roomid
   }
 }
 </script>
