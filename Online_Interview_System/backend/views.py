@@ -248,9 +248,9 @@ def room_getinfo(request, roomid):
 @api_view(['POST'])
 def room_storevideo(request, roomid):
 	"""
-	存储对应房间的代码
+	存储对应房间的视频
 
-	用法：POST /api/room/info/<int:roomid>/
+	用法：POST /api/room/video/<int:roomid>/
 	- 返回：
 		- 成功：{ 'result': 成功上传 }
 		- 失败：{ 'result': 上传失败 }
@@ -275,6 +275,28 @@ def room_storevideo(request, roomid):
 
 	return JsonResponse({'result': 'upload successfully'})
 
+@api_view(['POST'])
+def room_getVideoList(request, roomid):
+	"""
+	存储对应房间的代码
+
+	用法：POST /api/room/videolist/<int:roomid>/
+	- 返回：
+		- 成功：{ 'result': 成功, 'videolist': [name1,name2,.....]}
+		- 失败：{ 'result': 失败 }
+	"""
+	videolist = []
+	BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+	dir = os.path.join(os.path.join(BASE_DIR, 'static'),str(roomid))
+	if (not os.path.exists(dir) ):
+		return JsonResponse({'result': 'failure'})
+	for file in os.listdir(dir):
+		file_path = os.path.join(dir, file)
+		if os.path.isdir(file_path):
+			continue
+		else:
+			videolist.append(file)
+	return JsonResponse({'result': 'upload successfully','videolist':videolist})
 
 @api_view(['POST'])
 def room_add(request):

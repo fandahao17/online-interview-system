@@ -39,11 +39,20 @@
           </el-table-column>
           <el-table-column
             prop="interviewee__status"
-            label="状态">
+            label="状态"
+            width="180">
+          </el-table-column>
+          <el-table-column
+            label="观看面试回放">
+            <template slot-scope="scope">
+              <el-button @click="clickVideoList(scope.row)">选择观看视频</el-button>
+            </template>
           </el-table-column>
         </el-table>
       </el-main>
     </el-container>
+    <el-dialog title="选择视频" :visible.sync="VideoListVisible">
+    </el-dialog>
   </div>
 </template>
 
@@ -66,7 +75,8 @@ export default {
       postData: {
         rooms: [],
         status: ''
-      }
+      },
+      VideoListVisible: false
     }
   },
   computed: {
@@ -86,6 +96,10 @@ export default {
         this.postData.rooms.push(this.multipleSelection[item].roomid)
       }
       this.postData.status = Decide
+    },
+    clickVideoList: function (row) {
+      console.log(row.roomid)
+      this.VideoListVisible = true
     },
     clickHire: function () {
       console.log('clickHire')
