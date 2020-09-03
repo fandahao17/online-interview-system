@@ -9,7 +9,7 @@
         <el-row :gutter="20">
           <el-col :span="6">
             <el-row class="grid-content bg-purple">
-              <video-window v-bind:room-info="roomInfo"></video-window>
+              <video-window v-bind:room-info="roomInfo" :isHr='true'></video-window>
             </el-row>
             <el-row class="text-window grid-content bg-purple">
               <text-window></text-window>

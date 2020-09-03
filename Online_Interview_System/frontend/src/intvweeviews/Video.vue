@@ -1,24 +1,12 @@
 <template>
   <div class="video-window">
     <div class="button-area">
-      <button class="btn-success btn" :disabled="!users[user_name]" @click="call" style="position: absolute;left:0px; top:0px">Call</button>
-      <button class="btn-danger btn" :disabled="users[user_name]" @click="hangUp" style="position: absolute;left:50px; top:0px">Hang Up</button>
+      <el-button type="primary" :disabled="(state != OFF) || isHr" @click="call" >加入视频</el-button>
+      <el-button type="danger" :disabled="(state != ON) || isHr" @click="hangUp" >退出视频</el-button>
     </div>
     <div class="video-play">
-      <video id="localVideo" autoplay style="position: absolute; left:0px; top:60px; width: 45%; height: 60%; object-fit: fill"></video>
-      <video id="remoteVideo" :src="remote_video" autoplay style="position: absolute; left:150px; top:60px; width: 45%; height: 60%; object-fit: fill"></video>
-    </div>
-    <div class="preview" v-show="accept_video">
-      <div class="preview-wrapper">
-        <div class="preview-container">
-          <div class="preview-body">
-            <h4>您有视频邀请，是否接受?</h4>
-            <button class="btn-success btn" style="width: 50%; height: 50%" @click="accept">接受</button>
-            <button class="btn-danger btn" style="width: 10%; height: 50%" @click="reject">拒绝</button>
-          </div>
-          <div class="confirm" @click="closePreview">×</div>
-        </div>
-      </div>
+      <video id="localVideo" :src="local_video" autoplay ></video>
+      <video id="remoteVideo" :src="remote_video" autoplay ></video>
     </div>
   </div>
 </template>
@@ -33,49 +21,51 @@ window.RTCIceCandidate = window.RTCIceCandidate || window.mozRTCIceCandidate || 
 window.RTCSessionDescription =
   window.RTCSessionDescription || window.mozRTCSessionDescription || window.webkitRTCSessionDescription
 
-// const socket = io.connect('http://106.14.227.202:3000');
-// var socket;
-
 const configuration = {
   iceServers: [config.DEFAULT_ICE_SERVER],
 };
 
 let localStream, peerConn;
-let connectedUser = null;
 
 export default {
   name: 'VideoWindow',
-  props: ['roomInfo'],
+  props: ['roomInfo', 'isHr'],
   data() {
     return {
       socket: '',
       user_name: '',
-      show: true,
-      users: '',
+      users: [],
       call_username: '',
+      local_video: '',
       remote_video: '',
-      accept_video: false,
+      OFF: 0,
+      WAITING: 1,
+      ON: 2,
+      state: 0,
+      connections = [],
     };
   },
   created () {
     this.socket = io.connect('http://106.14.227.202:3000');
     // 36 挪到这里试试看
   },
+  computed: {
+    str_name() {
+      if (isHr) {
+        return 'hr';
+      }
+      else if(path.indexOf("interviewee") != -1){
+        return "itve";
+      }
+      else{
+        return "itvr";
+      }
+    }
+  },
   mounted() {
     var path = this.$route.path;
     var str_roomid = this.$route.params.roomid;
-    var str_name = null;
-    var str_name_other = null;
-    if(path.indexOf("interviewee") != -1){
-      str_name = "itve";
-      str_name_other = "itvr";
-    }
-    else{
-      str_name = "itvr";
-      str_name_other = "itve";
-    }
-    this.user_name = str_roomid + str_name;
-    this.call_username = str_roomid + str_name_other;
+    this.user_name = str_roomid + this.str_name;
     this.send({
       event: 'join',
       name: this.user_name,
@@ -119,29 +109,18 @@ export default {
     );
   },
   methods: {
-    send(message) {
-      if (connectedUser !== null) {
-        message.connectedUser = connectedUser;
+    send(message, toUser=null) {
+      if (toUser != null) {
+        message.toUser = toUser;
       }
       this.socket.send(JSON.stringify(message));
     },
     handleLogin(data) {
       if (data.success === false) {
-        alert('Ooops...please try a different username');
+        alert('重复登录！');
       } else {
-        this.show = false;
         this.users = data.allUsers;
-        this.initCreate();
-      }
-    },
-    addVideoURL(elementId, stream) {
-      var video = document.getElementById(elementId);
-      // Older brower may have no srcObject
-      if ('srcObject' in video) {
-        video.srcObject = stream;
-      } else {
-        // 防止在新的浏览器里使用它，应为它已经不再支持了
-        video.src = window.URL.createObjectURL(stream);
+        this.createConnection();
       }
     },
     initCreate() {
@@ -149,75 +128,55 @@ export default {
       navigator.mediaDevices
         .getUserMedia({ audio: true, video: true })
         .then(function(stream) {
-          var video = document.getElementById('localVideo');
-          self.addVideoURL('localVideo', stream);
+          this.local_video = stream;
           video.muted = true;
           localStream = stream;
         })
         .catch(function(err) {
+          alert!('打开本地视频失败！');
           console.log(err.name + ': ' + err.message);
         });
     },
     call() {
-      if (this.call_username.length > 0) {
-        if (this.users[this.call_username] === true) {
-          connectedUser = this.call_username;
-          this.createConnection();
-          this.send({
-            event: 'call',
-          });
-        } else {
-          alert('The current user is calling, try another');
-        }
-      } else {
-        alert('Ooops...this username cannot be empty, please try again');
-      }
+      this.state = this.WAITING;
+      initCreate();
+      this.connections.forEach((_, conn) => {
+        conn.addStream(localStream);
+      });
     },
     createConnection() {
-      peerConn = new RTCPeerConnection(configuration);
-      peerConn.addStream(localStream);
-      peerConn.onaddstream = e => {
-        this.addVideoURL('remoteVideo', e.stream);
-      };
-      peerConn.onicecandidate = event => {
-        setTimeout(() => {
-          if (event.candidate) {
-            this.send({
-              event: 'candidate',
-              candidate: event.candidate,
-            });
+      this.users.forEach(e => {
+        this.connections[e] = new RTCPeerConnection(configuration);
+        this.connections[e].onaddstream = s => {
+          if (isHr && e.indexOf('itve') != -1) {
+            local_video = s;
+          } else {
+            remote_video = s;
           }
-        });
-      };
-    },
-    handleCall(data) {
-      this.accept_video = true;
-      connectedUser = data.name;
-    },
-    reject() {
-      this.send({
-        event: 'accept',
-        accept: false,
+        };
+        this.connections[e].onicecandidate = event => {
+          setTimeout(() => {
+            if (event.candidate) {
+              this.send({
+                event: 'candidate',
+                candidate: event.candidate,
+              });
+            }
+          });
+        };
+        
       });
-      this.accept_video = false;
-    },
-    accept() {
-      this.send({
-        event: 'accept',
-        accept: true,
-      });
-      this.accept_video = false;
     },
     handleAccept(data) {
       if (data.accept) {
         // Create an offer
         peerConn.createOffer(
           offer => {
+            peerConn.setLocalDescription(offer);
             this.send({
               event: 'offer',
               offer: offer,
             });
-            peerConn.setLocalDescription(offer);
           },
           error => {
             alert('Error when creating an offer');
@@ -228,7 +187,6 @@ export default {
       }
     },
     handleOffer(data) {
-      connectedUser = data.name;
       this.createConnection();
       peerConn.setRemoteDescription(new RTCSessionDescription(data.offer));
       // Create an answer to an offer
@@ -262,8 +220,6 @@ export default {
       this.handleLeave();
     },
     handleLeave() {
-      alert('通话已结束');
-      connectedUser = null;
       this.remote_video = '';
       peerConn.close();
       peerConn.onicecandidate = null;
@@ -272,9 +228,6 @@ export default {
         this.initCreate();
       }
     },
-    closePreview() {
-      this.accept_video = false;
-    },
   },
 };
 </script>
@@ -282,14 +235,17 @@ export default {
 <style scoped>
 .video-window {
   height: 200px;
-  line-height: 200px;
 }
 .button-area {
-  height: 10%;
+  height: 25%;
+  text-align: center;
 }
 .video-play {
-  height: 100px;
-  width: 100px;
+  height: 75%;
+  text-align: center;
+}
+video {
+  width: 40%;
 }
 .preview {
   position: fixed;
