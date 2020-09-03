@@ -36,6 +36,7 @@
     "vue-router": "^3.0.1",
     "vue-socket.io": "^2.1.1-b",
     "vue-video-player": "^5.0.2",
+    "vuedraggable": "^2.24.1",
     "vuex": "^3.4.0",
     "webpack-dev-server": "^2.9.1",
     "webuploader": "^0.1.8",

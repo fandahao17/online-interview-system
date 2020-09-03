@@ -2,25 +2,31 @@
   <div>
     <el-container>
       <el-header><head-menu></head-menu></el-header>
-      <el-container>
+      <!-- <el-container>
         <left-side></left-side>
         <div class="vertical-bar"></div>
         <el-main><right-side></right-side></el-main>
-      </el-container>
+      </el-container> -->
+      <el-main>
+        <hr-distribute></hr-distribute>
+      </el-main>
     </el-container>
   </div>
 </template>
 
 <script>
 import HeadMenu from '@/hrs/HeadMenu'
-import LeftSide from '@/hrs/LeftSide'
-import RightSide from '@/hrs/RightSide'
+import HrDistribute from '@/hrs/HrDistribute'
+// import LeftSide from '@/hrs/LeftSide'
+// import RightSide from '@/hrs/RightSide'
+
 export default {
   name: 'HrHome',
   components: {
     HeadMenu,
-    LeftSide,
-    RightSide
+    HrDistribute
+    // LeftSide,
+    // RightSide
   }
 }
 </script>

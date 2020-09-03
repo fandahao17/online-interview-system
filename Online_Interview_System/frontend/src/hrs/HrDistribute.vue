@@ -1,0 +1,187 @@
+<template>
+  <el-row>
+    <el-col :span="12" class="left-top">
+      <el-row>
+        <div class="title">候选人</div>
+      </el-row>
+      <el-row :gutter="100">
+        <el-col :span="8">
+          <el-checkbox v-model="leftChecked1">已安排</el-checkbox>
+        </el-col>
+        <el-col :span="8">
+          <el-checkbox v-model="leftChecked2">未安排</el-checkbox>
+        </el-col>
+        <el-col :span="8">
+          <el-button type="text" class="but">发送邮件</el-button>
+        </el-col>
+      </el-row>
+
+      <draggable v-model="myArray">
+      <el-row v-for="num in itveNum" v-bind:key="num">
+        <el-card class="box-card" shadow="hover">
+          <div class="icon"><el-avatar :size="50" :src="circleUrl"></el-avatar></div>
+          <div class="item">Name: {{ leftCardData[num-1]['name'] }}</div>
+          <div class="item">Email: {{ leftCardData[num-1]['email'] }}</div>
+        </el-card>
+      </el-row>
+      </draggable>
+    </el-col>
+
+    <!-- <div class="vertical-bar"></div> -->
+
+    <el-col :span="12" class="right-top">
+      <el-row>
+        <el-col :span="20" :offset="3">
+          <div class="title">面试官</div>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="5" :offset="5">
+          <el-checkbox v-model="rightChecked1">有空闲时间</el-checkbox>
+        </el-col>
+        <el-col :span="5" :offset="5">
+          <el-checkbox v-model="rightChecked2">无空闲时间</el-checkbox>
+        </el-col>
+      </el-row>
+      <el-row v-for="num in itvrNum" v-bind:key="num">
+        <el-card class="box-card" shadow="hover">
+          <div class="icon"><el-avatar :size="50" :src="circleUrl"></el-avatar></div>
+          <div class="item">Name: {{ rightCardData[num-1]['name'] }}</div>
+          <div class="item">Email: {{ rightCardData[num-1]['email'] }}</div>
+        </el-card>
+      </el-row>
+    </el-col>
+  </el-row>
+</template>
+
+<script>
+import axios from 'axios'
+import draggable from 'vuedraggable'
+
+export default {
+  name: 'HrDistribute',
+  components: {
+    draggable
+  },
+  data: function () {
+    return {
+      circleUrl: 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png',
+      leftChecked1: false,
+      leftChecked2: false,
+      rightChecked1: false,
+      rightChecked2: false,
+      leftCardData: [{}],
+      rightCardData: [{}],
+      myArray: []
+    }
+  },
+  computed: {
+    itveNum: function () {
+      return this.leftCardData.length
+    },
+    itvrNum: function () {
+      return this.rightCardData.length
+    }
+  },
+  mounted: function () {
+    this.getItveInfo(this)
+    this.getItvrInfo(this)
+  },
+  methods: {
+    getItveInfo: function (_this) {
+      axios.get('http://106.14.227.202/api/itve/getall/', {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }).then(function (response) {
+        console.log(response.data)
+        console.log('type:', typeof (response.data))
+        _this.leftCardData = response.data
+        // _this.checked = Array(_this.leftCardData.length).fill(false)
+      }).catch(function (error) {
+        console.log('get itve info error:')
+        console.log(error.response)
+      })
+    },
+    getItvrInfo: function (_this) {
+      axios.get('http://106.14.227.202/api/itvr/getall/', {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }).then(function (response) {
+        console.log(response.data)
+        console.log('type:', typeof (response.data))
+        _this.rightCardData = response.data
+        // _this.checked = Array(_this.cardDataAll.length).fill(false)
+      }).catch(function (error) {
+        console.log('get itvr info error:')
+        console.log(error.response)
+      })
+    }
+  }
+}
+</script>
+
+<style scoped>
+.vertical-bar {
+  width: 5px;
+  height: 700px;
+  background: lightgray;
+  display: inline-block;
+  margin-top: 15px;
+  vertical-align: top;
+  margin-left: 310px;
+}
+
+.left-top {
+  text-align: center;
+  float: left;
+}
+
+.el-row {
+  margin-bottom: 25px;
+}
+
+.el-col {
+  border-radius: 4px;
+}
+
+.icon {
+  float: left;
+}
+
+.but {
+  padding-top: 0;
+}
+
+.item {
+  margin-bottom: 13px;
+}
+
+.title {
+  margin-top: 15px;
+  margin-right: 5px;
+  font-size: 30px;
+  line-height: 50px;
+  text-align: center;
+}
+
+.box-card {
+  font-size: 16px;
+  width: 400px;
+  height: 100px;
+  border-radius: 20px;
+  border-width: 2px;
+  margin: auto;
+}
+
+.grid-content {
+  border-radius: 4px;
+  min-height: 26px;
+}
+
+.row-bg {
+  padding: 10px 0;
+  background-color: #f9fafc;
+}
+</style>
