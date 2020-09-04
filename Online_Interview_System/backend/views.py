@@ -407,7 +407,19 @@ def room_delete(request):
 
 	success = True
 	try:
-		Room.objects.get(pk=rid).delete()
+		# Room.objects.get(pk=rid).delete()
+		r = Room.objects.get(pk=rid)
+		print('r.tester = ')
+		print(r.tester)
+		print(r.tester.free1)
+		if r.time == 0:
+			r.tester.free1 = True
+		elif r.time == 1:
+			r.tester.free2 = True
+		else:
+			r.tester.free3 = True
+		r.tester.save()
+		r.delete()
 	except Exception as e:
 		success = False
 		print(e)

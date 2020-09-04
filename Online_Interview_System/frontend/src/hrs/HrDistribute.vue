@@ -5,13 +5,13 @@
         <el-row>
           <div class="title">候选人</div>
         </el-row>
-        <el-row :gutter="100">
-          <el-col :span="12">
+        <el-row :gutter="100" class="blank-row">
+          <!-- <el-col :span="12">
             <el-checkbox v-model="leftChecked1">已安排</el-checkbox>
           </el-col>
           <el-col :span="12">
             <el-checkbox v-model="leftChecked2">未安排</el-checkbox>
-          </el-col>
+          </el-col> -->
         </el-row>
 
         <el-row v-for="num in itveNum" v-bind:key="num">
@@ -38,14 +38,15 @@
         </el-row>
         <el-row>
           <el-col :span="5" :offset="5">
-            <el-checkbox v-model="rightChecked1">有空闲时间</el-checkbox>
+            <el-checkbox v-model="rightChecked1" @change="itvrCheckboxChange">有空闲时间</el-checkbox>
           </el-col>
           <el-col :span="5" :offset="5">
-            <el-checkbox v-model="rightChecked2">无空闲时间</el-checkbox>
+            <el-checkbox v-model="rightChecked2" @change="itvrCheckboxChange">无空闲时间</el-checkbox>
           </el-col>
         </el-row>
         <el-row v-for="num in itvrNum" v-bind:key="num">
-          <el-card class="box-card" shadow="hover" @click.native="clickItvr(num)">
+          <el-card class="box-card" shadow="hover" @click.native="clickItvr(num)"
+            v-if="(rightChecked1 === false && rightChecked2 === false) || (rightChecked1 === true && rightChecked2 === true) || (rightChecked1 === true && rightChecked2 === false && rightCardData[num-1]['busyall'] === false) || (rightChecked1 === false && rightChecked2 === true && rightCardData[num-1]['busyall'] === true)">
             <el-col :span="22">
               <div class="icon"><el-avatar :size="50" :src="circleUrl"></el-avatar></div>
               <div class="item">Name: {{ rightCardData[num-1]['name'] }}</div>
@@ -64,7 +65,7 @@
     <el-button icon="el-icon-close" plain class="cancel-dist" v-if="isDistributing" @click="clickCancelDist">取消</el-button>
     <el-button icon="el-icon-check" type="primary" plain class="confirm-dist" v-if="isDistributing" @click="clickConfirmDist">分配</el-button>
 
-    <el-dialog title="分配面试" :visible.sync="distDialogFormVisible" class="dist-dialog">
+    <el-dialog title="分配面试" :visible.sync="distDialogFormVisible" class="dist-dialog" :before-close="clickCancelDist">
       <el-row>
         <el-col :span="12">
           <h3>候选人</h3>
@@ -103,7 +104,7 @@
       </div>
     </el-dialog>
 
-    <el-dialog title="面试官信息" :visible.sync="itvrDialogFormVisible" class="dist-dialog" width="60%">
+    <el-dialog title="面试官信息" :visible.sync="itvrDialogFormVisible" class="dist-dialog" width="60%" :before-close="clickCancelItvr">
       <el-row>
         <h3>面试官</h3>
         <el-form :model="itvrFormInItvrDia">
@@ -131,6 +132,7 @@
         <span v-if="itvrItveNum === 0">该面试官未安排面试</span>
         <el-col :span="8" v-for="i in itvrItveNum" v-bind:key="i">
           <el-popover
+            v-if="itvrItveCardData[i-1]['time'] >= timeRange[0] && itvrItveCardData[i-1]['time'] <= timeRange[1]"
             placement="top-start"
             width="300px"
             trigger="hover"
@@ -141,7 +143,7 @@
                 <span>{{ itvrItveCardData[i-1]['roomid'] }}</span>
               </el-form-item>
               <el-form-item label="面试时间" :label-width="formLabelWidth">
-                <span>{{ itvrItveCardData[i-1]['time'] }}</span>
+                <span>{{ itvrItveCardData[i-1]['time_str'] }}</span>
               </el-form-item>
               <el-form-item label="候选人" :label-width="formLabelWidth">
                 <span>{{ itvrItveCardData[i-1]['interviewee__name'] }}</span>
@@ -178,7 +180,6 @@
       </el-row>
       <div slot="footer" class="dialog-footer">
         <el-button @click="clickCancelItvr">关 闭</el-button>
-        <!-- <el-button type="primary" @click="commitDistItve">确 定</el-button> -->
       </div>
     </el-dialog>
   </div>
@@ -213,7 +214,7 @@ export default {
       itvrDialogFormVisible: false,
       itvrFormLabelWidth: '120px',
       itvrFormInItvrDia: {},
-      timeRange: [0, 3],
+      timeRange: [0, 2],
       timeMarks: {
         0: '上午',
         1: '下午',
@@ -270,7 +271,13 @@ export default {
         console.log(response.data)
         console.log('type:', typeof (response.data))
         _this.rightCardData = response.data
-        // _this.checked = Array(_this.cardDataAll.length).fill(false)
+        for (let i = 0; i < _this.rightCardData.length; i++) {
+          if (_this.rightCardData[i]['free1'] === false && _this.rightCardData[i]['free2'] === false && _this.rightCardData[i]['free3'] === false) {
+            _this.rightCardData[i]['busyall'] = true
+          } else {
+            _this.rightCardData[i]['busyall'] = false
+          }
+        }
       }).catch(function (error) {
         console.log('get itvr info error:')
         console.log(error.response)
@@ -328,6 +335,7 @@ export default {
       this.itveChoosed = ''
       this.itvrChoosed = ''
       this.itvrTimeRadio = ''
+      this.getItvrInfo(this)
     },
     clickItvr: function (num) {
       if (this.isDistributing === false) {
@@ -345,11 +353,11 @@ export default {
           _this.itvrItveCardData = response.data
           for (let i = 0; i < _this.itvrItveCardData.length; i++) {
             if (_this.itvrItveCardData[i]['time'] === 0) {
-              _this.itvrItveCardData[i]['time'] = '上午'
+              _this.itvrItveCardData[i]['time_str'] = '上午'
             } else if (_this.itvrItveCardData[i]['time'] === 1) {
-              _this.itvrItveCardData[i]['time'] = '下午'
+              _this.itvrItveCardData[i]['time_str'] = '下午'
             } else {
-              _this.itvrItveCardData[i]['time'] = '晚上'
+              _this.itvrItveCardData[i]['time_str'] = '晚上'
             }
           }
         }).catch(function (error) {
@@ -361,6 +369,7 @@ export default {
     },
     clickCancelItvr: function () {
       this.itvrDialogFormVisible = false
+      this.timeRange = [0, 2]
     },
     deleteRoom: function (i) {
       let _this = this
@@ -383,6 +392,10 @@ export default {
         console.log('delete ', _this.currentMenu, ' error: ' + error)
         _this.$alert('删除面试出错', '删除出错')
       })
+      this.getItvrInfo(this)
+    },
+    itvrCheckboxChange: function () {
+      //
     }
   }
 }
@@ -491,5 +504,9 @@ export default {
 
 .room-popover {
   width: 300px;
+}
+
+.blank-row {
+  height: 19.2px;
 }
 </style>
