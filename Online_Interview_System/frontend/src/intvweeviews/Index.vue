@@ -23,18 +23,18 @@
         </el-col>
         <el-col :span="5" class="question-window">
           <div class="grid-content bg-purple question-window">
-            <p4>题目</p4><br/>
-              {{ queDetail['name'] }}<br/><br/>
-              <p4>描述</p4><br/>
-              {{ queDetail['desc'] }}<br/><br/>
-              <p4>输入描述</p4><br/>
-              {{ queDetail['input'] }}<br/><br/>
-              <p4>输出描述</p4><br/>
-              {{ queDetail['output'] }}<br/><br/>
-              <p4>样例输入</p4><br/>
-              {{ queDetail['input_sample'] }}<br/><br/>
-              <p4>样例输出</p4><br/>
-              {{ queDetail['output_sample'] }}<br/><br/>
+            <h4>题目</h4>
+            {{ queDetail['name'] }}<br/>
+            <h4>描述</h4>
+            {{ queDetail['desc'] }}<br/>
+            <h4>输入描述</h4>
+            {{ queDetail['input'] }}<br/>
+            <h4>输出描述</h4>
+            {{ queDetail['output'] }}<br/>
+            <h4>样例输入</h4>
+            {{ queDetail['input_sample'] }}<br/>
+            <h4>样例输出</h4>
+            {{ queDetail['output_sample'] }}<br/>
           </div>
         </el-col>
       </el-row>
