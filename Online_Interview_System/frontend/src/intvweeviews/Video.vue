@@ -1,9 +1,5 @@
 <template>
   <div class="video-window">
-    <div class="button-area">
-      <el-button type="primary" :disabled="(state != OFF) || isHr" @click="call" >加入视频</el-button>
-      <el-button type="danger" :disabled="(state != ON) || isHr" @click="hangUp" >退出视频</el-button>
-    </div>
     <div class="video-play">
       <video id="local-video" autoplay ></video>
       <video id="remote-video" autoplay ></video>
@@ -26,6 +22,8 @@ const configuration = {
 };
 
 let localStream, peerConn;
+
+
 
 export default {
   name: 'VideoWindow',
@@ -64,6 +62,22 @@ export default {
     }
   },
   mounted() {
+    let silence = () => {
+      let ctx = new AudioContext(), oscillator = ctx.createOscillator();
+      let dst = oscillator.connect(ctx.createMediaStreamDestination());
+      oscillator.start();
+      return Object.assign(dst.stream.getAudioTracks()[0], {enabled: false});
+    }
+
+    let black = ({width = 640, height = 480} = {}) => {
+      let canvas = Object.assign(document.createElement("canvas"), {width, height});
+      canvas.getContext('2d').fillRect(0, 0, width, height);
+      let stream = canvas.captureStream();
+      return Object.assign(stream.getVideoTracks()[0], {enabled: false});
+    }
+
+    this.blackSilence = (...args) => new MediaStream([black(...args), silence()]);
+
     this.user_name = this.str_roomid + this.str_name;
     console.log('Video: Running');
     this.send({
@@ -116,7 +130,11 @@ export default {
         alert('该用户已经登陆过，请退出！');
       } else {
         this.users = data.allUsers;
-        this.initCreate();
+        if (!this.isHr) {
+          this.initCreate();
+        } else {
+          this.call();
+        }
       }
     },
     addVideoURL(elementId, stream) {
@@ -138,6 +156,7 @@ export default {
           this.addVideoURL('local-video', stream);
           this.state = this.OFF;
           localStream = stream;
+          this.call();
         })
         .catch(err => {
           alert('打开本地视频失败！');
@@ -154,7 +173,11 @@ export default {
         this.connections[e] = new RTCPeerConnection(configuration);
 
         // Add local stream & Wait for remote stream
-        this.connections[e].addStream(localStream);
+        if (!this.isHr) {
+          this.connections[e].addStream(localStream);
+        } else {
+          this.connections[e].addStream(this.blackSilence());
+        }
         this.connections[e].onaddstream = s => {
           console.log('Got stream from: ', e);
           if (this.isHr && e.indexOf('itve') != -1) {
@@ -197,7 +220,11 @@ export default {
 
       var from = data.fromUser;
       this.connections[from] = new RTCPeerConnection(configuration);
-      this.connections[from].addStream(localStream);
+      if (!this.isHr) {
+        this.connections[from].addStream(localStream);
+      } else {
+        this.connections[from].addStream(this.blackSilence());
+      }
       this.connections[from].onaddstream = s => {
         console.log('Got stream from: ', from);
         if (this.isHr && from.indexOf('itve') != -1) {
