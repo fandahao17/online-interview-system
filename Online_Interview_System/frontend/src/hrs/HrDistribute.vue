@@ -248,7 +248,7 @@ export default {
   },
   methods: {
     getItveInfo: function (_this) {
-      axios.get('http://localhost:8000/itve/getall/', { // 106.14.227.202/api
+      axios.get('http://106.14.227.202/api/itve/getall/', { // 106.14.227.202/api
         headers: {
           'Content-Type': 'application/json'
         }
@@ -263,7 +263,7 @@ export default {
       })
     },
     getItvrInfo: function (_this) {
-      axios.get('http://localhost:8000/itvr/getall/', {
+      axios.get('http://106.14.227.202/api/itvr/getall/', {
         headers: {
           'Content-Type': 'application/json'
         }
@@ -317,7 +317,7 @@ export default {
       let itveNum = this.itveChoosed
       let itvrNum = this.itvrChoosed
       console.log('roomForm = ', roomForm)
-      axios.post('http://localhost:8000/room/add/', roomForm, {
+      axios.post('http://106.14.227.202/api/room/add/', roomForm, {
         headers: {
           'Content-Type': 'application/json'
         }
@@ -343,7 +343,7 @@ export default {
         this.itvrFormInItvrDia = this.rightCardData[num - 1]
         this.itvrDialogFormVisible = true
         this.detailItvrNumNow = num
-        axios.get('http://localhost:8000/itvr/getitves/' + this.rightCardData[num - 1]['email'] + '/', {
+        axios.get('http://106.14.227.202/api/itvr/getitves/' + this.rightCardData[num - 1]['email'] + '/', {
           headers: {
             'Content-Type': 'application/json'
           }
@@ -375,7 +375,7 @@ export default {
       let _this = this
       console.log('delete room: ')
       console.log(this.itvrItveCardData[i - 1])
-      axios.delete('http://localhost:8000/room/delete/', { // note: 这里应换成对 server 的请求  localhost:8000 改成 106.14.227.202/api
+      axios.delete('http://106.14.227.202/api/room/delete/', {
         headers: {
           'Content-Type': 'application/json'
         },
