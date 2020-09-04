@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="my_video">
     <video-player class="video-player vjs-custom-skin" ref="videoPlayer" :playsinline="true" type="video/webm" :options="playerOptions"></video-player>
   </div>
 </template>
@@ -31,7 +31,9 @@ export default {
         }],
         // src: “http://172.18.0.10:5000/file/getMaterialFile?id=736&fileType=content” //url地址 }],
         poster: '', // 你的封面地址
-        width: document.documentElement.clientWidth, // 播放器宽度 //notSupportedMessage: ‘请打开浏览器设置Flash允许’, // 允许覆盖Video.js无法播放媒体源时显示的默认信息。
+        width: '800px',
+        height: '800px',
+        // width: document.documentElement.clientWidth, // 播放器宽度 //notSupportedMessage: ‘请打开浏览器设置Flash允许’, // 允许覆盖Video.js无法播放媒体源时显示的默认信息。
         controlBar: {
           timeDivider: true,
           durationDisplay: true,
@@ -43,3 +45,10 @@ export default {
   }
 }
 </script>
+<style scoped>
+  .my_video{
+    width: 100%;
+    height: calc(100vh - 100px);
+    background-color: white;
+  }
+</style>
