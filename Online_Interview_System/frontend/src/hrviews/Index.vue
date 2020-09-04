@@ -101,6 +101,7 @@ import BoardWindow from '@/intvweeviews/Board'
 
 export default {
   name: 'HrWatchHome',
+  props: ['roomInfo', 'isHr'],
   components: {
     VideoWindow,
     TextWindow,
