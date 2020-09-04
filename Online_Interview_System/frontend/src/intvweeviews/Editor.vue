@@ -127,6 +127,8 @@ export default {
       this.isOtherChanges = true
     },
     server_result (data) {
+      console.log('test server_result')
+      console.log(data.msg)
       this.resultMsg = data.msg
     }
   }
