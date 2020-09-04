@@ -42,7 +42,7 @@ export default {
       WAITING: 1,
       ON: 2,
       state: 0,
-      connections = [],
+      connections: [],
     };
   },
   created () {
@@ -81,12 +81,6 @@ export default {
           case 'join':
             this.handleLogin(data);
             break;
-          case 'call':
-            this.handleCall(data);
-            break;
-          case 'accept':
-            this.handleAccept(data);
-            break;
           case 'offer':
             this.handleOffer(data);
             break;
@@ -113,11 +107,12 @@ export default {
       if (toUser != null) {
         message.toUser = toUser;
       }
+      message.fromUser = this.user_name;
       this.socket.send(JSON.stringify(message));
     },
     handleLogin(data) {
       if (data.success === false) {
-        alert('重复登录！');
+        alert('该用户已经登陆过，请退出！');
       } else {
         this.users = data.allUsers;
         this.createConnection();
@@ -133,7 +128,7 @@ export default {
           localStream = stream;
         })
         .catch(function(err) {
-          alert!('打开本地视频失败！');
+          alert('打开本地视频失败！');
           console.log(err.name + ': ' + err.message);
         });
     },
@@ -154,49 +149,46 @@ export default {
             remote_video = s;
           }
         };
+
+        // Gather ICE candidates
         this.connections[e].onicecandidate = event => {
           setTimeout(() => {
             if (event.candidate) {
               this.send({
                 event: 'candidate',
                 candidate: event.candidate,
-              });
+              }, e);
             }
           });
         };
         
-      });
-    },
-    handleAccept(data) {
-      if (data.accept) {
-        // Create an offer
-        peerConn.createOffer(
+        // Create offer
+        this.connections[e].createOffer(
           offer => {
-            peerConn.setLocalDescription(offer);
+            this.connections[e].setLocalDescription(offer);
             this.send({
               event: 'offer',
               offer: offer,
-            });
+            }, e);
           },
           error => {
             alert('Error when creating an offer');
           }
         );
-      } else {
-        alert('对方已拒绝');
-      }
+      });
     },
     handleOffer(data) {
-      this.createConnection();
-      peerConn.setRemoteDescription(new RTCSessionDescription(data.offer));
+      from = data.fromUser;
+      this.connections[from] = new RTCPeerConnection(configuration);
+      this.connections[from].setRemoteDescription(new RTCSessionDescription(data.offer));
       // Create an answer to an offer
-      peerConn.createAnswer(
+      this.connections[from].createAnswer(
         answer => {
-          peerConn.setLocalDescription(answer);
+          this.connections[from].setLocalDescription(answer);
           this.send({
             event: 'answer',
             answer: answer,
-          });
+          }, from);
         },
         error => {
           alert('Error when creating an answer');
@@ -207,26 +199,25 @@ export default {
       console.log(data.message);
     },
     handleAnswer(data) {
-      peerConn.setRemoteDescription(new RTCSessionDescription(data.answer));
+      this.connections[data.fromUser].setRemoteDescription(new RTCSessionDescription(data.answer));
     },
     handleCandidate(data) {
       // ClientB 通过 PeerConnection 的 AddIceCandidate 方法保存起来
-      peerConn.addIceCandidate(new RTCIceCandidate(data.candidate));
+      this.connections[data.fromUser].addIceCandidate(new RTCIceCandidate(data.candidate));
     },
     hangUp() {
       this.send({
         event: 'leave',
       });
-      this.handleLeave();
+      this.connections.forEach(e => {
+        e.close();
+        e.onicecandidate = null;
+        e.onaddstream = null;
+      });
+      this.connections = [];
     },
     handleLeave() {
       this.remote_video = '';
-      peerConn.close();
-      peerConn.onicecandidate = null;
-      peerConn.onaddstream = null;
-      if (peerConn.signalingState === 'closed') {
-        this.initCreate();
-      }
     },
   },
 };
