@@ -4,8 +4,8 @@
       <div class="columns">
         <div class="column is-half code-editor">
           <el-card>
-              <el-button @click="onSubmit">提交</el-button>
-              <el-button @click="onClear">清空</el-button>
+              <el-button @click="onSubmit" :disabled="isHr">提交</el-button>
+              <el-button @click="onClear" :disabled="isHr">清空</el-button>
               {{this.resultMsg}}
           </el-card>
           <editor
@@ -47,6 +47,7 @@ import 'codemirror/mode/clike/clike.js'
 import 'codemirror/theme/monokai.css'
 export default {
   name: 'EditorWindow',
+  props: ['isHr'],
   components: {
     'editor': codemirror,
     Multiselect
@@ -86,16 +87,18 @@ export default {
   },
   methods: {
     onCmCodeChange (newCode) {
-      if (!this.isOtherChanges) {
-        //  when change, send changed code to the server here
-        //  maybe needed to send all codes or part
-        console.log('this is new code', newCode)
-        //  todo:where add roomid
-        //  send to server
-        this.$socket.emit('client_update', {id: this.$route.params.roomid, code: newCode})
-        this.code = newCode
-      } else {
-        this.isOtherChanges = false
+      if (!this.isHr) {
+        if (!this.isOtherChanges) {
+          //  when change, send changed code to the server here
+          //  maybe needed to send all codes or part
+          console.log('this is new code', newCode)
+          //  todo:where add roomid
+          //  send to server
+          this.$socket.emit('client_update', {id: this.$route.params.roomid, code: newCode})
+          this.code = newCode
+        } else {
+          this.isOtherChanges = false
+        }
       }
     },
     setLanguageMode () {

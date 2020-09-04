@@ -29,7 +29,7 @@
     </div>
     <div class="footer im-input">
       <input type="text" v-model="msg" placeholder="请输入内容">
-      <button @click="send">发送</button>
+      <button @click="send" disabled="isHr">发送</button>
     </div>
   </div>
 </template>
@@ -41,7 +41,7 @@ import moment from 'moment'
 
 export default {
   name: 'Text',
-  props: ['roomInfo'],
+  props: ['roomInfo','isHr'],
   components: {
     'c-dialog': Vue.extend(require('@/components/dialog/index.vue').default)
   },

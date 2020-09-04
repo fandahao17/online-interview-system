@@ -9,16 +9,16 @@
         <el-row :gutter="20">
           <el-col :span="6">
             <el-row class="grid-content bg-purple">
-              <video-window v-bind:room-info="roomInfo"></video-window>
+              <video-window v-bind:room-info="roomInfo" :isHr="true"></video-window>
             </el-row>
             <el-row class="text-window grid-content bg-purple">
-              <text-window></text-window>
+              <text-window :isHr="true"></text-window>
             </el-row>
           </el-col>
           <el-col :span="13" class="editor-and-board">
             <el-tabs type="border-card" class="card">
               <el-tab-pane label="editor" class="editor-window">
-                <editor-window></editor-window>
+                <editor-window :isHr="true"></editor-window>
               </el-tab-pane>
               <el-tab-pane label="white board" class="board-window">
                 <board-window></board-window>
