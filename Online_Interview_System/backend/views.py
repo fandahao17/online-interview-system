@@ -203,7 +203,7 @@ def itvr_get_itves(request, pk):
 	"""
 	返回某一面试官的所有面试及相关候选人信息。
 
-	用法：GET /api/itvr/getitve/《面试官email》/
+	用法：GET /api/itvr/getitves/《面试官email》/
 	- 成功返回：`[{ 'roomid': str, 'time': int(0-2), 'interviewee__email': str, 'interviewee__name': str, 'interviewee__mobile': str }]`
 	- 失败返回：`[]`
 	"""
@@ -368,6 +368,10 @@ def room_add(request):
 
 	d = request.data
 	t, e, r = d.get('time'), d.get('itve'), d.get('itvr')
+	# debug
+	print('request.data = ')
+	print(d)
+	print(t, e ,r)
 	try:
 		itvr = Interviewer.objects.get(pk=r)
 		room = Room.objects.create(roomid=rid, time=t, tester=itvr,
@@ -390,12 +394,12 @@ def room_add(request):
 	return JsonResponse({'roomid': roomid})
 
 
-@api_view(['POST'])
+@api_view(['DELETE'])
 def room_delete(request):
 	"""
 	删除面试。
 
-	用法：POST /api/room/delete/
+	DELETE /api/room/delete/
 	- 请求内容：`{ 'roomid': int }`
 	- 返回内容：`{ 'success': bool }`
 	"""
@@ -403,9 +407,22 @@ def room_delete(request):
 
 	success = True
 	try:
-		Room.objects.get(pk=rid).delete()
-	except:
+		# Room.objects.get(pk=rid).delete()
+		r = Room.objects.get(pk=rid)
+		print('r.tester = ')
+		print(r.tester)
+		print(r.tester.free1)
+		if r.time == 0:
+			r.tester.free1 = True
+		elif r.time == 1:
+			r.tester.free2 = True
+		else:
+			r.tester.free3 = True
+		r.tester.save()
+		r.delete()
+	except Exception as e:
 		success = False
+		print(e)
 
 	return JsonResponse({'success': success})
 
