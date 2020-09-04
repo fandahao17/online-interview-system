@@ -38,10 +38,10 @@
         </el-row>
         <el-row>
           <el-col :span="5" :offset="5">
-            <el-checkbox v-model="rightChecked1" @change="itvrCheckboxChange">有空闲时间</el-checkbox>
+            <el-checkbox v-model="rightChecked1">有空闲时间</el-checkbox>
           </el-col>
           <el-col :span="5" :offset="5">
-            <el-checkbox v-model="rightChecked2" @change="itvrCheckboxChange">无空闲时间</el-checkbox>
+            <el-checkbox v-model="rightChecked2">无空闲时间</el-checkbox>
           </el-col>
         </el-row>
         <el-row v-for="num in itvrNum" v-bind:key="num">
@@ -393,9 +393,6 @@ export default {
         _this.$alert('删除面试出错', '删除出错')
       })
       this.getItvrInfo(this)
-    },
-    itvrCheckboxChange: function () {
-      //
     }
   }
 }
