@@ -2,7 +2,9 @@
   <div>
     <el-row v-for="rn in rowNum" v-bind:key="rn">
       <el-col :span="8" v-for="i in 3" v-bind:key="i">
-        <el-card class="box-card" shadow="hover" @click.native="clickCard(((rn-1) * 3) + i - 1)">
+        <el-card class="box-card" shadow="hover"
+          @click.native="clickCard(((rn-1) * 3) + i - 1)"
+          v-if="searchInfo === '' || cardDataAll[(((rn-1) * 3) + i - 1)]['name'].lastIndexOf(searchInfo) >= 0">
           <div slot="header" class="clearfix">
             <span> {{ cardDataAll[(((rn-1) * 3) + i - 1)]['name'] }} </span>
             <el-button style="float: right; padding: 3px 0" type="text">编辑</el-button>
@@ -30,7 +32,9 @@
     <!-- 最后一行 -->
     <el-row v-if="lastRow > 0">
       <el-col :span="8" v-for="i in lastRow" v-bind:key="i">
-        <el-card class="box-card" shadow="hover" @click.native="clickCard(peopleNum - lastRow + i - 1)">
+        <el-card class="box-card" shadow="hover"
+          @click.native="clickCard(peopleNum - lastRow + i - 1)"
+          v-if="searchInfo === '' || cardDataAll[peopleNum - lastRow + i - 1]['name'].lastIndexOf(searchInfo) >= 0">
           <div slot="header" class="clearfix">
             <span>{{ cardDataAll[peopleNum - lastRow + i - 1]['name'] }}</span>
             <el-button style="float: right; padding: 3px 0" type="text">编辑</el-button>
@@ -368,7 +372,8 @@ export default {
         email: 'bbb@gmail.com',
         category: '江浙小吃、小吃零食'
       }],
-      cardDataAll: [{}]
+      cardDataAll: [{}],
+      searchInfo: ''
     }
   },
   computed: {
@@ -597,17 +602,25 @@ export default {
         this.getHrInfo(this)
       }
       this.addForm = { name: '', mobile: '', new_email: '', old_email: '' }
+    },
+    handleSearch: function (searchInfo) {
+      this.searchInfo = searchInfo
+      console.log('search')
+      console.log(this.searchInfo)
+      console.log(this.cardDataAll[0]['name'])
     }
   },
   created: function () {
     this.$eventHub.$on('click-delete', this.handleDelete)
     this.$eventHub.$on('menu-change', this.handleMenuChange)
     this.$eventHub.$on('admin-add', this.handleAdminAdd)
+    this.$eventHub.$on('search-info', this.handleSearch)
   },
   beforeDestory: function () {
     this.$eventHub.$off('click-delete')
     this.$eventHub.$off('menu-change')
     this.$eventHub.$off('admin-add')
+    this.$eventHub.$off('search-info')
   },
   mounted: function () {
     this.getItveInfo(this)

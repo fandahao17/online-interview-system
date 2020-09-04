@@ -1,8 +1,13 @@
 <template>
   <div class="menu-right">
-    <el-button icon="el-icon-search" plain>搜索</el-button>
+    <el-button icon="el-icon-search" plain @click="isSearching = true" v-if="isSearching === false">搜索</el-button>
+    <el-input
+      v-else
+      v-model="searchInfo"
+      @change="searchChange"
+      placeholder="输入关键字搜索"/>
     <el-button icon="el-icon-plus" type="primary" plain @click="clickAdd">添加</el-button>
-    <el-upload
+    <!-- <el-upload
       class="upload-demo"
       action="https://jsonplaceholder.typicode.com/posts/"
       :on-preview="handlePreview"
@@ -12,7 +17,7 @@
       :limit="3"
       :on-exceed="handleExceed">
       <el-button icon="el-icon-upload2" type="primary" plain>导入</el-button>
-    </el-upload>
+    </el-upload> -->
     <el-button icon="el-icon-delete" type="danger" plain @click="clickDelete">删除</el-button>
 
     <el-dropdown class="avatar-container">
@@ -41,7 +46,9 @@ export default {
       },
       formLabelWidth: '120px',
       dialogFormVisible: false,
-      fileList: []
+      fileList: [],
+      searchInfo: '',
+      isSearching: false
     }
   },
   methods: {
@@ -62,6 +69,11 @@ export default {
     },
     beforeRemove: function (file, fileList) {
       return this.$confirm(`确定移除 ${file.name}？`)
+    },
+    searchChange: function () {
+      console.log('info = ')
+      console.log(this.searchInfo)
+      this.$eventHub.$emit('search-info', this.searchInfo)
     }
   }
 }
