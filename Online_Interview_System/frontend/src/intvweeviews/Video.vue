@@ -60,12 +60,14 @@ export default {
       else{
         return "itvr";
       }
+    },
+    str_roomid() {
+      return this.$route.params.roomid;
     }
   },
   mounted() {
     var path = this.$route.path;
-    var str_roomid = this.$route.params.roomid;
-    this.user_name = str_roomid + this.str_name;
+    this.user_name = this.str_roomid + this.str_name;
     this.send({
       event: 'join',
       name: this.user_name,
@@ -94,7 +96,7 @@ export default {
             this.handleAnswer(data);
             break;
           case 'leave':
-            this.handleLeave();
+            this.handleLeave(data);
             break;
           default:
             break;
@@ -107,7 +109,8 @@ export default {
       if (toUser != null) {
         message.toUser = toUser;
       }
-      message.fromUser = this.user_name;
+      message.connectedUser = this.user_name;
+      message.roomid = this.str_roomid;
       this.socket.send(JSON.stringify(message));
     },
     handleLogin(data) {
@@ -115,16 +118,18 @@ export default {
         alert('该用户已经登陆过，请退出！');
       } else {
         this.users = data.allUsers;
-        this.createConnection();
+        this.initCreate();
       }
     },
     initCreate() {
       const self = this;
+      this.state = this.WAITING;
       navigator.mediaDevices
         .getUserMedia({ audio: true, video: true })
         .then(function(stream) {
           this.local_video = stream;
           video.muted = true;
+          this.state = this.OFF;
           localStream = stream;
         })
         .catch(function(err) {
@@ -134,14 +139,11 @@ export default {
     },
     call() {
       this.state = this.WAITING;
-      initCreate();
-      this.connections.forEach((_, conn) => {
-        conn.addStream(localStream);
-      });
-    },
-    createConnection() {
       this.users.forEach(e => {
         this.connections[e] = new RTCPeerConnection(configuration);
+
+        // Add local stream & Wait for remote stream
+        this.connections[e].addStream(localStream);
         this.connections[e].onaddstream = s => {
           if (isHr && e.indexOf('itve') != -1) {
             local_video = s;
@@ -180,6 +182,7 @@ export default {
     handleOffer(data) {
       from = data.fromUser;
       this.connections[from] = new RTCPeerConnection(configuration);
+      this.connections[from].addStream(localStream);
       this.connections[from].setRemoteDescription(new RTCSessionDescription(data.offer));
       // Create an answer to an offer
       this.connections[from].createAnswer(
@@ -216,8 +219,9 @@ export default {
       });
       this.connections = [];
     },
-    handleLeave() {
+    handleLeave(data) {
       this.remote_video = '';
+      delete this.connections[data.fromUser];
     },
   },
 };
