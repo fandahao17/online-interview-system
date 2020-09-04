@@ -58,17 +58,17 @@ io.on('connect', function(socket) {
 
       case 'offer':
         // i.e. UserA wants to call UserB
-        console.log('Sending offer to: ', data.connectedUser);
         //if UserB exists then send him offer details
         var conn = allSockets[data.connectedUser];
         allUsers[user] = false;
         if (conn != null) {
           // Setting that UserA connected with UserB
-          socket.otherName = data.connectedUser;
+          console.log('Sending offer to: ', data.connectedUser);
           sendTo(conn, {
             event: 'offer',
             offer: data.offer,
             name: socket.name,
+            fromUser: data.fromUser,
           });
         } else {
           sendTo(socket, {
@@ -87,6 +87,7 @@ io.on('connect', function(socket) {
           sendTo(conn, {
             event: 'answer',
             answer: data.answer,
+            fromUser: data.fromUser,
           });
         }
         break;
@@ -98,12 +99,13 @@ io.on('connect', function(socket) {
           sendTo(conn, {
             event: 'candidate',
             candidate: data.candidate,
+            fromUser: data.fromUser,
           });
         }
         break;
 
       case 'leave':
-        console.log('Disconnecting from', data.connectedUser);
+        console.log('User left: ', data.connectedUser);
         allUsers[socket.name] = true;
         // Notify the other user so he can disconnect his peer connection
         broadcastRoom(data.roomid, {
@@ -116,6 +118,7 @@ io.on('connect', function(socket) {
 
   socket.on('disconnect', function() {
     if (socket.name) {
+      console.log('User disconnected: ', socket.name);
       delete allUsers[socket.name];
       delete allSockets[socket.name];
       // Trick to get roomid here
@@ -138,7 +141,7 @@ function showUserInfo(roomid) {
 
 function broadcastRoom(roomid, msg) {
   allRooms[roomid].forEach(e => {
-    sendTo(e, msg);
+    sendTo(allSockets[e], msg);
   });
 }
 

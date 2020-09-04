@@ -5,8 +5,8 @@
       <el-button type="danger" :disabled="(state != ON) || isHr" @click="hangUp" >退出视频</el-button>
     </div>
     <div class="video-play">
-      <video id="localVideo" :src="local_video" autoplay ></video>
-      <video id="remoteVideo" :src="remote_video" autoplay ></video>
+      <video id="local-video" autoplay ></video>
+      <video id="remote-video" autoplay ></video>
     </div>
   </div>
 </template>
@@ -36,8 +36,6 @@ export default {
       user_name: '',
       users: [],
       call_username: '',
-      local_video: '',
-      remote_video: '',
       OFF: 0,
       WAITING: 1,
       ON: 2,
@@ -51,10 +49,10 @@ export default {
   },
   computed: {
     str_name() {
-      if (isHr) {
+      if (this.isHr) {
         return 'hr';
       }
-      else if(path.indexOf("interviewee") != -1){
+      else if(this.$route.path.indexOf("interviewee") != -1){
         return "itve";
       }
       else{
@@ -66,8 +64,8 @@ export default {
     }
   },
   mounted() {
-    var path = this.$route.path;
     this.user_name = this.str_roomid + this.str_name;
+    console.log('Video: Running');
     this.send({
       event: 'join',
       name: this.user_name,
@@ -107,9 +105,9 @@ export default {
   methods: {
     send(message, toUser=null) {
       if (toUser != null) {
-        message.toUser = toUser;
+        message.connectedUser = toUser;
       }
-      message.connectedUser = this.user_name;
+      message.fromUser = this.user_name;
       message.roomid = this.str_roomid;
       this.socket.send(JSON.stringify(message));
     },
@@ -121,34 +119,48 @@ export default {
         this.initCreate();
       }
     },
+    addVideoURL(elementId, stream) {
+      var video = document.getElementById(elementId);
+      // Older brower may have no srcObject
+      if ('srcObject' in video) {
+        video.srcObject = stream;
+      } else {
+        // 防止在新的浏览器里使用它，应为它已经不再支持了
+        video.src = window.URL.createObjectURL(stream);
+      }
+    },
     initCreate() {
       const self = this;
       this.state = this.WAITING;
       navigator.mediaDevices
         .getUserMedia({ audio: true, video: true })
-        .then(function(stream) {
-          this.local_video = stream;
-          video.muted = true;
+        .then(stream => {
+          this.addVideoURL('local-video', stream);
           this.state = this.OFF;
           localStream = stream;
         })
-        .catch(function(err) {
+        .catch(err => {
           alert('打开本地视频失败！');
           console.log(err.name + ': ' + err.message);
         });
     },
     call() {
-      this.state = this.WAITING;
+      this.state = this.ON;
       this.users.forEach(e => {
+        console.log('Send to ', e);
+        if (e == this.user_name) return;
+        console.log('Send');
+
         this.connections[e] = new RTCPeerConnection(configuration);
 
         // Add local stream & Wait for remote stream
         this.connections[e].addStream(localStream);
         this.connections[e].onaddstream = s => {
-          if (isHr && e.indexOf('itve') != -1) {
-            local_video = s;
+          console.log('Got stream from: ', e);
+          if (this.isHr && e.indexOf('itve') != -1) {
+            this.addVideoURL('local-video', s.stream);
           } else {
-            remote_video = s;
+            this.addVideoURL('remote-video', s.stream);
           }
         };
 
@@ -174,15 +186,26 @@ export default {
             }, e);
           },
           error => {
-            alert('Error when creating an offer');
+            alert('通话失败（Error when creating an offer）');
           }
         );
       });
     },
     handleOffer(data) {
-      from = data.fromUser;
+      console.log('Get offer from: ', data.fromUser, ' to ', this.user_name);
+      if (data.fromUser == this.user_name) return;
+
+      var from = data.fromUser;
       this.connections[from] = new RTCPeerConnection(configuration);
       this.connections[from].addStream(localStream);
+      this.connections[from].onaddstream = s => {
+        console.log('Got stream from: ', from);
+        if (this.isHr && from.indexOf('itve') != -1) {
+          this.addVideoURL('local-video', s.stream);
+        } else {
+          this.addVideoURL('remote-video', s.stream);
+        }
+      };
       this.connections[from].setRemoteDescription(new RTCSessionDescription(data.offer));
       // Create an answer to an offer
       this.connections[from].createAnswer(
@@ -194,17 +217,22 @@ export default {
           }, from);
         },
         error => {
-          alert('Error when creating an answer');
+          alert('通话失败（Error when creating an answer）');
         }
       );
+      this.state = this.ON;
     },
     handleMsg(data) {
       console.log(data.message);
     },
     handleAnswer(data) {
+      if (data.fromUser == this.user_name) return;
+
       this.connections[data.fromUser].setRemoteDescription(new RTCSessionDescription(data.answer));
     },
     handleCandidate(data) {
+      if (data.fromUser == this.user_name) return;
+
       // ClientB 通过 PeerConnection 的 AddIceCandidate 方法保存起来
       this.connections[data.fromUser].addIceCandidate(new RTCIceCandidate(data.candidate));
     },
@@ -218,9 +246,13 @@ export default {
         e.onaddstream = null;
       });
       this.connections = [];
+      this.addVideoURL('remote-video', null);
+      this.state = this.OFF;
     },
     handleLeave(data) {
-      this.remote_video = '';
+      if (data.fromUser == this.user_name) return;
+
+      this.addVideoURL('remote-video', null);
       delete this.connections[data.fromUser];
     },
   },
@@ -241,6 +273,7 @@ export default {
 }
 video {
   width: 40%;
+  height: 80%;
 }
 .preview {
   position: fixed;
