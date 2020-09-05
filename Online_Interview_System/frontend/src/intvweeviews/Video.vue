@@ -3,7 +3,7 @@
     <div v-if="isHr" class="button-area">
       <el-button type="primary" @click="startAudio()">观看视频</el-button>
     </div>
-    <div v-if="!isHr" class="button-area">
+    <div v-show="ifitvr" class="button-area" >
       <el-button type="primary" @click="call()">加入视频</el-button>
     </div>
     <div class="video-play">
@@ -45,6 +45,7 @@ export default {
       ON: 2,
       state: 0,
       connections: [],
+      ifitvr: false,
     };
   },
   created () {
@@ -68,7 +69,9 @@ export default {
     }
   },
   mounted() {
-    console.log( 'ishr: ', this.isHr)
+    if(this.$route.path.indexOf("interviewer") != -1){
+      this.ifitvr = true;
+    }
     this.user_name = this.str_roomid + this.str_name;
     console.log('Video: Running');
     this.send({
@@ -137,7 +140,6 @@ export default {
     },
     handleLogin(data) {
       if (data.success === false) {
-        console.log( 'ishr: ', this.isHr)
         alert('该用户已经登陆过，请退出！');
       } else {
         this.users = data.allUsers;
