@@ -15,10 +15,7 @@
           <div class="header im-title">{{title}}</div>
             <div class="body im-record" id="im-record">
               <div class="li" :class="{user: item.uid == uid}" v-for="item in currentMessage" v-bind:key="item">
-                <template v-if="item.type===1">
-                  <p class="join-tips">{{item.msg}}</p>
-                </template>
-                <template v-else>
+                <template v-if="item.type===2">
                   <div class="img">{{item.nickname}}</div>
                   <p class="message-box">{{item.msg}}</p>
                 </template>
