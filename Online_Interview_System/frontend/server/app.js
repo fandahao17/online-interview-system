@@ -68,6 +68,7 @@ io.on('connection', function (socket) {
     }
     if (groupcode[data.id]) {
     	socket.emit('server_update', {code: groupcode[data.id]})
+        socket.emit('server_language_change', {language:data.language})
     }
   })
   socket.on('code_run', function (data) {
