@@ -157,7 +157,7 @@ export default {
 <style scoped>
   .el-header {
     background-color: #DCDFE6;
-    text-align: center;
+    text-align: left;
     line-height: 55px;
   }
 

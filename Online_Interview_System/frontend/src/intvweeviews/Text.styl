@@ -1,4 +1,4 @@
-$green = #00b7a3;
+$green = #25BB9B;
 *
   padding 0
   margin 0
@@ -65,9 +65,9 @@ html, body, #app
         clear both
       .img
         float left
-        width 45px
-        height 10px
-        border-radius 0%
+        width 40px
+        height 12px
+        border-radius 50%
         background #ccc
         padding 6px
         font-size 10px
@@ -77,12 +77,13 @@ html, body, #app
         text-align center 
       .message-box
         position absolute
+        overflow auto
         top 50%
         transform translateY(-50%)
         left 50px
       &.user
         .message-box
-          background #46b0ff
+          background #99ccff
           float right
           right 50px
           left inherit
@@ -109,8 +110,10 @@ html, body, #app
     flex 1
     padding 0 4px
     font-size 10px
+    border-radius 4px
   button
     width 40px
     background $green
     color #fff
     font-size 10px
+    border-radius 4px
