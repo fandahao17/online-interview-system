@@ -39,6 +39,9 @@ def login(request):
 			ret["type"] = "1"
 			ret["token"] = token
 			ret["name"] = obj.name
+			ret["free1"] = obj.free1
+			ret["free2"] = obj.free2
+			ret["free3"] = obj.free3
 			return JsonResponse(ret)
 
 		elif identity == 2:
