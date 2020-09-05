@@ -3,6 +3,9 @@
     <div v-if="isHr" class="button-area">
       <el-button type="primary" @click="startAudio()">观看视频</el-button>
     </div>
+    <div v-if="!isHr" class="button-area">
+      <el-button type="primary" @click="call()">加入视频</el-button>
+    </div>
     <div class="video-play">
       <video id="local-video" autoplay ></video>
       <video id="remote-video" autoplay ></video>
@@ -171,7 +174,7 @@ export default {
           this.addVideoURL('local-video', stream);
           this.state = this.OFF;
           localStream = stream;
-          this.call();
+          // this.call();
         })
         .catch(err => {
           alert('打开本地视频失败！');
