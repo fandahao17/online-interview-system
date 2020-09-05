@@ -271,7 +271,20 @@ export default {
         }
       };
 
+      // Gather ICE candidates
+      this.connections[from].onicecandidate = event => {
+        setTimeout(() => {
+          if (event.candidate) {
+            this.send({
+              event: 'candidate',
+              candidate: event.candidate,
+            }, from);
+          }
+        });
+      };
+
       this.connections[from].setRemoteDescription(new RTCSessionDescription(data.offer));
+
       // Create an answer to an offer
       this.connections[from].createAnswer(
         answer => {
