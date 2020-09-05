@@ -2,20 +2,23 @@
   <div>
     <el-container>
       <el-header>
+        <!-- <el-col :span="6">
+          <img src="../assets/logo1.jpg">
+        </el-col> -->
         Header 这是面试官的房间
-        <el-button type="primary" :disabled="isStart" @click="onStartBtn">开始录制</el-button>
+        <el-button type="primary" :disabled="isStart" @click="onStartBtn" class="end-button">开始录制</el-button>
         <el-button type="primary" :disabled="!isStart" @click="onEndBtn">结束录制</el-button>
         <el-button type="primary" :disabled="!isFinish" @click="onDownloadBtn">下载</el-button>
         <el-button type="primary" :disabled="!isFinish||isUpload" @click="onUploadBtn">上传</el-button>
-        <el-button type="primary" plain @click="clickButton">控制台输出房间信息</el-button>
+        <!-- <el-button type="primary" plain @click="clickButton">控制台输出房间信息</el-button> -->
       </el-header>
       <el-main>
         <el-row :gutter="20">
           <el-col :span="6">
-            <el-row class="grid-content bg-purple">
+            <el-row class="grid-content video-row">
               <video-window v-bind:room-info="roomInfo"></video-window>
             </el-row>
-            <el-row class="text-window grid-content bg-purple">
+            <el-row class="text-window grid-content text-row">
               <text-window></text-window>
             </el-row>
           </el-col>
@@ -29,10 +32,10 @@
               </el-tab-pane>
             </el-tabs>
           </el-col>
-          <el-col :span="5">
+          <el-col :span="5" class="question-window">
             <el-scrollbar>
-              <div class="grid-content bg-purple question-window">
-                <h4>题目</h4>
+              <div class="grid-content question-window">
+                <h4 class="top-head">题目</h4>
                 {{ queDetail['name'] }}<br/>
                 <h4>描述</h4>
                 {{ queDetail['desc'] }}<br/>
@@ -47,8 +50,8 @@
               </div>
             </el-scrollbar>
             <div class="bottom-toolbar">
-              <el-button type="primary" plain @click="addQuestion">添加题目</el-button>
-              <el-button type="primary" plain @click="endInterview">结束面试</el-button>
+              <el-button type="success" plain @click="addQuestion">添加题目</el-button>
+              <el-button type="success" @click="endInterview" class="end-button">结束面试</el-button>
             </div>
           </el-col>
         </el-row>
@@ -324,15 +327,17 @@ export default {
 </script>
 
 <style scoped>
-.text-window {
-  height: 400px;
-  line-height: 400px;
-  margin-top: 10px;
+.end-button {
+  background-color: #25BB9B;
+  border-color: #25BB9B;
 }
 
 .question-window {
   height: 540px;
   /* line-height: 500px; */
+  background-color: #F5F5F5;
+  border-width: 1px;
+  border-color: #000;
 }
 
 .card {
@@ -340,14 +345,14 @@ export default {
 }
 
 .el-header {
-  background-color: #B3C0D1;
-  color: #333;
+  background-color: #3D444C;
+  color: #FFF;
   text-align: center;
   line-height: 60px;
 }
 
 .el-main {
-  background-color: #E9EEF3;
+  background-color: #EDEDED;
   color: #333;
   height: 650px;
 }
@@ -389,5 +394,28 @@ body > .el-container {
 
 h4 {
   margin-bottom: 10px
+}
+
+.top-head {
+  margin-top: 0;
+}
+
+.video-row {
+  background-color: #3D444D;
+}
+
+.text-window {
+  height: 400px;
+  line-height: 400px;
+  margin-top: 10px;
+  background-color: #3D444D;
+}
+
+.el-tabs {
+  background-color: #F5F5F5;
+}
+
+.el-tabs--border-card>.el-tabs__header {
+  background-color: #F5F5F5;
 }
 </style>

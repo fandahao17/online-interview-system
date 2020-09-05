@@ -1,6 +1,9 @@
 <template>
   <el-container>
-    <el-header>Header<el-button type="primary" plain @click="clickButton">控制台输出房间信息</el-button></el-header>
+    <el-header>
+      Header
+      <!-- <el-button type="primary" plain @click="clickButton">控制台输出房间信息</el-button> -->
+    </el-header>
     <el-main>
       <el-row :gutter="20">
         <el-col :span="6">
@@ -23,7 +26,7 @@
         </el-col>
         <el-col :span="5" class="question-window">
           <div class="grid-content bg-purple question-window">
-            <h4>题目</h4>
+            <h4 class="top-head">题目</h4>
             {{ queDetail['name'] }}<br/>
             <h4>描述</h4>
             {{ queDetail['desc'] }}<br/>
@@ -204,5 +207,13 @@ body > .el-container {
 .grid-content {
   border-radius: 5px;
   min-height: 36px;
+}
+
+h4 {
+  margin-bottom: 10px
+}
+
+.top-head {
+  margin-top: 0;
 }
 </style>
