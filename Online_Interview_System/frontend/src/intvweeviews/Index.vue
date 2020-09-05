@@ -18,7 +18,7 @@
         <el-col :span="13" class="editor-and-board">
           <el-tabs type="border-card" class="card">
             <el-tab-pane label="editor" class="editor-window">
-              <editor-window isHr="false"></editor-window>
+              <editor-window :isHr="false"></editor-window>
             </el-tab-pane>
             <el-tab-pane label="white board" class="board-window">
               <board-window isHr="false"></board-window>
