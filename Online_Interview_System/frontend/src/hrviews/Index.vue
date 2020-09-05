@@ -2,16 +2,17 @@
   <div>
     <el-container>
       <el-header>
-        Header 这是hr的房间
+        <img src="../assets/logo3.png" width="120px" height="60px" class="top-img">
+        在线面试（房间号：{{ $route.params.roomid }}）
         <!-- <el-button type="primary" plain @click="clickButton">控制台输出房间信息</el-button> -->
       </el-header>
       <el-main>
         <el-row :gutter="20">
           <el-col :span="6">
-            <el-row class="grid-content bg-purple">
+            <el-row class="grid-content video-row">
               <video-window v-bind:room-info="roomInfo" :isHr="true"></video-window>
             </el-row>
-            <el-row class="text-window grid-content bg-purple">
+            <el-row class="text-window grid-content text-row">
               <text-window :isHr="true"></text-window>
             </el-row>
           </el-col>
@@ -25,24 +26,26 @@
               </el-tab-pane>
             </el-tabs>
           </el-col>
-          <el-col :span="5">
-            <div class="grid-content bg-purple question-window">
-              <h4 class="top-head">题目</h4>
-              {{ queDetail['name'] }}<br/>
-              <h4>描述</h4>
-              {{ queDetail['desc'] }}<br/>
-              <h4>输入描述</h4>
-              {{ queDetail['input'] }}<br/>
-              <h4>输出描述</h4>
-              {{ queDetail['output'] }}<br/>
-              <h4>样例输入</h4>
-              {{ queDetail['input_sample'] }}<br/>
-              <h4>样例输出</h4>
-              {{ queDetail['output_sample'] }}<br/>
-            </div>
+          <el-col :span="5" class="question-window">
+            <el-scrollbar>
+              <div class="grid-content question-window">
+                <h4 class="top-head">题目</h4>
+                {{ queDetail['name'] }}<br/>
+                <h4>描述</h4>
+                {{ queDetail['desc'] }}<br/>
+                <h4>输入描述</h4>
+                {{ queDetail['input'] }}<br/>
+                <h4>输出描述</h4>
+                {{ queDetail['output'] }}<br/>
+                <h4>样例输入</h4>
+                {{ queDetail['input_sample'] }}<br/>
+                <h4>样例输出</h4>
+                {{ queDetail['output_sample'] }}<br/>
+              </div>
+            </el-scrollbar>
             <div class="bottom-toolbar">
-              <el-button type="primary" plain @click="addQuestion">添加题目</el-button>
-              <el-button type="primary" plain @click="endInterview">结束面试</el-button>
+              <el-button type="primary" @click="addQuestion" class="end-button">添加题目</el-button>
+              <el-button type="primary" @click="endInterview" class="end-button">结束面试</el-button>
             </div>
           </el-col>
         </el-row>
@@ -317,6 +320,21 @@ export default {
 </script>
 
 <style scoped>
+.head-line {
+  color: #BCC4C8;
+}
+
+.top-img {
+  float: left;
+}
+
+.end-button,
+.end-button:focus,
+.end-button:hover {
+  background-color: #25BB9B;
+  border-color: #25BB9B;
+}
+
 .text-window {
   height: 400px;
   line-height: 400px;
@@ -326,6 +344,9 @@ export default {
 .question-window {
   height: 540px;
   /* line-height: 500px; */
+  background-color: #F5F5F5;
+  border-width: 1px;
+  border-color: #000;
 }
 
 .card {
@@ -333,14 +354,14 @@ export default {
 }
 
 .el-header {
-  background-color: #B3C0D1;
-  color: #333;
-  text-align: center;
+  background-color: #3D444C;
+  color: #FFF;
+  text-align: left;
   line-height: 60px;
 }
 
 .el-main {
-  background-color: #E9EEF3;
+  background-color: #EDEDED;
   color: #333;
   height: 650px;
 }
@@ -386,5 +407,24 @@ h4 {
 
 .top-head {
   margin-top: 0;
+}
+
+.video-row {
+  background-color: #3D444D;
+}
+
+.text-window {
+  height: 400px;
+  line-height: 400px;
+  margin-top: 10px;
+  background-color: #3D444D;
+}
+
+.el-tabs {
+  background-color: #F5F5F5;
+}
+
+.el-tabs--border-card>.el-tabs__header {
+  background-color: #F5F5F5;
 }
 </style>

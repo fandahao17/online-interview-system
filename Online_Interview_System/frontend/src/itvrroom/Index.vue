@@ -2,14 +2,12 @@
   <div>
     <el-container>
       <el-header>
-        <!-- <el-col :span="6">
-          <img src="../assets/logo1.jpg">
-        </el-col> -->
-        Header 这是面试官的房间
-        <el-button type="primary" :disabled="isStart" @click="onStartBtn" class="end-button">开始录制</el-button>
-        <el-button type="primary" :disabled="!isStart" @click="onEndBtn">结束录制</el-button>
-        <el-button type="primary" :disabled="!isFinish" @click="onDownloadBtn">下载</el-button>
-        <el-button type="primary" :disabled="!isFinish||isUpload" @click="onUploadBtn">上传</el-button>
+        <img src="../assets/logo3.png" width="120px" height="60px" class="top-img">
+        在线面试（房间号：{{ $route.params.roomid }}）
+        <el-button type="primary" size="medium" :disabled="isStart" @click="onStartBtn" class="head-button">开始录制</el-button>
+        <el-button type="primary" size="medium" :disabled="!isStart" @click="onEndBtn" class="head-button">结束录制</el-button>
+        <el-button type="primary" size="medium" :disabled="!isFinish" @click="onDownloadBtn" class="head-button">下载</el-button>
+        <el-button type="primary" size="medium" :disabled="!isFinish||isUpload" @click="onUploadBtn" class="head-button">上传</el-button>
         <!-- <el-button type="primary" plain @click="clickButton">控制台输出房间信息</el-button> -->
       </el-header>
       <el-main>
@@ -50,8 +48,8 @@
               </div>
             </el-scrollbar>
             <div class="bottom-toolbar">
-              <el-button type="success" plain @click="addQuestion">添加题目</el-button>
-              <el-button type="success" @click="endInterview" class="end-button">结束面试</el-button>
+              <el-button type="primary" @click="addQuestion" class="end-button">添加题目</el-button>
+              <el-button type="primary" @click="endInterview" class="end-button">结束面试</el-button>
             </div>
           </el-col>
         </el-row>
@@ -327,9 +325,29 @@ export default {
 </script>
 
 <style scoped>
-.end-button {
+.head-line {
+  color: #BCC4C8;
+}
+
+.top-img {
+  float: left;
+}
+
+.end-button,
+.end-button:focus,
+.end-button:hover,
+.head-button:focus,
+.head-button:hover {
   background-color: #25BB9B;
   border-color: #25BB9B;
+}
+
+.head-button {
+  background-color: #25BB9B;
+  border-color: #25BB9B;
+  float: right;
+  margin-top: 10px;
+  margin-left: 10px;
 }
 
 .question-window {
@@ -347,7 +365,7 @@ export default {
 .el-header {
   background-color: #3D444C;
   color: #FFF;
-  text-align: center;
+  text-align: left;
   line-height: 60px;
 }
 
