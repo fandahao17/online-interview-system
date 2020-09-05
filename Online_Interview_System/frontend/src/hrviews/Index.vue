@@ -44,8 +44,8 @@
               </div>
             </el-scrollbar>
             <div class="bottom-toolbar">
-              <el-button type="primary" disabled @click="addQuestion" class="end-button">添加题目</el-button>
-              <el-button type="primary" disabled @click="endInterview" class="end-button">结束面试</el-button>
+              <el-button type="primary" @click="addQuestion" class="end-button">添加题目</el-button>
+              <el-button type="primary" @click="endInterview" class="end-button">结束面试</el-button>
             </div>
           </el-col>
         </el-row>
@@ -133,7 +133,7 @@ export default {
       queForm: {},
       queTableData: [],
       queDetail: {},
-      messageList: [],
+      messageList: '',
       bridge: []
     }
   },
@@ -274,7 +274,6 @@ export default {
     },
     conWebSocket: function () {
       let vm = this
-      let _this = this
       if (window.WebSocket) {
         vm.socket = new WebSocket('ws://106.14.227.202:8088')
         let socket = vm.socket
@@ -293,22 +292,6 @@ export default {
           console.log(vm.messageList)
           let message = JSON.parse(e.data)
           vm.messageList.push(message)
-          console.log('message[\'roomid\'] === this.$route.params.roomid = ', message['roomid'] === vm.$route.params.roomid)
-          if (message['roomid'] === vm.$route.params.roomid) {
-            axios.get('http://106.14.227.202/api/problem/' + message['msg'] + '/', {
-              headers: {
-                'Content-Type': 'application/json'
-              }
-            }).then(function (response) {
-              console.log(response.data)
-              console.log('type:', typeof (response.data))
-              _this.queDetail = response.data
-              console.log(_this.queDetail)
-            }).catch(function (error) {
-              console.log('get problems detail error:')
-              console.log(error.response)
-            })
-          }
         }
       }
     },

@@ -12,16 +12,16 @@
             <video-window v-bind:room-info="roomInfo" :isHr="false"></video-window>
           </el-row>
           <el-row class="text-window grid-content text-row">
-            <text-window isHr="false"></text-window>
+            <text-window :isHr="false"></text-window>
           </el-row>
         </el-col>
         <el-col :span="13" class="editor-and-board">
           <el-tabs type="border-card" class="card">
             <el-tab-pane label="editor" class="editor-window">
-              <editor-window isHr="false"></editor-window>
+              <editor-window :isHr="false"></editor-window>
             </el-tab-pane>
             <el-tab-pane label="white board" class="board-window">
-              <board-window isHr="false"></board-window>
+              <board-window :isHr="false"></board-window>
             </el-tab-pane>
           </el-tabs>
         </el-col>
@@ -121,22 +121,19 @@ export default {
           // if(message.users) {
           //   vm.users = message.users;
           // }
-          console.log('message[\'roomid\'] === this.$route.params.roomid = ', message['roomid'] === vm.$route.params.roomid)
-          if (message['roomid'] === vm.$route.params.roomid) {
-            axios.get('http://106.14.227.202/api/problem/' + message['msg'] + '/', {
-              headers: {
-                'Content-Type': 'application/json'
-              }
-            }).then(function (response) {
-              console.log(response.data)
-              console.log('type:', typeof (response.data))
-              _this.queDetail = response.data
-              console.log(_this.queDetail)
-            }).catch(function (error) {
-              console.log('get problems detail error:')
-              console.log(error.response)
-            })
-          }
+          axios.get('http://106.14.227.202/api/problem/' + message['msg'] + '/', {
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          }).then(function (response) {
+            console.log(response.data)
+            console.log('type:', typeof (response.data))
+            _this.queDetail = response.data
+            console.log(_this.queDetail)
+          }).catch(function (error) {
+            console.log('get problems detail error:')
+            console.log(error.response)
+          })
         }
       }
     },
