@@ -1,24 +1,11 @@
 <template>
   <div class="video-window">
-    <div class="button-area">
-      <button class="btn-success btn" :disabled="!users[user_name]" @click="call" style="position: absolute;left:0px; top:0px">Call</button>
-      <button class="btn-danger btn" :disabled="users[user_name]" @click="hangUp" style="position: absolute;left:50px; top:0px">Hang Up</button>
+    <div v-if="isHr" class="button-area">
+      <el-button type="primary" @click="startAudio()">观看视频</el-button>
     </div>
     <div class="video-play">
-      <video id="localVideo" autoplay style="position: absolute; left:0px; top:60px; width: 45%; height: 60%; object-fit: fill"></video>
-      <video id="remoteVideo" :src="remote_video" autoplay style="position: absolute; left:150px; top:60px; width: 45%; height: 60%; object-fit: fill"></video>
-    </div>
-    <div class="preview" v-show="accept_video">
-      <div class="preview-wrapper">
-        <div class="preview-container">
-          <div class="preview-body">
-            <h4>您有视频邀请，是否接受?</h4>
-            <button class="btn-success btn" style="width: 50%; height: 50%" @click="accept">接受</button>
-            <button class="btn-danger btn" style="width: 10%; height: 50%" @click="reject">拒绝</button>
-          </div>
-          <div class="confirm" @click="closePreview">×</div>
-        </div>
-      </div>
+      <video id="local-video" autoplay ></video>
+      <video id="remote-video" autoplay ></video>
     </div>
   </div>
 </template>
@@ -33,49 +20,54 @@ window.RTCIceCandidate = window.RTCIceCandidate || window.mozRTCIceCandidate || 
 window.RTCSessionDescription =
   window.RTCSessionDescription || window.mozRTCSessionDescription || window.webkitRTCSessionDescription
 
-// const socket = io.connect('http://106.14.227.202:3000');
-// var socket;
-
 const configuration = {
   iceServers: [config.DEFAULT_ICE_SERVER],
 };
 
 let localStream, peerConn;
-let connectedUser = null;
+
+
 
 export default {
   name: 'VideoWindow',
-  props: ['roomInfo'],
+  props: ['roomInfo', 'isHr'],
   data() {
     return {
       socket: '',
       user_name: '',
-      show: true,
-      users: '',
+      users: [],
       call_username: '',
-      remote_video: '',
-      accept_video: false,
+      OFF: 0,
+      WAITING: 1,
+      ON: 2,
+      state: 0,
+      connections: [],
     };
   },
   created () {
     this.socket = io.connect('http://106.14.227.202:3000');
     // 36 挪到这里试试看
   },
+  computed: {
+    str_name() {
+      if (this.isHr) {
+        return 'hr';
+      }
+      else if(this.$route.path.indexOf("interviewee") != -1){
+        return "itve";
+      }
+      else{
+        return "itvr";
+      }
+    },
+    str_roomid() {
+      return this.$route.params.roomid;
+    }
+  },
   mounted() {
-    var path = this.$route.path;
-    var str_roomid = this.$route.params.roomid;
-    var str_name = null;
-    var str_name_other = null;
-    if(path.indexOf("interviewee") != -1){
-      str_name = "itve";
-      str_name_other = "itvr";
-    }
-    else{
-      str_name = "itvr";
-      str_name_other = "itve";
-    }
-    this.user_name = str_roomid + str_name;
-    this.call_username = str_roomid + str_name_other;
+
+    this.user_name = this.str_roomid + this.str_name;
+    console.log('Video: Running');
     this.send({
       event: 'join',
       name: this.user_name,
@@ -91,12 +83,6 @@ export default {
           case 'join':
             this.handleLogin(data);
             break;
-          case 'call':
-            this.handleCall(data);
-            break;
-          case 'accept':
-            this.handleAccept(data);
-            break;
           case 'offer':
             this.handleOffer(data);
             break;
@@ -110,7 +96,7 @@ export default {
             this.handleAnswer(data);
             break;
           case 'leave':
-            this.handleLeave();
+            this.handleLeave(data);
             break;
           default:
             break;
@@ -119,19 +105,51 @@ export default {
     );
   },
   methods: {
-    send(message) {
-      if (connectedUser !== null) {
-        message.connectedUser = connectedUser;
+    startAudio() {
+      let silence = () => {
+        let ctx = new AudioContext(), oscillator = ctx.createOscillator();
+        let dst = oscillator.connect(ctx.createMediaStreamDestination());
+        oscillator.start();
+        return Object.assign(dst.stream.getAudioTracks()[0], {enabled: false});
       }
+
+      let black = ({width = 640, height = 480} = {}) => {
+        let canvas = Object.assign(document.createElement("canvas"), {width, height});
+        canvas.getContext('2d').fillRect(0, 0, width, height);
+        let stream = canvas.captureStream();
+        return Object.assign(stream.getVideoTracks()[0], {enabled: false});
+      }
+
+      this.blackSilence = (...args) => new MediaStream([black(...args), silence()]);
+
+      this.call();
+    },
+    send(message, toUser=null) {
+      if (toUser != null) {
+        message.connectedUser = toUser;
+      }
+      message.fromUser = this.user_name;
+      message.roomid = this.str_roomid;
       this.socket.send(JSON.stringify(message));
     },
     handleLogin(data) {
       if (data.success === false) {
-        alert('Ooops...please try a different username');
+        alert('该用户已经登陆过，请退出！');
       } else {
-        this.show = false;
         this.users = data.allUsers;
-        this.initCreate();
+        if (!this.isHr) {
+          this.initCreate();
+        }
+      }
+    },
+    addVideoURL(elementId, stream) {
+      var video = document.getElementById(elementId);
+      // Older brower may have no srcObject
+      if ('srcObject' in video) {
+        video.srcObject = stream;
+      } else {
+        // 防止在新的浏览器里使用它，应为它已经不再支持了
+        video.src = window.URL.createObjectURL(stream);
       }
     },
     addVideoURL(elementId, stream) {
@@ -146,134 +164,169 @@ export default {
     },
     initCreate() {
       const self = this;
+      this.state = this.WAITING;
       navigator.mediaDevices
         .getUserMedia({ audio: true, video: true })
-        .then(function(stream) {
-          var video = document.getElementById('localVideo');
-          self.addVideoURL('localVideo', stream);
-          video.muted = true;
+        .then(stream => {
+          this.addVideoURL('local-video', stream);
+          this.state = this.OFF;
           localStream = stream;
+          this.call();
         })
-        .catch(function(err) {
+        .catch(err => {
+          alert('打开本地视频失败！');
           console.log(err.name + ': ' + err.message);
         });
     },
     call() {
-      if (this.call_username.length > 0) {
-        if (this.users[this.call_username] === true) {
-          connectedUser = this.call_username;
-          this.createConnection();
-          this.send({
-            event: 'call',
-          });
+      this.state = this.ON;
+      this.users.forEach(e => {
+        if (e == this.user_name) return;
+
+        this.connections[e] = new RTCPeerConnection(configuration);
+
+        // Add local stream & Wait for remote stream
+        if (!this.isHr) {
+          this.connections[e].addStream(localStream);
         } else {
-          alert('The current user is calling, try another');
+          this.connections[e].addStream(this.blackSilence());
         }
-      } else {
-        alert('Ooops...this username cannot be empty, please try again');
-      }
-    },
-    createConnection() {
-      peerConn = new RTCPeerConnection(configuration);
-      peerConn.addStream(localStream);
-      peerConn.onaddstream = e => {
-        this.addVideoURL('remoteVideo', e.stream);
-      };
-      peerConn.onicecandidate = event => {
-        setTimeout(() => {
-          if (event.candidate) {
-            this.send({
-              event: 'candidate',
-              candidate: event.candidate,
-            });
+
+        this.connections[e].onaddstream = s => {
+          console.log('Got stream from: ', e);
+          if (e.indexOf('hr') == -1) {
+            console.log('Not HR, show video');
+            // Ignore stream from HR
+            if (this.isHr && e.indexOf('itvr') != -1) {
+              // On HR page, treat interviewer stream as local stream
+              console.log('Put video on local-video');
+              this.addVideoURL('local-video', s.stream);
+            } else {
+              // Otherwise, put it on 'remote-video'
+              console.log('Put video on remote-video');
+              this.addVideoURL('remote-video', s.stream);
+            }
           }
-        });
-      };
-    },
-    handleCall(data) {
-      this.accept_video = true;
-      connectedUser = data.name;
-    },
-    reject() {
-      this.send({
-        event: 'accept',
-        accept: false,
-      });
-      this.accept_video = false;
-    },
-    accept() {
-      this.send({
-        event: 'accept',
-        accept: true,
-      });
-      this.accept_video = false;
-    },
-    handleAccept(data) {
-      if (data.accept) {
-        // Create an offer
-        peerConn.createOffer(
+        };
+
+        // Gather ICE candidates
+        this.connections[e].onicecandidate = event => {
+          setTimeout(() => {
+            if (event.candidate) {
+              this.send({
+                event: 'candidate',
+                candidate: event.candidate,
+              }, e);
+            }
+          });
+        };
+        
+        // Create offer
+        this.connections[e].createOffer(
           offer => {
+            this.connections[e].setLocalDescription(offer);
             this.send({
               event: 'offer',
               offer: offer,
-            });
-            peerConn.setLocalDescription(offer);
+            }, e);
           },
           error => {
-            alert('Error when creating an offer');
+            alert('通话失败（Error when creating an offer）');
           }
         );
-      } else {
-        alert('对方已拒绝');
-      }
+      });
     },
     handleOffer(data) {
-      connectedUser = data.name;
-      this.createConnection();
-      peerConn.setRemoteDescription(new RTCSessionDescription(data.offer));
+      console.log('Get offer from: ', data.fromUser, ' to ', this.user_name);
+      if (data.fromUser == this.user_name) return;
+
+      var from = data.fromUser;
+      this.connections[from] = new RTCPeerConnection(configuration);
+
+      // Let HR send a dummy stream
+      if (!this.isHr) {
+        this.connections[from].addStream(localStream);
+      } else {
+        this.connections[from].addStream(this.blackSilence());
+      }
+
+      this.connections[from].onaddstream = s => {
+        console.log('Got stream from: ', from);
+        if (from.indexOf('hr') == -1) {
+          console.log('Not HR, show video');
+          // Ignore stream from HR
+          if (this.isHr && from.indexOf('itvr') != -1) {
+            // On HR page, treat interviewer stream as local stream
+            console.log('Put video on local-video');
+            this.addVideoURL('local-video', s.stream);
+          } else {
+            console.log('Put video on remote-video');
+            this.addVideoURL('remote-video', s.stream);
+          }
+        }
+      };
+
+      this.connections[from].setRemoteDescription(new RTCSessionDescription(data.offer));
       // Create an answer to an offer
-      peerConn.createAnswer(
+      this.connections[from].createAnswer(
         answer => {
-          peerConn.setLocalDescription(answer);
+          this.connections[from].setLocalDescription(answer);
           this.send({
             event: 'answer',
             answer: answer,
-          });
+          }, from);
         },
         error => {
-          alert('Error when creating an answer');
+          alert('通话失败（Error when creating an answer）');
         }
       );
+      this.state = this.ON;
     },
     handleMsg(data) {
       console.log(data.message);
     },
     handleAnswer(data) {
-      peerConn.setRemoteDescription(new RTCSessionDescription(data.answer));
+      if (data.fromUser == this.user_name) return;
+
+      this.connections[data.fromUser].setRemoteDescription(new RTCSessionDescription(data.answer));
     },
     handleCandidate(data) {
+      if (data.fromUser == this.user_name) return;
+
       // ClientB 通过 PeerConnection 的 AddIceCandidate 方法保存起来
-      peerConn.addIceCandidate(new RTCIceCandidate(data.candidate));
+      this.connections[data.fromUser].addIceCandidate(new RTCIceCandidate(data.candidate));
     },
     hangUp() {
       this.send({
         event: 'leave',
       });
-      this.handleLeave();
+      this.connections.forEach(e => {
+        e.close();
+        e.onicecandidate = null;
+        e.onaddstream = null;
+      });
+      this.connections = [];
+      this.addVideoURL('remote-video', null);
+      this.state = this.OFF;
     },
-    handleLeave() {
-      alert('通话已结束');
-      connectedUser = null;
-      this.remote_video = '';
-      peerConn.close();
-      peerConn.onicecandidate = null;
-      peerConn.onaddstream = null;
-      if (peerConn.signalingState === 'closed') {
-        this.initCreate();
+    handleLeave(data) {
+      if (data.fromUser == this.user_name) return;
+
+      console.log('User left: ', data.fromUser);
+
+      if (data.fromUser.indexOf('hr') == -1) {
+        // Ignore HR leave
+        if (!this.isHr) {
+          this.addVideoURL('remote-video', null);
+        } else if (data.fromUser.indexOf('itve') != -1) {
+          // Interviewee left on HR page
+          this.addVideoURL('remote-video', null);
+        } else {
+          // Interviewer left on HR page
+          this.addVideoURL('local-video', null);
+        }
       }
-    },
-    closePreview() {
-      this.accept_video = false;
+      delete this.connections[data.fromUser];
     },
   },
 };
@@ -282,14 +335,18 @@ export default {
 <style scoped>
 .video-window {
   height: 200px;
-  line-height: 200px;
 }
 .button-area {
-  height: 10%;
+  height: 25%;
+  text-align: center;
 }
 .video-play {
-  height: 100px;
-  width: 100px;
+  height: 75%;
+  text-align: center;
+}
+video {
+  width: 40%;
+  height: 80%;
 }
 .preview {
   position: fixed;
