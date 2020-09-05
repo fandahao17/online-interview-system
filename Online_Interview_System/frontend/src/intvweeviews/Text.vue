@@ -24,9 +24,9 @@
         </div>
       </div>
     </div>
-    <div class="footer im-input" v-show="inputshow">
+    <div class="footer im-input">
       <input type="text" v-model="msg" placeholder="请输入内容">
-      <button @click="send">发送</button>
+      <button @click="send" disabled="isHr">发送</button>
     </div>
   </div>
 </template>
@@ -52,8 +52,7 @@ export default {
       msg: '',
       messageList: [],
       users: [],
-      bridge: [],
-      inputshow: true
+      bridge: []
     }
   },
   mounted() {
@@ -108,7 +107,7 @@ export default {
       this.title = '和' + item.nickname + '聊天';
     },
     send(){
-      if(!this.msg||this.isHr==true){
+      if(!this.msg){
         return
       }
       this.sendMessage(2, this.msg)
@@ -125,9 +124,6 @@ export default {
       this.msg = '';
     },
     conWebSocket(){
-      if (this.isHr == true){
-      this.inputshow = false;
-      }
       let vm = this;
       if(window.WebSocket){
         vm.socket = new WebSocket('ws://106.14.227.202:8010');

@@ -87,9 +87,9 @@
     </el-dialog>
 
     <!-- 点击 HR 卡片弹出的表单 -->
-    <el-dialog width=50% :visible.sync="hrDialogFormVisible">
+    <el-dialog width=85% :visible.sync="hrDialogFormVisible">
       <el-row :gutter="20">
-        <el-col>
+        <el-col :span="7">
           <h3>HR 信息</h3>
           <el-form :model="hrForm">
             <el-form-item label="姓名" :label-width="hrFormLabelWidth">
@@ -111,7 +111,7 @@
             <el-button size="medium" type="primary" plain v-if="editHrInfo" @click="commitHrDialog">确 定</el-button>
           </div>
         </el-col>
-        <!-- <el-col :span="1">
+        <el-col :span="1">
           <el-divider direction="vertical"></el-divider>
         </el-col>
         <el-col :span="8">
@@ -202,7 +202,7 @@
             <el-button size="medium" type="danger" plain @click="hrDialogFormVisible = true">删 除</el-button>
             <el-button size="medium" type="primary" plain @click="addIntvwerDialogFormVisible = true">添 加</el-button>
           </div>
-        </el-col> -->
+        </el-col>
       </el-row>
     </el-dialog>
 
