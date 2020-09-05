@@ -41,7 +41,7 @@ class ProblemTestCase(TestCase):
         self.assertEqual(json_data['input'], "所有输入只包含小写字母 a-z")
         self.assertEqual(json_data['output'], "字符串数组中的最长公共前缀")
 
-def test_problem_getall(self):
+    def test_problem_getall(self):
         client = Client()
         response = client.get('/problem/getall/')
         json_data = eval(response.content.decode('utf8'))

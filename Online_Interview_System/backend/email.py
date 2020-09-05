@@ -25,9 +25,10 @@ def room_send_email(itve, itvr, roomid, time):
     """
     Send notification emails to interviewer & interviewee
     """
+    # print("---email, type:{}, number:{}".format(type(time), time))
     url = ITVE_URL_PAT.format(roomid)
     name = Interviewee.objects.get(pk=itve)
-    msg = MIMEText(ITVE_MESSAGE.format(name, TIME_OPTIONS[time], url), 'plain', 'utf-8')
+    msg = MIMEText(ITVE_MESSAGE.format(name, TIME_OPTIONS[int(time)], url), 'plain', 'utf-8')
     msg['Subject'] = ITVE_SUBJECT
     msg['From'] = 'Jobs <fandahao17@mail.ustc.edu.cn>'
     msg['To'] = itve
