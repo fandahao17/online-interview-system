@@ -55,7 +55,7 @@ export default {
     onLogin () {
       var _this = this
       axios.request({
-        url: '/api/login',
+        url: 'http://106.14.227.202/api/login',
         method: 'POST',
         data: {
           email: _this.input1,
@@ -68,12 +68,17 @@ export default {
       }).then(function (arg) {
         //  get return results
         if (arg.data.code === 1000) {
-          window.alert(arg.data.msg)
+          console.log('arg.data = ', arg.data)
+          // window.alert(arg.data.msg)
+          _this.$message(arg.data.msg)
           localStorage.setItem('identity', Number(_this.value.charAt(_this.value.length - 1)))
           localStorage.setItem('token', arg.data.token)
           localStorage.setItem('email', _this.input1)
           localStorage.setItem('name', arg.data.name)
           if (arg.data.type === '1') {
+            localStorage.setItem('free1', arg.data.free1)
+            localStorage.setItem('free2', arg.data.free2)
+            localStorage.setItem('free3', arg.data.free3)
             _this.$router.push('/interviewer')
           } else if (arg.data.type === '2') {
             _this.$router.push('/admin')
