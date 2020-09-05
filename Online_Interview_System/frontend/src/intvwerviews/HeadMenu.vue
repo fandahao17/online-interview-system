@@ -44,6 +44,7 @@ export default {
   },
   created: function () {
     let _this = this
+    console.log(localStorage.getItem('identity'))
     if (localStorage.getItem('email') === null) {
       alert('need to login')
       _this.$router.push('/login/')
