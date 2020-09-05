@@ -467,7 +467,7 @@ def room_review(request):
 	- status：0代表未分配，1代表拒绝，2代表录用
 	"""
 	res = Room.objects.values('roomid', 'interviewee__name',
-	                          'tester__name', 'score', 'time', 'interviewee__status')
+	                          'tester__name', 'score', 'time', 'interviewee__status', 'remark')
 	return JsonResponse(list(res), safe=False, json_dumps_params={'ensure_ascii': False})
 
 
