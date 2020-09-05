@@ -16,14 +16,19 @@
           <div class="toolbar">
             <div class="columns">
               <div class="column">
-                <multiselect
-                  v-model="language"
-                  class="languages"
-                  :options="languages"
-                  :show-labels="false"
-                  placeholder="Select a language"
-                  @input="setLanguageMode"
-                ></multiselect>
+                <div v-if="isItvr">
+                  <multiselect
+                    v-model="language"
+                    class="languages"
+                    :options="languages"
+                    :show-labels="false"
+                    placeholder="Select a language:default:javascript"
+                    @input="setLanguageMode"
+                  ></multiselect>
+                </div>
+                <div v-if="!isItvr">
+                  <el-text style="color:white">{{this.language}}</el-text>
+                </div>
                 <el-text style="color:red">{{this.hint}}</el-text>
               </div>
             </div>
@@ -47,7 +52,7 @@ import 'codemirror/mode/clike/clike.js'
 import 'codemirror/theme/monokai.css'
 export default {
   name: 'EditorWindow',
-  props: ['isHr'],
+  props: ['isHr', 'isItvr'],
   components: {
     'editor': codemirror,
     Multiselect
@@ -103,6 +108,7 @@ export default {
     },
     setLanguageMode () {
       this.cmOptions.mode = `text/${this.languageModes[this.language]}`
+      this.$socket.emit('language_change', {language: this.language})
       if (this.language === 'java') {
         this.hint = 'class name should be "Solution"'
       } else {
@@ -133,6 +139,17 @@ export default {
       console.log('test server_result')
       console.log(data.msg)
       this.resultMsg = data.msg
+    },
+    server_language_change (data) {
+      if (!this.isItvr) {
+        this.language = data.language
+        this.cmOptions.mode = `text/${this.languageModes[this.language]}`
+        if (this.language === 'java') {
+          this.hint = 'class name should be "Solution"'
+        } else {
+          this.hint = ''
+        }
+      }
     }
   }
 }

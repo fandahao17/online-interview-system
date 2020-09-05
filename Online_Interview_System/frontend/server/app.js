@@ -9,6 +9,7 @@ app.listen(PORT,'0.0.0.0')
 var group = new Array()
 var grouplength = new Array()
 var groupcode = new Array()
+var grouplanguage = new Array()
 io.on('connection', function (socket) {
   socket.on('client_update', function (data) {
     console.log(socket.id+'change code')
@@ -25,6 +26,23 @@ io.on('connection', function (socket) {
     	   toSocket.emit('server_update', {code:data.code})
         }
     	templength++
+    }
+  })
+  socket.on('language_change', function (data) {
+    console.log(socket.id+'change language')
+    console.log(data)
+    grouplanguage[data.id] = data.language
+    var templength = 0
+    while(templength <= grouplength[data.id]) {
+        if (group[data.id][templength] == socket.id) {
+            templength++
+            continue
+        }
+        var toSocket = _.findWhere(io.sockets.sockets, {id: group[data.id][templength]})
+        if (toSocket) {
+           toSocket.emit('server_language_change', {language:data.language})
+        }
+        templength++
     }
   })
   socket.on('client_enter', function (data) {
@@ -46,6 +64,7 @@ io.on('connection', function (socket) {
     	group[data.id] = []
     	group[data.id][0] = socket.id
     	grouplength[data.id] = 1
+        grouplanguage[data.id] = 'javascript'
     }
     if (groupcode[data.id]) {
     	socket.emit('server_update', {code: groupcode[data.id]})
