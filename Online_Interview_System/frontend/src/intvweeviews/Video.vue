@@ -154,6 +154,7 @@ export default {
         // 防止在新的浏览器里使用它，应为它已经不再支持了
         video.src = window.URL.createObjectURL(stream);
       }
+      video.play()
     },
     addVideoURL(elementId, stream) {
       var video = document.getElementById(elementId);
@@ -164,6 +165,7 @@ export default {
         // 防止在新的浏览器里使用它，应为它已经不再支持了
         video.src = window.URL.createObjectURL(stream);
       }
+      video.play()
     },
     initCreate() {
       const self = this;
@@ -269,7 +271,20 @@ export default {
         }
       };
 
+      // Gather ICE candidates
+      this.connections[from].onicecandidate = event => {
+        setTimeout(() => {
+          if (event.candidate) {
+            this.send({
+              event: 'candidate',
+              candidate: event.candidate,
+            }, from);
+          }
+        });
+      };
+
       this.connections[from].setRemoteDescription(new RTCSessionDescription(data.offer));
+
       // Create an answer to an offer
       this.connections[from].createAnswer(
         answer => {
