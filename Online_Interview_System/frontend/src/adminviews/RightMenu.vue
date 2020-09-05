@@ -86,11 +86,11 @@ export default {
     if (localStorage.getItem('email') === null) {
       alert('need to login')
       _this.$router.push('/login/')
-    } else if (localStorage.getItem('identity') !== '2') {
+    } else if (localStorage.getItem('identity') != '2') {
       alert('permission denied: not a admin')
-      if (localStorage.getItem('identity') === '3') {
+      if (localStorage.getItem('identity') == '3') {
         _this.$router.push('/hr')
-      } else if (localStorage.getItem('identity') === '1') {
+      } else if (localStorage.getItem('identity') == '1') {
         _this.$router.push('/interviewer')
       } else {
         alert('can\'t identify ')
