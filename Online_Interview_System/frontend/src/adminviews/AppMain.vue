@@ -607,7 +607,7 @@ export default {
       this.searchInfo = searchInfo
       console.log('search')
       console.log(this.searchInfo)
-      console.log(this.cardDataAll[0]['name'])
+      this.cardDataAll.sort(function(a, b){return b['name'].lastIndexOf(searchInfo) - a['name'].lastIndexOf(searchInfo)})
     }
   },
   created: function () {
