@@ -1,9 +1,5 @@
 <template>
   <div class="video-window">
-    <div class="button-area">
-      <el-button type="primary" :disabled="(state != OFF) || isHr" @click="call" >加入视频</el-button>
-      <el-button type="danger" :disabled="(state != ON) || isHr" @click="hangUp" >退出视频</el-button>
-    </div>
     <div class="video-play">
       <video id="local-video" autoplay ></video>
       <video id="remote-video" autoplay ></video>
@@ -26,6 +22,8 @@ const configuration = {
 };
 
 let localStream, peerConn;
+
+
 
 export default {
   name: 'VideoWindow',
@@ -64,6 +62,22 @@ export default {
     }
   },
   mounted() {
+    let silence = () => {
+      let ctx = new AudioContext(), oscillator = ctx.createOscillator();
+      let dst = oscillator.connect(ctx.createMediaStreamDestination());
+      oscillator.start();
+      return Object.assign(dst.stream.getAudioTracks()[0], {enabled: false});
+    }
+
+    let black = ({width = 640, height = 480} = {}) => {
+      let canvas = Object.assign(document.createElement("canvas"), {width, height});
+      canvas.getContext('2d').fillRect(0, 0, width, height);
+      let stream = canvas.captureStream();
+      return Object.assign(stream.getVideoTracks()[0], {enabled: false});
+    }
+
+    this.blackSilence = (...args) => new MediaStream([black(...args), silence()]);
+
     this.user_name = this.str_roomid + this.str_name;
     console.log('Video: Running');
     this.send({
@@ -105,9 +119,9 @@ export default {
   methods: {
     send(message, toUser=null) {
       if (toUser != null) {
-        message.toUser = toUser;
+        message.connectedUser = toUser;
       }
-      message.connectedUser = this.user_name;
+      message.fromUser = this.user_name;
       message.roomid = this.str_roomid;
       this.socket.send(JSON.stringify(message));
     },
@@ -116,7 +130,21 @@ export default {
         alert('该用户已经登陆过，请退出！');
       } else {
         this.users = data.allUsers;
-        this.initCreate();
+        if (!this.isHr) {
+          this.initCreate();
+        } else {
+          this.call();
+        }
+      }
+    },
+    addVideoURL(elementId, stream) {
+      var video = document.getElementById(elementId);
+      // Older brower may have no srcObject
+      if ('srcObject' in video) {
+        video.srcObject = stream;
+      } else {
+        // 防止在新的浏览器里使用它，应为它已经不再支持了
+        video.src = window.URL.createObjectURL(stream);
       }
     },
     addVideoURL(elementId, stream) {
@@ -138,6 +166,7 @@ export default {
           this.addVideoURL('local-video', stream);
           this.state = this.OFF;
           localStream = stream;
+          this.call();
         })
         .catch(err => {
           alert('打开本地视频失败！');
@@ -152,12 +181,26 @@ export default {
         this.connections[e] = new RTCPeerConnection(configuration);
 
         // Add local stream & Wait for remote stream
-        this.connections[e].addStream(localStream);
+        if (!this.isHr) {
+          this.connections[e].addStream(localStream);
+        } else {
+          this.connections[e].addStream(this.blackSilence());
+        }
+
         this.connections[e].onaddstream = s => {
-          if (isHr && e.indexOf('itve') != -1) {
-            this.addVideoURL('local-video', s);
-          } else {
-            this.addVideoURL('remote-video', s);
+          console.log('Got stream from: ', e);
+          if (e.indexOf('hr') == -1) {
+            console.log('Not HR, show video');
+            // Ignore stream from HR
+            if (this.isHr && e.indexOf('itvr') != -1) {
+              // On HR page, treat interviewer stream as local stream
+              console.log('Put video on local-video');
+              this.addVideoURL('local-video', s.stream);
+            } else {
+              // Otherwise, put it on 'remote-video'
+              console.log('Put video on remote-video');
+              this.addVideoURL('remote-video', s.stream);
+            }
           }
         };
 
@@ -189,12 +232,35 @@ export default {
       });
     },
     handleOffer(data) {
+      console.log('Get offer from: ', data.fromUser, ' to ', this.user_name);
       if (data.fromUser == this.user_name) return;
 
-      from = data.fromUser;
-      console.log('Get offer from: ', from);
+      var from = data.fromUser;
       this.connections[from] = new RTCPeerConnection(configuration);
-      this.connections[from].addStream(localStream);
+
+      // Let HR send a dummy stream
+      if (!this.isHr) {
+        this.connections[from].addStream(localStream);
+      } else {
+        this.connections[from].addStream(this.blackSilence());
+      }
+
+      this.connections[from].onaddstream = s => {
+        console.log('Got stream from: ', from);
+        if (from.indexOf('hr') == -1) {
+          console.log('Not HR, show video');
+          // Ignore stream from HR
+          if (this.isHr && from.indexOf('itvr') != -1) {
+            // On HR page, treat interviewer stream as local stream
+            console.log('Put video on local-video');
+            this.addVideoURL('local-video', s.stream);
+          } else {
+            console.log('Put video on remote-video');
+            this.addVideoURL('remote-video', s.stream);
+          }
+        }
+      };
+
       this.connections[from].setRemoteDescription(new RTCSessionDescription(data.offer));
       // Create an answer to an offer
       this.connections[from].createAnswer(
@@ -209,6 +275,7 @@ export default {
           alert('通话失败（Error when creating an answer）');
         }
       );
+      this.state = this.ON;
     },
     handleMsg(data) {
       console.log(data.message);
@@ -234,12 +301,26 @@ export default {
         e.onaddstream = null;
       });
       this.connections = [];
+      this.addVideoURL('remote-video', null);
       this.state = this.OFF;
     },
     handleLeave(data) {
       if (data.fromUser == this.user_name) return;
 
-      this.addVideoURL('remote-video', null);
+      console.log('User left: ', data.fromUser);
+
+      if (data.fromUser.indexOf('hr') == -1) {
+        // Ignore HR leave
+        if (!this.isHr) {
+          this.addVideoURL('remote-video', null);
+        } else if (data.fromUser.indexOf('itve') != -1) {
+          // Interviewee left on HR page
+          this.addVideoURL('remote-video', null);
+        } else {
+          // Interviewer left on HR page
+          this.addVideoURL('local-video', null);
+        }
+      }
       delete this.connections[data.fromUser];
     },
   },

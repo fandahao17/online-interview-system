@@ -58,13 +58,12 @@ io.on('connect', function(socket) {
 
       case 'offer':
         // i.e. UserA wants to call UserB
-        console.log('Sending offer to: ', data.connectedUser);
         //if UserB exists then send him offer details
         var conn = allSockets[data.connectedUser];
         allUsers[user] = false;
         if (conn != null) {
           // Setting that UserA connected with UserB
-          socket.otherName = data.connectedUser;
+          console.log('Sending offer to: ', data.connectedUser);
           sendTo(conn, {
             event: 'offer',
             offer: data.offer,
