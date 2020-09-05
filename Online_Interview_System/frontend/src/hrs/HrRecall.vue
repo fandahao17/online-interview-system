@@ -28,11 +28,6 @@
             width="180">
           </el-table-column>
           <el-table-column
-            prop="score"
-            label="评分"
-            width="180">
-          </el-table-column>
-          <el-table-column
             prop="time"
             label="时间"
             width="180">
@@ -40,6 +35,16 @@
           <el-table-column
             prop="interviewee__status"
             label="状态"
+            width="180">
+          </el-table-column>
+          <el-table-column
+            prop="score"
+            label="评分"
+            width="180">
+          </el-table-column>
+          <el-table-column
+            prop="remark"
+            label="评语"
             width="180">
           </el-table-column>
           <el-table-column
