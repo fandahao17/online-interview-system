@@ -65,7 +65,7 @@ export default {
     onRegister () {
       var _this = this
       axios.request({
-        url: 'http://127.0.0.1:8000/api/register',
+        url: 'http://106.14.227.202/api/register',
         method: 'POST',
         data: {
           name: _this.input1,

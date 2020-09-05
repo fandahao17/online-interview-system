@@ -665,12 +665,15 @@ def itve_delete(request):
 	# print(request.data)
 	# print(type(request.data))
 	success = True
+	err_msg = 'init'
 	try:
 		for item in request.data:
 			n, m, e = item.get('name'), item.get('mobile'), item.get('email')
 			Interviewee.objects.get(pk=e).delete()
-	except:
+	except Exception as e:
 		success = False
+		err_msg = e
+		print(e)
 
 	return JsonResponse({'success': success})
 
@@ -685,12 +688,14 @@ def itvr_delete(request):
 	- 返回：`{ 'success': bool }`
 	"""
 	success = True
+	err_msg = 'init'
 	try:
 		for item in request.data:
 			n, m, e = item.get('name'), item.get('mobile'), item.get('email')
 			Interviewer.objects.get(pk=e).delete()
 	except Exception as e:
 		success = False
+		err_msg = e
 		print(e)
 
 	return JsonResponse({'success': success})
