@@ -1,5 +1,8 @@
 <template>
   <div class="video-window">
+    <div v-if="isHr" class="button-area">
+      <el-button type="primary" @click="startAudio()">观看视频</el-button>
+    </div>
     <div class="video-play">
       <video id="local-video" autoplay ></video>
       <video id="remote-video" autoplay ></video>
@@ -62,21 +65,6 @@ export default {
     }
   },
   mounted() {
-    let silence = () => {
-      let ctx = new AudioContext(), oscillator = ctx.createOscillator();
-      let dst = oscillator.connect(ctx.createMediaStreamDestination());
-      oscillator.start();
-      return Object.assign(dst.stream.getAudioTracks()[0], {enabled: false});
-    }
-
-    let black = ({width = 640, height = 480} = {}) => {
-      let canvas = Object.assign(document.createElement("canvas"), {width, height});
-      canvas.getContext('2d').fillRect(0, 0, width, height);
-      let stream = canvas.captureStream();
-      return Object.assign(stream.getVideoTracks()[0], {enabled: false});
-    }
-
-    this.blackSilence = (...args) => new MediaStream([black(...args), silence()]);
 
     this.user_name = this.str_roomid + this.str_name;
     console.log('Video: Running');
@@ -117,6 +105,25 @@ export default {
     );
   },
   methods: {
+    startAudio() {
+      let silence = () => {
+        let ctx = new AudioContext(), oscillator = ctx.createOscillator();
+        let dst = oscillator.connect(ctx.createMediaStreamDestination());
+        oscillator.start();
+        return Object.assign(dst.stream.getAudioTracks()[0], {enabled: false});
+      }
+
+      let black = ({width = 640, height = 480} = {}) => {
+        let canvas = Object.assign(document.createElement("canvas"), {width, height});
+        canvas.getContext('2d').fillRect(0, 0, width, height);
+        let stream = canvas.captureStream();
+        return Object.assign(stream.getVideoTracks()[0], {enabled: false});
+      }
+
+      this.blackSilence = (...args) => new MediaStream([black(...args), silence()]);
+
+      this.call();
+    },
     send(message, toUser=null) {
       if (toUser != null) {
         message.connectedUser = toUser;
@@ -132,8 +139,6 @@ export default {
         this.users = data.allUsers;
         if (!this.isHr) {
           this.initCreate();
-        } else {
-          this.call();
         }
       }
     },
