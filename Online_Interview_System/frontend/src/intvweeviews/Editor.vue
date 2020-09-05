@@ -108,7 +108,7 @@ export default {
     },
     setLanguageMode () {
       this.cmOptions.mode = `text/${this.languageModes[this.language]}`
-      this.$socket.emit('language_change', {language: this.language})
+      this.$socket.emit('language_change', {id: this.$route.params.roomid, language: this.language})
       if (this.language === 'java') {
         this.hint = 'class name should be "Solution"'
       } else {
@@ -141,6 +141,7 @@ export default {
       this.resultMsg = data.msg
     },
     server_language_change (data) {
+      console.log(data)
       if (!this.isItvr) {
         this.language = data.language
         this.cmOptions.mode = `text/${this.languageModes[this.language]}`
