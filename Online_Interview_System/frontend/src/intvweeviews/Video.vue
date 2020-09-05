@@ -1,10 +1,10 @@
 <template>
   <div class="video-window">
     <div v-if="isHr" class="button-area">
-      <el-button type="primary" @click="startAudio()">观看视频</el-button>
+      <el-button type="primary" class="video-button" @click="startAudio()">观看视频</el-button>
     </div>
     <div v-show="ifitvr" class="button-area" >
-      <el-button type="primary" @click="call()">加入视频</el-button>
+      <el-button type="primary" class="video-button" @click="call()">加入视频</el-button>
     </div>
     <div class="video-play">
       <video id="local-video" autoplay ></video>
@@ -354,6 +354,13 @@ export default {
 </script>
 
 <style scoped>
+.video-button,
+.video-button:focus,
+.video-button:hover {
+  background-color: #25BB9B;
+  border-color: #25BB9B;
+}
+
 .video-window {
   height: 200px;
 }
