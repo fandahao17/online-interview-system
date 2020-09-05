@@ -148,18 +148,24 @@ export default {
     addVideoURL(elementId, stream) {
       var video = document.getElementById(elementId);
       // Older brower may have no srcObject
-      // if ('srcObject' in video) {
-      //   video.srcObject = stream;
-      // } else {
-      //   // 防止在新的浏览器里使用它，应为它已经不再支持了
-      //   video.src = window.URL.createObjectURL(stream);
-      // }
-      try {
-        video.srcObject = event.stream;
-      } catch(error) {
-        video.src = URL.createObjectURL(event.stream);
-      };
-      video.play();
+      if ('srcObject' in video) {
+        video.srcObject = stream;
+      } else {
+        // 防止在新的浏览器里使用它，应为它已经不再支持了
+        video.src = window.URL.createObjectURL(stream);
+      }
+      video.play()
+    },
+    addVideoURL(elementId, stream) {
+      var video = document.getElementById(elementId);
+      // Older brower may have no srcObject
+      if ('srcObject' in video) {
+        video.srcObject = stream;
+      } else {
+        // 防止在新的浏览器里使用它，应为它已经不再支持了
+        video.src = window.URL.createObjectURL(stream);
+      }
+      video.play()
     },
     initCreate() {
       const self = this;
