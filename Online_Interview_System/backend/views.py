@@ -611,6 +611,8 @@ def itvr_set(request):
 	success = True
 	try:
 		if oe:
+			print('enter find old email')
+			print(d)
 			itvr = Interviewer.objects.get(pk=oe)
 			itvr.name, itvr.mobile = n, m
 			itvr.free1, itvr.free2, itvr.free3 = f1, f2, f3
@@ -620,8 +622,10 @@ def itvr_set(request):
 			itvr.save()
 		else:
 			Interviewer.objects.create(name=n, mobile=m, email=ne)
-	except:
+	except Exception as e:
 		success = False
+		print("itvr")
+		print(e)
 
 	return JsonResponse({'success': success})
 
@@ -666,11 +670,14 @@ def itve_delete(request):
 	# print(type(request.data))
 	success = True
 	try:
+		print("try find itve")
 		for item in request.data:
-			n, m, e = item.get('name'), item.get('mobile'), item.get('email')
 			Interviewee.objects.get(pk=e).delete()
-	except:
+			n, m, e = item.get('name'), item.get('mobile'), item.get('email')
+			print("try delete itve")
+	except Exception as e:
 		success = False
+		print(e)
 
 	return JsonResponse({'success': success})
 

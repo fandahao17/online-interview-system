@@ -110,6 +110,11 @@ DATABASES = {
         'PORT': '3306', 
         'CHARSET': 'utf8mb4', 
         'COLLATION': 'utf8mb4_unicode_ci', 
+        'TEST': {
+            'NAME': 'test_Online_Interview_System',
+            'CHARSET': 'utf8mb4', 
+            'COLLATION': 'utf8mb4_unicode_ci', 
+        },
     }
 }
 
