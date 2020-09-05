@@ -48,11 +48,11 @@ export default {
     if (localStorage.getItem('email') === null) {
       alert('need to login')
       _this.$router.push('/login/')
-    } else if (localStorage.getItem('identity') !== 3) {
+    } else if (localStorage.getItem('identity').toString() !== '3') {
       alert('permission denied: not a hr')
-      if (localStorage.getItem('identity') === 2) {
+      if (localStorage.getItem('identity').toString() === '2') {
         _this.$router.push('/admin')
-      } else if (localStorage.getItem('identity') === 1) {
+      } else if (localStorage.getItem('identity').toString() === '1') {
         _this.$router.push('/interviewer')
       } else {
         alert('can\'t identify ')

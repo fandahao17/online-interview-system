@@ -157,7 +157,7 @@ export default {
 <style scoped>
   .el-header {
     background-color: #DCDFE6;
-    text-align: center;
+    text-align: left;
     line-height: 55px;
   }
 
@@ -180,7 +180,7 @@ export default {
 
   .box-card {
     width: 400px;
-    height: 200px;
+    height: 250px;
     margin-left: 40px;
     border-radius: 20px;
     border-width: 2px;

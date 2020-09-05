@@ -44,14 +44,15 @@ export default {
   },
   created: function () {
     let _this = this
+    console.log(localStorage.getItem('identity'))
     if (localStorage.getItem('email') === null) {
       alert('need to login')
       _this.$router.push('/login/')
-    } else if (localStorage.getItem('identity') !== 1) {
+    } else if (localStorage.getItem('identity').toString() !== '1') {
       alert('permission denied: not a interviewer')
-      if (localStorage.getItem('identity') === 2) {
+      if (localStorage.getItem('identity').toString() === '2') {
         _this.$router.push('/admin')
-      } else if (localStorage.getItem('identity') === 3) {
+      } else if (localStorage.getItem('identity').toString() === '3') {
         _this.$router.push('/hr')
       } else {
         alert('can\'t identify ')

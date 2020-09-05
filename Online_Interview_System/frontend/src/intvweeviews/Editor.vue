@@ -139,6 +139,14 @@ export default {
 </script>
 <style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
 <style scoped>
+/* .el-card {
+  padding: 0;
+} */
+
+/* .container {
+  height: 100%;
+} */
+
 /* TODO: refactor it into scss (need to learn :D) */
 .dashboard {
   padding: 0;
@@ -202,6 +210,7 @@ export default {
   text-transform: capitalize;
 }
 </style>
+
  <!--// <template>
 //   <div class="editor-window">
 //       <editor
