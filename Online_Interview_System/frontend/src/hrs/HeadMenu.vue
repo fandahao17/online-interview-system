@@ -13,8 +13,13 @@
         <span class="tag">Hr</span>
         <span class="tag">{{ hrname }}</span>
         <el-avatar icon="el-icon-user-solid" size="medium"></el-avatar>
+        <i class="el-icon-caret-bottom"/>
       </div>
-      <el-dropdown-menu></el-dropdown-menu>
+      <el-dropdown-menu slot="dropdown">
+        <el-dropdown-item>个人中心</el-dropdown-item>
+        <el-dropdown-item>选项二</el-dropdown-item>
+        <el-dropdown-item divided @click.native="logout">退出登录</el-dropdown-item>
+      </el-dropdown-menu>
     </el-dropdown>
   </div>
 </template>
@@ -31,7 +36,31 @@ export default {
   methods: {
     handleSelect: function (key, keyPath) {
       console.log(key, keyPath)
+    },
+    logout: function () {
+      console.log('logout')
+      localStorage.clear()
+      this.$router.push('/')
     }
+  },
+  created: function () {
+    let _this = this
+    if (localStorage.getItem('email') === null) {
+      alert('need to login')
+      _this.$router.push('/login/')
+    } else if (localStorage.getItem('identity') != '3') {
+      alert('permission denied: not a hr')
+      if (localStorage.getItem('identity') == '2') {
+        _this.$router.push('/admin')
+      } else if (localStorage.getItem('identity') == '1') {
+        _this.$router.push('/interviewer')
+      } else {
+        alert('can\'t identify ')
+        _this.$router.push('/')
+      }
+    }
+    _this.hrname = localStorage.getItem('name')
+    console.log(_this.hrname)
   }
 }
 </script>

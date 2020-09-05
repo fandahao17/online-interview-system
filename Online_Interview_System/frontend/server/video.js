@@ -16,6 +16,8 @@ console.log('Socket Secure server is up and running.');
 
 // All joined users
 var allUsers = {};
+// Room-users table
+var allRooms = {};
 // All joined sockets
 var allSockets = {};
 
@@ -39,39 +41,34 @@ io.on('connect', function(socket) {
           console.log('User joined', data.name);
           // Save users info
           allUsers[user] = true; // 'true' means has not call, 'false' means calling
+          if (!(data.roomid in allRooms)) {
+            allRooms[data.roomid] = [];
+          }
+          allRooms[data.roomid].push(user);
           allSockets[user] = socket;
           socket.name = user;
-          showUserInfo(allUsers);
           sendTo(socket, {
             event: 'join',
-            allUsers: allUsers,
+            allUsers: allRooms[data.roomid],
             success: true,
           });
+          showUserInfo(data.roomid);
         }
-        break;
-
-      case 'call':
-        var conn = allSockets[data.connectedUser];
-        sendTo(conn, {
-          event: 'call',
-          name: socket.name,
-        });
         break;
 
       case 'offer':
         // i.e. UserA wants to call UserB
-        console.log('Sending offer to: ', data.connectedUser);
         //if UserB exists then send him offer details
         var conn = allSockets[data.connectedUser];
         allUsers[user] = false;
         if (conn != null) {
-          showUserInfo(allUsers);
           // Setting that UserA connected with UserB
-          socket.otherName = data.connectedUser;
+          console.log('Sending offer to: ', data.connectedUser);
           sendTo(conn, {
             event: 'offer',
             offer: data.offer,
             name: socket.name,
+            fromUser: data.fromUser,
           });
         } else {
           sendTo(socket, {
@@ -81,97 +78,70 @@ io.on('connect', function(socket) {
         }
         break;
 
-      case 'accept':
-        var conn = allSockets[data.connectedUser];
-        if (conn != null) {
-          if (data.accept) {
-            sendTo(conn, {
-              event: 'accept',
-              accept: true,
-            });
-          } else {
-            allUsers[data.connectedUser] = true;
-            sendTo(conn, {
-              event: 'accept',
-              accept: false,
-            });
-          }
-        }
-        break;
-
       case 'answer':
         console.log('Sending answer to: ', data.connectedUser);
         // i.e. UserB answers UserA
         var conn = allSockets[data.connectedUser];
         allUsers[user] = false;
         if (conn != null) {
-          showUserInfo(allUsers);
-          socket.otherName = data.connectedUser;
           sendTo(conn, {
             event: 'answer',
             answer: data.answer,
+            fromUser: data.fromUser,
           });
         }
         break;
 
       case 'candidate':
         console.log('Sending candidate to:', data.connectedUser);
-        var conn1 = allSockets[data.connectedUser];
-        var conn2 = allSockets[socket.otherName];
-        if (conn1 != null) {
-          sendTo(conn1, {
+        var conn = allSockets[data.connectedUser];
+        if (conn != null) {
+          sendTo(conn, {
             event: 'candidate',
             candidate: data.candidate,
-          });
-        } else {
-          sendTo(conn2, {
-            event: 'candidate',
-            candidate: data.candidate,
+            fromUser: data.fromUser,
           });
         }
         break;
 
       case 'leave':
-        console.log('Disconnecting from', data.connectedUser);
-        var conn = allSockets[data.connectedUser];
+        console.log('User left: ', data.connectedUser);
         allUsers[socket.name] = true;
-        allUsers[data.connectedUser] = true;
-        socket.otherName = null;
         // Notify the other user so he can disconnect his peer connection
-        if (conn != null) {
-          showUserInfo(allUsers);
-          sendTo(conn, {
-            event: 'leave',
-          });
-        }
+        broadcastRoom(data.roomid, {
+          event: 'leave',
+          fromUser: data.fromUser,
+        });
         break;
     }
   });
 
   socket.on('disconnect', function() {
     if (socket.name) {
+      console.log('User disconnected: ', socket.name);
       delete allUsers[socket.name];
       delete allSockets[socket.name];
-      showUserInfo(allUsers);
-      if (socket.otherName) {
-        console.log('Disconnecting from ', socket.otherName);
-        var conn = allSockets[socket.otherName];
-        allUsers[socket.otherName] = true;
-        socket.otherName = null;
-        if (conn != null) {
-          sendTo(conn, {
-            type: 'leave',
-          });
-        }
-      }
+      // Trick to get roomid here
+      roomid = socket.name.substr(0, 6);
+      allRooms[roomid].splice(allRooms[roomid].indexOf(socket.name), 1);
+      broadcastRoom(roomid, {
+        event: 'leave',
+        fromUser: socket.name,
+      });
     }
   });
 });
 
-function showUserInfo(allUsers) {
-  sendTo(io, {
+function showUserInfo(roomid) {
+  broadcastRoom(roomid, {
     event: 'show',
-    allUsers: allUsers,
+    allUsers: allRooms[roomid],
+  });
+}
+
+function broadcastRoom(roomid, msg) {
+  allRooms[roomid].forEach(e => {
+    sendTo(allSockets[e], msg);
   });
 }
 
