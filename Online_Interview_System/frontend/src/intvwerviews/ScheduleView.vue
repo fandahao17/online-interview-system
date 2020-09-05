@@ -133,6 +133,7 @@ export default {
     },
     getMeetingInfo: function (_this) {
       let email = localStorage.getItem('email')
+      console.log('emali' + email)
       axios.get('http://106.14.227.202/api/itvr/getitves/' + email + '/', {
         headers: {
           'Content-Type': 'application/json'

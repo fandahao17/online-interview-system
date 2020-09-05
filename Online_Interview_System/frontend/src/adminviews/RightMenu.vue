@@ -28,7 +28,7 @@
       <el-dropdown-menu slot="dropdown">
         <el-dropdown-item>个人中心</el-dropdown-item>
         <el-dropdown-item>选项二</el-dropdown-item>
-        <el-dropdown-item divided>退出登录</el-dropdown-item>
+        <el-dropdown-item divided @click.native="logout">退出登录</el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
   </div>
@@ -74,6 +74,28 @@ export default {
       console.log('info = ')
       console.log(this.searchInfo)
       this.$eventHub.$emit('search-info', this.searchInfo)
+    },
+    logout: function () {
+      console.log('logout')
+      localStorage.clear()
+      this.$router.push('/')
+    }
+  },
+  created: function () {
+    let _this = this
+    if (localStorage.getItem('email') === null) {
+      alert('need to login')
+      _this.$router.push('/login/')
+    } else if (localStorage.getItem('identity') !== 2) {
+      alert('permission denied: not a admin')
+      if (localStorage.getItem('identity') === 3) {
+        _this.$router.push('/hr')
+      } else if (localStorage.getItem('identity') === 1) {
+        _this.$router.push('/interviewer')
+      } else {
+        alert('can\'t identify ')
+        _this.$router.push('/')
+      }
     }
   }
 }

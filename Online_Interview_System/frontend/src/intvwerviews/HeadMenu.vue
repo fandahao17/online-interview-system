@@ -17,7 +17,7 @@
       <el-dropdown-menu slot="dropdown">
         <el-dropdown-item>个人中心</el-dropdown-item>
         <el-dropdown-item>选项二</el-dropdown-item>
-        <el-dropdown-item divided>退出登录</el-dropdown-item>
+        <el-dropdown-item divided @click.native="logout">退出登录</el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
   </div>
@@ -35,7 +35,31 @@ export default {
   methods: {
     handleSelect: function (key, keyPath) {
       console.log(key, keyPath)
+    },
+    logout: function () {
+      console.log('logout')
+      localStorage.clear()
+      this.$router.push('/')
     }
+  },
+  created: function () {
+    let _this = this
+    if (localStorage.getItem('email') === null) {
+      alert('need to login')
+      _this.$router.push('/login/')
+    } else if (localStorage.getItem('identity') !== 1) {
+      alert('permission denied: not a interviewer')
+      if (localStorage.getItem('identity') === 2) {
+        _this.$router.push('/admin')
+      } else if (localStorage.getItem('identity') === 3) {
+        _this.$router.push('/hr')
+      } else {
+        alert('can\'t identify ')
+        _this.$router.push('/')
+      }
+    }
+    _this.intvwerName = localStorage.getItem('name')
+    console.log(_this.intvwerName)
   }
 }
 </script>

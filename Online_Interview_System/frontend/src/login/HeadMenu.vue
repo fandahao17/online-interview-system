@@ -1,6 +1,10 @@
 <template>
   <div>
-    <div class="tag">首页</div>
+    <div class="menu-left">
+      <el-menu default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect" router>
+        <el-menu-item index="/">首页</el-menu-item>
+      </el-menu>
+    </div>
     <div class="menu-right">
       <el-menu default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect" router>
         <el-menu-item index="/login">登录</el-menu-item>

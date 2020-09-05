@@ -72,6 +72,7 @@ export default {
           localStorage.setItem('identity', Number(_this.value.charAt(_this.value.length - 1)))
           localStorage.setItem('token', arg.data.token)
           localStorage.setItem('email', _this.input1)
+          localStorage.setItem('name', arg.data.name)
           if (arg.data.type === '1') {
             _this.$router.push('/interviewer')
           } else if (arg.data.type === '2') {

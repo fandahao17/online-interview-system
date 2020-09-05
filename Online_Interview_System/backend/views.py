@@ -38,6 +38,7 @@ def login(request):
 			ret["msg"] = "Login success"
 			ret["type"] = "1"
 			ret["token"] = token
+			ret["name"] = obj.name
 			return JsonResponse(ret)
 
 		elif identity == 2:
@@ -53,6 +54,7 @@ def login(request):
 			ret["msg"] = "Login success"
 			ret["type"] = "2"
 			ret["token"] = token
+			ret["name"] = obj.name
 			return JsonResponse(ret)
 
 		elif identity == 3:
@@ -66,6 +68,7 @@ def login(request):
 			ret["msg"] = "Login success"
 			ret["type"] = "3"
 			ret["token"] = token
+			ret["name"] = obj.name
 			return JsonResponse(ret)
 		else:
 			ret["code"] = 1003
