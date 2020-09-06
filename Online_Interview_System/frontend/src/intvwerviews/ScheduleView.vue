@@ -10,12 +10,13 @@
             <el-card class="box-card" shadow="hover" @click.native="clickCard(((rn-1) * 3) + i - 1)">
               <div slot="header" class="clearfix">
                 <span> {{ cardDataAll[(((rn-1) * 3) + i - 1)]['interviewee__name'] }} </span>
-                <el-button style="float: right; padding: 3px 0" type="text">查看</el-button>
+                <el-button style="float: right; padding: 3px 0" type="text" @click="$router.push('interviewer/' + cardDataAll[(((rn-1) * 3) + i - 1)]['roomid'])">进入房间</el-button>
               </div>
               <el-col :span="18">
                 <div class="text item">
                   <span>roomid: </span>
                   {{ cardDataAll[(((rn-1) * 3) + i - 1)]['roomid'] }}
+                  <!-- <el-button size="medium" type="primary" plain @click="$router.push('interviewer/' + cardDataAll[(((rn-1) * 3) + i - 1)]['roomid'])">进入房间</el-button> -->
                 </div>
                 <div class="text item">
                   <span>email: </span>
@@ -85,6 +86,9 @@
         </el-form-item>
         <el-form-item label="简历" :label-width="formLabelWidth">
           <span>{{ intvwForm.resume }}</span>
+        </el-form-item>
+        <el-form-item label="进入房间" :label-width="formLabelWidth">
+          <el-button size="medium" type="primary" plain @click="enterRoom">进入房间</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
