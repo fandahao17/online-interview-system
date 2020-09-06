@@ -23,8 +23,8 @@ def login(request):
 	try:
 		email = request.data.get('email')
 		password = request.data.get('password')
-		identity = request.data.get('identity')
-		if identity == '1':
+		identity = int(request.data.get('identity'))
+		if identity == 1:
 			obj = Interviewer.objects.filter(
 				email=email, password=password).first()
 			if not obj:
@@ -44,7 +44,7 @@ def login(request):
 			ret["free3"] = obj.free3
 			return JsonResponse(ret)
 
-		elif identity == '2':
+		elif identity == 2:
 			obj = Super.objects.filter(email=email, password=password).first()
 			if not obj:
 				ret["code"] = '1001'
@@ -60,7 +60,7 @@ def login(request):
 			ret["name"] = obj.name
 			return JsonResponse(ret)
 
-		elif identity == '3':
+		elif identity == 3:
 			obj = Hr.objects.filter(email=email, password=password).first()
 			if not obj:
 				ret["code"] = '1001'
@@ -93,8 +93,8 @@ def register(request):
 		password = request.data.get('password')
 		mobile = request.data.get('mobile')
 		email = request.data.get('email')
-		identity = request.data.get('identity')
-		if identity == '1':
+		identity = int(request.data.get('identity'))
+		if identity == 1:
 			obj = Interviewer.objects.filter(
 				name=name, mobile=mobile, email=email, password=password)
 			if obj:
@@ -104,7 +104,7 @@ def register(request):
 			b = Interviewer(name=name, mobile=mobile,
                             email=email, password=password)
 			b.save()
-		elif identity == '2':
+		elif identity == 2:
 			obj = Super.objects.filter(
 				name=name, mobile=mobile, email=email, password=password)
 			if obj:
@@ -113,7 +113,7 @@ def register(request):
 				return JsonResponse(ret)
 			b = Super(name=name, mobile=mobile, email=email, password=password)
 			b.save()
-		elif identity == '3':
+		elif identity == 3:
 			obj = Hr.objects.filter(
 				name=name, mobile=mobile, email=email, password=password)
 			if obj:

@@ -70,6 +70,5 @@ class TestInterviewer(TestCase):
         Room.objects.create(roomid=1, time=1, tester=Itvr, interviewee=Itve)
         c = Client()
         response = c.get('/itvr/getitves/aa@ustc.edu.cn/')
-        print(response)
         self.assertEqual(len(json.loads(response.content.decode('utf8'))), 1)
         

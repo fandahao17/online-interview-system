@@ -15,9 +15,10 @@ class LoginRegisterViewtest(TestCase):
   def test_login(self):
     url = '/login'
     client = Client()
-    data = {'email': '940107412@qq.com', 'password': '123456', 'identity': 3}
+    data = {'email': '940107412@qq.com', 'password': '123456', 'identity': int(3)}
     response = client.post(url, data)
     json_data = json.loads(response.content.decode('utf8'))
+    print("--login--")
     print(json_data)
     self.assertEqual(json_data['code'], 1000)
 

@@ -79,7 +79,7 @@ export default {
       recevieData: '',
       isDataRecevie: false,
       status: ['未分配', '拒绝', '录用'],
-      time: ['早上', '中午', '晚上'],
+      time: ['早上', '下午', '晚上'],
       postData: {
         rooms: [],
         status: ''
