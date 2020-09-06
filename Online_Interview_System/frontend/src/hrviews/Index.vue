@@ -150,7 +150,7 @@ export default {
         _this.roomInfo = response.data
         if (_this.roomInfo['roomid'] === '') {
           _this.$message.error('This room id does not exist!')
-          this.$message.error('This room id does not exist!')
+          _this.$router.push('/error')
         }
       }).catch(function (error) {
         console.log('get room info error:')
@@ -275,6 +275,7 @@ export default {
     },
     conWebSocket: function () {
       let vm = this
+      let _this = this
       if (window.WebSocket) {
         vm.socket = new WebSocket('ws://106.14.227.202:8088')
         let socket = vm.socket
@@ -292,7 +293,22 @@ export default {
         socket.onmessage = function (e) {
           console.log(vm.messageList)
           let message = JSON.parse(e.data)
-          vm.messageList.push(message)
+          console.log('message = ', message)
+          if (message['roomid'] === vm.$route.params.roomid) {
+            axios.get('http://106.14.227.202/api/problem/' + message['msg'] + '/', {
+              headers: {
+                'Content-Type': 'application/json'
+              }
+            }).then(function (response) {
+              console.log(response.data)
+              console.log('type:', typeof (response.data))
+              _this.queDetail = response.data
+              console.log(_this.queDetail)
+            }).catch(function (error) {
+              console.log('get problems detail error:')
+              console.log(error.response)
+            })
+          }
         }
       }
     },

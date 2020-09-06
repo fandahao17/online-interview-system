@@ -121,19 +121,21 @@ export default {
           // if(message.users) {
           //   vm.users = message.users;
           // }
-          axios.get('http://106.14.227.202/api/problem/' + message['msg'] + '/', {
-            headers: {
-              'Content-Type': 'application/json'
-            }
-          }).then(function (response) {
-            console.log(response.data)
-            console.log('type:', typeof (response.data))
-            _this.queDetail = response.data
-            console.log(_this.queDetail)
-          }).catch(function (error) {
-            console.log('get problems detail error:')
-            console.log(error.response)
-          })
+          if (message['roomid'] === vm.$route.params.roomid) {
+            axios.get('http://106.14.227.202/api/problem/' + message['msg'] + '/', {
+              headers: {
+                'Content-Type': 'application/json'
+              }
+            }).then(function (response) {
+              console.log(response.data)
+              console.log('type:', typeof (response.data))
+              _this.queDetail = response.data
+              console.log(_this.queDetail)
+            }).catch(function (error) {
+              console.log('get problems detail error:')
+              console.log(error.response)
+            })
+          }
         }
       }
     },

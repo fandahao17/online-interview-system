@@ -154,7 +154,7 @@ export default {
         _this.roomInfo = response.data
         if (_this.roomInfo['roomid'] === '') {
           _this.$message.error('This room id does not exist!')
-          this.$message.error('This room id does not exist!')
+          _this.$router.push('/error')
         }
       }).catch(function (error) {
         console.log('get room info error:')
