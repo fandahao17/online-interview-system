@@ -44,8 +44,8 @@
               </div>
             </el-scrollbar>
             <div class="bottom-toolbar">
-              <el-button type="primary" @click="addQuestion" class="end-button">添加题目</el-button>
-              <el-button type="primary" @click="endInterview" class="end-button">结束面试</el-button>
+              <el-button type="primary" disabled @click="addQuestion" class="end-button">添加题目</el-button>
+              <el-button type="primary" disabled @click="endInterview" class="end-button">结束面试</el-button>
             </div>
           </el-col>
         </el-row>
@@ -133,7 +133,7 @@ export default {
       queForm: {},
       queTableData: [],
       queDetail: {},
-      messageList: '',
+      messageList: [],
       bridge: []
     }
   },
