@@ -23,7 +23,7 @@
     "element-ui": "^2.13.1",
     "fs": "0.0.1-security",
     "https": "^1.0.0",
-    "jquery": "^1.12.4",
+    "jquery": "^3.5.0",
     "moment": "^2.26.0",
     "nodejs-websocket": "^1.7.2",
     "socket.io": "^2.3.0",
