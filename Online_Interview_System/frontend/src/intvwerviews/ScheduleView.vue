@@ -40,7 +40,7 @@
             <el-card class="box-card" shadow="hover" @click.native="clickCard(MeetingNum - lastRow + i - 1)">
               <div slot="header" class="clearfix">
                 <span> {{ cardDataAll[MeetingNum - lastRow + i - 1]['interviewee__name'] }} </span>
-                <el-button style="float: right; padding: 3px 0" type="text">查看</el-button>
+                <el-button style="float: right; padding: 3px 0" type="text" @click="$router.push('interviewer/' + cardDataAll[MeetingNum - lastRow + i - 1]['roomid'])">进入房间</el-button>
               </div>
               <el-col :span="18">
                 <div class="text item">
@@ -69,26 +69,20 @@
     <!-- 点击面试卡片弹出的表单 -->
     <el-dialog title="面试信息" :visible.sync="intvwDialogFormVisible">
       <el-form :model="intvwForm">
-        <el-form-item label="姓名" :label-width="formLabelWidth">
-          <span>{{ intvwForm.name }}</span>
-        </el-form-item>
-        <el-form-item label="性别" :label-width="formLabelWidth">
-          <span>{{ intvwForm.sex }}</span>
+        <el-form-item label="候选人姓名" :label-width="formLabelWidth">
+          <span>{{ intvwForm['interviewee__name'] }}</span>
         </el-form-item>
         <el-form-item label="email" :label-width="formLabelWidth">
-          <span>{{ intvwForm.email }}</span>
+          <span>{{ intvwForm['interviewee__email'] }}</span>
         </el-form-item>
-        <el-form-item label="学历" :label-width="formLabelWidth">
-          <span>{{ intvwForm.education }}</span>
+        <el-form-item label="电话" :label-width="formLabelWidth">
+          <span>{{ intvwForm['interviewee__mobile'] }}</span>
         </el-form-item>
-        <el-form-item label="面试岗位" :label-width="formLabelWidth">
-          <span>{{ intvwForm.position }}</span>
+        <el-form-item label="面试时间" :label-width="formLabelWidth">
+          <span>{{ intvwForm['time'] }}</span>
         </el-form-item>
-        <el-form-item label="简历" :label-width="formLabelWidth">
-          <span>{{ intvwForm.resume }}</span>
-        </el-form-item>
-        <el-form-item label="进入房间" :label-width="formLabelWidth">
-          <el-button size="medium" type="primary" plain @click="enterRoom">进入房间</el-button>
+        <el-form-item label="房间号" :label-width="formLabelWidth">
+          <span>{{ intvwForm['roomid'] }}</span>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -108,14 +102,7 @@ export default {
     return {
       // MeetingNum: 11, // 从 API 请求到的 interview 的数量（用meetingnum代替）
       intvwDialogFormVisible: false,
-      intvwForm: { // 弹出表单的内容
-        name: 'default',
-        sex: '男',
-        email: 'default@default.com',
-        education: '本科',
-        position: '开发',
-        resume: '简历'
-      },
+      intvwForm: {},
       formLabelWidth: '120px', // 弹出表单的宽度
       cardDataAll: [{}] // 返回的面试信息
     }
@@ -132,7 +119,8 @@ export default {
     }
   },
   methods: {
-    clickCard: function () {
+    clickCard: function (num) {
+      this.intvwForm = this.cardDataAll[num]
       this.intvwDialogFormVisible = true
     },
     getMeetingInfo: function (_this) {
