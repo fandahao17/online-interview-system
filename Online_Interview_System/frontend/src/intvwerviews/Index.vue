@@ -151,6 +151,7 @@ export default {
           'Content-Type': 'application/json'
         }
       }).then(function (arg) {
+        alert("成功设定候选人空闲时间")
         console.log(arg.data.success)
       })
       console.log('submit free time')
